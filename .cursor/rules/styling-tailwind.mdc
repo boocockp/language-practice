@@ -1,0 +1,13 @@
+---
+description: Tailwind styling conventions
+globs: src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# Tailwind conventions
+
+- Prefer Tailwind utilities over custom CSS.
+- Use `cn()` from `src/lib/cn.ts` when composing classnames.
+- Extract repeated classname patterns into components (or variants) instead of copy/paste.
+- Light mode only for now (no dark-mode toggle or `dark:` styling unless explicitly requested).
+

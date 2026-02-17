@@ -1,0 +1,13 @@
+---
+description: Frontend React + TypeScript conventions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Frontend conventions
+
+- Prefer functional components + hooks.
+- Keep route components thin; move business logic to `src/features/` and backend logic to Convex.
+- Avoid `any`; prefer `unknown` + narrowing.
+- Use accessible, semantic HTML. Every form control needs a label.
+

@@ -1,0 +1,17 @@
+---
+description: Convex schema + function conventions
+globs: convex/**/*.ts
+alwaysApply: false
+---
+
+# Convex conventions
+
+- Validate all function arguments at the boundary.
+- Keep selection/scoring logic in Convex (not in React routes).
+- Name functions by intent (e.g. `generateQuestion`, `logAttempt`, `pickNextItems`).
+- Conceptual collections:
+  - `words`
+  - `questionTypes`
+  - `attempts`
+- Add indexes for frequently-used selection queries.
+

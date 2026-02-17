@@ -1,0 +1,28 @@
+---
+description: Project brief + definition of done
+alwaysApply: true
+---
+
+# Language Practice App (Cursor brief)
+
+## Product goal
+Intensive vocabulary + grammar practice.
+
+## Core concepts (data)
+- `words`: the learner’s vocabulary items
+- `questionTypes`: templates that generate questions from words
+- `attempts`: generated questions + user responses + scoring/metadata for future selection
+
+## Stack
+- TypeScript + React (Vite SPA)
+- React Router (library mode)
+- Tailwind CSS
+- Cloudflare Kumo styled components (use Tailwind for layout/spacing)
+- Convex backend service
+
+## Definition of done
+- `npm run typecheck` and `npm run lint` pass
+- UI remains accessible (labels, focus, keyboard navigation)
+- Business logic for selection/scoring lives in Convex functions (not in route components)
+- Update docs when behavior/data changes (`docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`)
+

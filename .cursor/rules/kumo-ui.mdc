@@ -1,0 +1,14 @@
+---
+description: Cloudflare Kumo styled component usage
+globs: src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# Kumo UI conventions
+
+- Prefer Kumo **styled components** over primitives.
+- Use Tailwind for layout/spacing/composition around Kumo components.
+- Prefer granular imports for tree-shaking:
+  - `@cloudflare/kumo/components/...`
+- When integrating links, use Kumo `LinkProvider` with React Router’s `Link`.
+

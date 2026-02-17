@@ -1,0 +1,20 @@
+---
+description: React Router (library mode) conventions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Routing (React Router library mode)
+
+- Use `createBrowserRouter` + `RouterProvider` as the router entry point.
+- Keep route components in `src/routes/*Page.tsx`.
+- Shared layout/nav lives in `src/app/AppLayout.tsx`.
+- Route map (top-level pages):
+  - `/` Home
+  - `/practice` Practice
+  - `/words` Words
+  - `/question-types` QuestionTypes
+  - `/stats` Stats
+  - `/settings` Settings
+- This is an SPA: deployment must rewrite unknown paths to `index.html`.
+
