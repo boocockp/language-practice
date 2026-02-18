@@ -11,6 +11,10 @@
 - **Frontend (React)**: routing, UI rendering, local interaction state.
 - **Backend (Convex)**: data model, question generation, scoring, selection/scheduling.
 
+### Authentication
+
+Authentication uses [Convex Auth](https://docs.convex.dev/auth/convex-auth) (beta). The only method initially is email + password; there is no password reset. The same session is shared across all browser tabs. The current user is exposed app-wide via `AuthContext` (`useAuth()`). All user-scoped data is filtered by `userId`; Convex queries and mutations use `getAuthUserId(ctx)` and filter or set `userId` accordingly.
+
 ### Current Language
 
 The user studies one language at a time. The selection is stored per browser tab in `sessionStorage` and exposed via `CurrentLanguageContext`. A dropdown in the nav bar lets the user switch. All Convex queries that return language-scoped data receive the current language as an argument from the client.
