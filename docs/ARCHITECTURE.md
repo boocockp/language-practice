@@ -11,6 +11,10 @@
 - **Frontend (React)**: routing, UI rendering, local interaction state.
 - **Backend (Convex)**: data model, question generation, scoring, selection/scheduling.
 
+### Current Language
+
+The user studies one language at a time. The selection is stored per browser tab in `sessionStorage` and exposed via `CurrentLanguageContext`. A dropdown in the nav bar lets the user switch. All Convex queries that return language-scoped data receive the current language as an argument from the client.
+
 ### Key screens
 - Home: entry point and navigation
 - Practice: show current question, accept answer, show feedback, advance

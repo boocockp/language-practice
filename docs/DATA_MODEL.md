@@ -2,6 +2,10 @@
 
 This is intentionally minimal and should be updated as the domain model becomes concrete.
 
+### Language filtering
+
+All language-scoped data (`words`, `questionTypes`, and related records) is filtered by the `language` field. The client passes the current language from `useCurrentLanguage()` to all relevant Convex queries and mutations. The user sees only records where `language` matches their current selection.
+
 ### Standard fields
 Every record will have the Convex standard fields _id and _creationTime
 
