@@ -18,6 +18,8 @@ Current Requirements
 - All the words are shown, in ascending order using the standard collating sequence for the current language (this may change to a paginated display in the future)
 - The table shows these fields described for the `words` type in @DATA_MODEL.md: text, pos, gender, meaning, tags
 
+Implemented: list + table on /words (Convex query `words.listByUserAndLanguage`, locale-sorted; empty state when no words or not logged in).
+
 Future requirements
 -------------------
 
