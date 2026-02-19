@@ -5,8 +5,8 @@
 export type LanguageCode = (typeof LANGUAGES)[number]["code"];
 
 export const LANGUAGES = [
-  { code: "fr", name: "Français" },
-  { code: "en", name: "English" },
+  { code: "fr", name: "Français", flag: "🇫🇷" },
+  { code: "en", name: "English", flag: "🇬🇧" },
 ] as const;
 
 export const LANGUAGE_CODES = LANGUAGES.map((l) => l.code);
@@ -15,12 +15,24 @@ const LANGUAGE_MAP = new Map<string, string>(
   LANGUAGES.map((l) => [l.code, l.name]),
 );
 
+const FLAG_MAP = new Map<string, string>(
+  LANGUAGES.map((l) => [l.code, l.flag]),
+);
+
 /**
  * Returns the display name of a language given its ISO 639 code.
  * If the code is unknown, returns the code itself.
  */
 export function getLanguageName(code: string): string {
   return LANGUAGE_MAP.get(code) ?? code;
+}
+
+/**
+ * Returns the flag emoji for a language given its ISO 639 code.
+ * If the code is unknown, returns empty string.
+ */
+export function getLanguageFlag(code: string): string {
+  return FLAG_MAP.get(code) ?? "";
 }
 
 /**
