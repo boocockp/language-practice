@@ -7,6 +7,7 @@ alwaysApply: false
 # Tailwind conventions
 
 - Prefer Tailwind utilities over custom CSS.
+- Design mobile-first: default styles for small viewports; use `sm:`, `md:`, `lg:` for larger screens. See the responsive-mobile rule for touch targets, safe areas, and layout guidance.
 - Use `cn()` from `src/lib/cn.ts` when composing classnames.
 - Extract repeated classname patterns into components (or variants) instead of copy/paste.
 - Light mode only for now (no dark-mode toggle or `dark:` styling unless explicitly requested).

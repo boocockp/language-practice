@@ -1,0 +1,14 @@
+---
+description: Responsive and mobile-first UI
+globs: src/**/*.{ts,tsx,css}
+alwaysApply: false
+---
+
+# Responsive and mobile-first UI
+
+- **Mobile-first**: Default (unprefixed) styles are for the smallest viewport; add `sm:`, `md:`, `lg:` etc. only when the layout or spacing should change at larger widths. Tailwind breakpoints: `sm` 640px, `md` 768px, `lg` 1024px, `xl` 1280px, `2xl` 1536px.
+- **Touch targets**: Interactive elements (buttons, links, form controls, nav items) must have a minimum tap area of about 44×44px (e.g. `min-h-11 min-w-11` or `p-3`). Avoid tiny clickable areas; use padding rather than margin to grow the hit area.
+- **Readable width**: Limit line length on large screens (e.g. `max-w-prose` for text blocks). On small screens, use horizontal padding (e.g. `px-4` or `px-6`) so content doesn’t touch the edges.
+- **Safe areas**: For full-bleed or fixed UI near the viewport edges (e.g. bottom nav, sticky headers), use the project’s safe-area utilities so content isn’t hidden by notches or home indicators. Viewport meta in `index.html` includes `viewport-fit=cover`. Available utilities (defined in `src/index.css`): padding `pt-safe`, `pr-safe`, `pb-safe`, `pl-safe`, `px-safe`, `py-safe`, `p-safe`; margin `mt-safe`, `mr-safe`, `mb-safe`, `ml-safe`; height `min-h-screen-safe`. See `docs/RESPONSIVE_CHECKLIST.md`.
+- **Forms and inputs**: On mobile, use full-width inputs where appropriate (e.g. `w-full` inside a narrow container). Ensure labels and error text remain visible and that focus states are clear for both keyboard and touch.
+- **Navigation**: On narrow viewports, prefer stacking or wrapping (e.g. `flex-wrap`, or a collapsible menu) over horizontal overflow. Ensure nav items remain easily tappable.
