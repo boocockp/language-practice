@@ -3,9 +3,11 @@
  */
 import { cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
 import { renderAppLayout, screen, STORAGE_KEY } from "../test-utils";
+
+const MD_BREAKPOINT = "(min-width: 768px)";
 
 describe("AppLayout", () => {
   let user: ReturnType<typeof userEvent.setup>;
@@ -67,6 +69,60 @@ describe("AppLayout", () => {
       });
       expect(buttonAfterRemount).toHaveTextContent("fr");
       expect(buttonAfterRemount).toHaveTextContent("🇫🇷");
+    });
+  });
+
+  describe("navigation", () => {
+    let mdMatches: boolean;
+    const originalMatchMedia = window.matchMedia;
+
+    beforeEach(() => {
+      window.matchMedia = (query: string) => ({
+        get matches() {
+          return query === MD_BREAKPOINT ? mdMatches : false;
+        },
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => true,
+        onchange: null,
+        media: query,
+      });
+    });
+
+    afterEach(() => {
+      window.matchMedia = originalMatchMedia;
+    });
+
+    describe("hamburger menu (small viewport)", () => {
+      it("opens menu and navigates to Words page when Words is clicked", async () => {
+        mdMatches = false;
+        renderAppLayout();
+
+        const openMenuButton = screen.getByRole("button", {
+          name: "Open menu",
+        });
+        await user.click(openMenuButton);
+
+        const wordsItem = await screen.findByText("Words");
+        expect(wordsItem).toBeInTheDocument();
+        await user.click(wordsItem);
+
+        expect(screen.getByTestId("words-page")).toBeInTheDocument();
+      });
+    });
+
+    describe("nav bar (large viewport)", () => {
+      it("navigates to Words page when Words link is clicked", async () => {
+        mdMatches = true;
+        renderAppLayout();
+
+        const wordsLink = screen.getByRole("link", { name: "Words" });
+        await user.click(wordsLink);
+
+        expect(screen.getByTestId("words-page")).toBeInTheDocument();
+      });
     });
   });
 });

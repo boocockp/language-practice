@@ -61,6 +61,10 @@ function renderAppLayout() {
     <Routes>
       <Route path="/" element={<AppLayout />}>
         <Route index element={<div data-testid="outlet" />} />
+        <Route
+          path="words"
+          element={<div data-testid="words-page">Words page</div>}
+        />
       </Route>
     </Routes>,
   );
