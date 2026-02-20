@@ -10,14 +10,16 @@ import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Doc } from "../../convex/_generated/dataModel";
 
-type AuthContextValue = {
+export type AuthContextValue = {
   user: Doc<"users"> | null;
   isLoading: boolean;
   signIn: (provider: string, formData: FormData) => Promise<void>;
   signOut: () => Promise<void>;
 };
 
-const AuthContext = createContext<AuthContextValue | null>(null);
+// Exported for test wrappers (MockAuthProvider in test-utils)
+// eslint-disable-next-line react-refresh/only-export-components -- test support
+export const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const user = useQuery(api.users.currentUser);

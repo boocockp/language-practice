@@ -1,4 +1,4 @@
-Feature: User Login
+User Feature: User Login
 ===================
 
 Overview

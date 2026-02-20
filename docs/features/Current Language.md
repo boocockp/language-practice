@@ -1,4 +1,4 @@
-Feature: Current Language
+User Feature: Current Language
 =========================
 
 Overview
