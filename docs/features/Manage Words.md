@@ -25,6 +25,18 @@ Requirements - Part 2
 ---------------------
 
 - The words table should be usable on small phones in portrait orientation
+- To achieve this, the Part of Speech and Gender columns will be made part of the Text column
+- Add a POS item in the Text column, following the actual Text content, containing:
+    - the first letter of the Part of Speech
+    - the Gender (if present)
+- Each part of the POS item will be contained in a span with a coloured background and a contrasting text colour, no space between
+- The background colours for Part of Speech are: noun: green, verb: red, adjective: purple
+- The background colours for Gender are M: blue, F: magenta
+- The letters in the POS item are in lowercase, with no space between them
+- The POS item is separated from the text by two non-breaking spaces
+- The Part of Speech and Gender columns are removed 
+
+Implemented: POS and Gender merged into Text column as coloured spans (noun/verb/adj + M/F/N), columns removed; table in overflow wrapper; usable on small phones.
 
 
 Future requirements
