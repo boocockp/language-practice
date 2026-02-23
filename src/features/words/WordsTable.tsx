@@ -1,7 +1,8 @@
 import { Table } from "@cloudflare/kumo";
 import type { ReactNode } from "react";
 
-import type { Doc } from "../../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
+import { cn } from "../../lib/cn";
 
 const POS_BG: Record<Doc<"words">["pos"], string> = {
   noun: "bg-green-600 text-white",
@@ -53,7 +54,27 @@ function formatWordWithPos(word: Pick<Doc<"words">, "text" | "pos" | "gender">):
   );
 }
 
-export function WordsTable({ words }: { words: Doc<"words">[] }) {
+type WordsTableProps = {
+  words: Doc<"words">[];
+  selectedWordId: Id<"words"> | null;
+  onRowClick: (wordId: Id<"words">) => void;
+};
+
+export function WordsTable({
+  words,
+  selectedWordId,
+  onRowClick,
+}: WordsTableProps) {
+  function handleKeyDown(
+    e: React.KeyboardEvent,
+    wordId: Id<"words">,
+  ) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onRowClick(wordId);
+    }
+  }
+
   return (
     <div className="min-w-0 overflow-x-auto">
       <Table className="w-full" layout="auto">
@@ -65,19 +86,32 @@ export function WordsTable({ words }: { words: Doc<"words">[] }) {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {words.map((word) => (
-            <Table.Row key={word._id}>
-              <Table.Cell>
-                <div className="flex justify-between items-baseline">
-                  {formatWordWithPos(word)}
-                </div>
-              </Table.Cell>
-              <Table.Cell>{word.meaning}</Table.Cell>
-              <Table.Cell>
-                <span className="whitespace-nowrap">{word.tags ?? "—"}</span>
-              </Table.Cell>
-            </Table.Row>
-          ))}
+          {words.map((word) => {
+            const isSelected = word._id === selectedWordId;
+            return (
+              <Table.Row
+                key={word._id}
+                className={cn(
+                  "cursor-pointer",
+                  isSelected && "bg-slate-100",
+                )}
+                data-selected={isSelected ? "true" : undefined}
+                tabIndex={0}
+                onClick={() => onRowClick(word._id)}
+                onKeyDown={(e) => handleKeyDown(e, word._id)}
+              >
+                <Table.Cell>
+                  <div className="flex justify-between items-baseline">
+                    {formatWordWithPos(word)}
+                  </div>
+                </Table.Cell>
+                <Table.Cell>{word.meaning}</Table.Cell>
+                <Table.Cell>
+                  <span className="whitespace-nowrap">{word.tags ?? "—"}</span>
+                </Table.Cell>
+              </Table.Row>
+            );
+          })}
         </Table.Body>
       </Table>
     </div>

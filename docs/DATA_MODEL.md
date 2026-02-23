@@ -14,7 +14,7 @@ All language-scoped data (`words`, `questionTypes`, and related records) is filt
 Every record will have the Convex standard fields _id and _creationTime
 
 ### `words`
-Represents vocabulary items.  Each word is for a particular language and a particular user.
+Represents vocabulary items.  Each word is for a particular language and a particular user. Single-word read and update are done via Convex `words.getById` (query) and `words.update` (mutation), both scoped by `userId` and language.
 
 Fields:
 - `userId`: the id of the User to which this record belongs

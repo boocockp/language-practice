@@ -17,7 +17,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "practice", element: <PracticePage /> },
-      { path: "words", element: <WordsPage /> },
+      { path: "words/:wordId?", element: <WordsPage /> },
       { path: "question-types", element: <QuestionTypesPage /> },
       { path: "stats", element: <StatsPage /> },
       { path: "settings", element: <SettingsPage /> },

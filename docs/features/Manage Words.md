@@ -38,8 +38,37 @@ Requirements - Part 2
 
 Implemented: POS and Gender merged into Text column as coloured spans (noun/verb/adj + M/F/N), columns removed; table in overflow wrapper; usable on small phones.
 
+Requirements - Part 3
+---------------------
+
+- The user can view full details of a word and edit the details
+
+### Screen layout
+- When the user clicks on a row in the words table, a details form for that word appears
+- On screen sizes which are wide enough, the table remains visible and the details form appears to the right of the table
+- On smaller screen sizes, the details form replaces or overlays the table
+
+### Routing
+- When a word is selected to display details, the URL changes to include the word id at the end of the path
+- A URL with a word id is a bookmarkable deep link to that word with details shown
+- When the words page is displayed with a deep link to a word, on a screen wide enough to show both the table and details form, the table and details form both appear, and the table is scrolled to show the selected word
+- The browser back button acts normally, moving back through selected words and eventually back to the table on its own
+
+### Details form
+- The form includes all the fields of the `words` record in @DATA_MODEL.md except userId and language
+- All the fields can be edited
+- There is a Save button to save changes
+- There is a Cancel button to abandon any changes 
+- There is also a close button with an X icon in the top right corner of the details view
+
+### Navigation
+- After clicking the Save, Cancel or Close button, go back to showing the table on its own
+- If the table is visible beside the details view, clicking on a different row will change the content of the details of the view to the word for that row
+- If the details form has been edited but not saved, any attempt to navigate away by using the close button, the browser back button, or clicking a different row in the table will show a modal dialog prompt to confirm that the changes should be abandoned
+- The Cancel button does not show the confirm prompt
+
 
 Future requirements
 -------------------
 
-- Select a row in the table to show a dialog for editing the fields
+

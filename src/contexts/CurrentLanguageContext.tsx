@@ -55,10 +55,10 @@ export function CurrentLanguageProvider({ children }: { children: ReactNode }) {
 // eslint-disable-next-line react-refresh/only-export-components
 export function useCurrentLanguage(): CurrentLanguageContextValue {
   const ctx = useContext(CurrentLanguageContext);
+  /* v8 ignore if */
   if (!ctx) {
-    throw new Error(
-      "useCurrentLanguage must be used within a CurrentLanguageProvider",
-    );
+    /* v8 ignore next */
+    throw new Error("useCurrentLanguage must be used within a CurrentLanguageProvider");
   }
   return ctx;
 }

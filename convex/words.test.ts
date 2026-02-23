@@ -136,3 +136,175 @@ describe("words.listByUserAndLanguage", () => {
     expect(textOf(bWords)).toEqual(["user-b-word"]);
   });
 });
+
+async function insertWord(
+  t: ReturnType<typeof convexTest>,
+  userId: Id<"users">,
+  language: string,
+  word: {
+    text: string;
+    pos: "noun" | "verb" | "adjective";
+    gender?: "M" | "F" | "N";
+    meaning: string;
+    tags?: string;
+  },
+): Promise<Id<"words">> {
+  return await t.run(async (ctx) => {
+    return await ctx.db.insert("words", {
+      userId,
+      language,
+      text: word.text,
+      pos: word.pos,
+      meaning: word.meaning,
+      ...(word.gender !== undefined && { gender: word.gender }),
+      ...(word.tags !== undefined && { tags: word.tags }),
+    });
+  });
+}
+
+describe("words.getById", () => {
+  let t: ReturnType<typeof convexTest>;
+
+  beforeEach(() => {
+    t = convexTest(schema, modules);
+  });
+
+  it("returns null when unauthenticated", async () => {
+    const { userId } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "hello",
+      pos: "noun",
+      meaning: "hi",
+    });
+    const result = await t.query(api.words.getById, {
+      wordId,
+      language: "en",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns null when word exists but belongs to another user", async () => {
+    const userA = await createUserAndSession(t, "test-a");
+    const userB = await createUserAndSession(t, "test-b");
+    const wordId = await insertWord(t, userA.userId, "en", {
+      text: "user-a-word",
+      pos: "noun",
+      meaning: "only for A",
+    });
+    const result = await userB.userSession.query(api.words.getById, {
+      wordId,
+      language: "en",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns null when word exists and is owned but language does not match", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "fr", {
+      text: "bonjour",
+      pos: "noun",
+      meaning: "hello",
+    });
+    const result = await userSession.query(api.words.getById, {
+      wordId,
+      language: "en",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns the word when authenticated, owner, and language matches", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "hello",
+      pos: "verb",
+      gender: "M",
+      meaning: "to greet",
+      tags: "greeting",
+    });
+    const result = await userSession.query(api.words.getById, {
+      wordId,
+      language: "en",
+    });
+    expect(result).not.toBeNull();
+    expect(result?._id).toBe(wordId);
+    expect(result?.text).toBe("hello");
+    expect(result?.pos).toBe("verb");
+    expect(result?.gender).toBe("M");
+    expect(result?.meaning).toBe("to greet");
+    expect(result?.tags).toBe("greeting");
+  });
+});
+
+describe("words.update", () => {
+  let t: ReturnType<typeof convexTest>;
+
+  beforeEach(() => {
+    t = convexTest(schema, modules);
+  });
+
+  it("does not update when unauthenticated", async () => {
+    const { userId } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "original",
+      pos: "noun",
+      meaning: "first",
+    });
+    await expect(
+      t.mutation(api.words.update, {
+        wordId,
+        text: "hacked",
+        pos: "noun",
+        meaning: "first",
+      }),
+    ).rejects.toThrow();
+    const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
+    expect(word?.text).toBe("original");
+  });
+
+  it("does not update when word belongs to another user", async () => {
+    const userA = await createUserAndSession(t, "test-a");
+    const userB = await createUserAndSession(t, "test-b");
+    const wordId = await insertWord(t, userA.userId, "en", {
+      text: "user-a-word",
+      pos: "noun",
+      meaning: "only for A",
+    });
+    await expect(
+      userB.userSession.mutation(api.words.update, {
+        wordId,
+        text: "stolen",
+        pos: "noun",
+        meaning: "only for A",
+      }),
+    ).rejects.toThrow();
+    const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
+    expect(word?.text).toBe("user-a-word");
+  });
+
+  it("succeeds when owner and updates only editable fields", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "original",
+      pos: "noun",
+      gender: "M",
+      meaning: "first",
+      tags: "old",
+    });
+    await userSession.mutation(api.words.update, {
+      wordId,
+      text: "updated",
+      pos: "verb",
+      gender: "F",
+      meaning: "second",
+      tags: "new",
+    });
+    const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
+    expect(word?.text).toBe("updated");
+    expect(word?.pos).toBe("verb");
+    expect(word?.gender).toBe("F");
+    expect(word?.meaning).toBe("second");
+    expect(word?.tags).toBe("new");
+    expect(word?.userId).toBe(userId);
+    expect(word?.language).toBe("en");
+  });
+});
