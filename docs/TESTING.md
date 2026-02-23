@@ -5,9 +5,6 @@ Convex function tests
 
 Convex queries and mutations are tested with [convex-test](https://docs.convex.dev/testing/convex-test) and Vitest. Test files live in `convex/**/*.test.ts` and run in the edge-runtime environment.
 
-**Covered:**
-
-- `words.listByUserAndLanguage` — unauthenticated (empty), authenticated with no words, locale-sorted results (including en vs sv), language filter, and user isolation.
 
 React component tests
 ---------------------
@@ -25,7 +22,3 @@ React components are tested with [Vitest](https://vitest.dev/), [React Testing L
 
 - `npm run test` or `npx vitest` — watch mode.
 - `npm run test:once` — single run (CI).
-
-**Covered:**
-
-- `AppLayout` language selector — initial button content (language code and flag), open menu and see options, change language (button and sessionStorage update), persistence across re-render (unmount and remount still shows selected language).

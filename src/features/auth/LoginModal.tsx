@@ -68,6 +68,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
               type="email"
               autoComplete="email"
               placeholder="you@example.com"
+              aria-label="Email"
               required
               disabled={isSubmitting}
               aria-describedby="login-dialog-description"
@@ -79,6 +80,7 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
               type="password"
               autoComplete={step === "signIn" ? "current-password" : "new-password"}
               placeholder="••••••••"
+              aria-label="Password"
               required
               disabled={isSubmitting}
               minLength={8}

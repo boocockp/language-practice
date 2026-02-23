@@ -5,7 +5,7 @@ import { useMutation, useQuery } from "convex/react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import type { Doc, Id } from "../../convex/_generated/dataModel";
 import { useAuth } from "../contexts/AuthContext";
 import { useCurrentLanguage } from "../contexts/CurrentLanguageContext";
 import {
@@ -85,6 +85,18 @@ export function WordsPage() {
     if (!showDetails) confirmLeaveRef.current = null;
   }, [showDetails]);
 
+  function detailsForm(word: Doc<"words"> | null) {
+    return <WordDetailsForm
+      key={word?._id ?? "_new"} 
+      word={word}
+      onSave={handleSave}
+      onCancel={goToWords}
+      onClose={goToWords}
+      onConfirmLeaveReady={(fn) => {
+        confirmLeaveRef.current = fn;
+      } } />;
+  }
+
   return (
     <section className="flex flex-col min-h-0 flex-1">
       <div className="flex items-center justify-between gap-2">
@@ -138,16 +150,7 @@ export function WordsPage() {
           {showDetails && (
             <div className="min-w-0 flex-1 md:min-w-[320px] flex flex-col border border-slate-200 rounded-lg p-4 bg-white">
               {isNewWord ? (
-                <WordDetailsForm
-                  key="_new"
-                  word={null}
-                  onSave={handleSave}
-                  onCancel={goToWords}
-                  onClose={goToWords}
-                  onConfirmLeaveReady={(fn) => {
-                    confirmLeaveRef.current = fn;
-                  }}
-                />
+                detailsForm(null)
               ) : selectedWord === undefined ? (
                 <p className="text-slate-500" aria-busy="true">
                   Loading…
@@ -165,22 +168,13 @@ export function WordsPage() {
                     Back to words
                   </button>
                 </div>
-              ) : (
-                <WordDetailsForm
-                  key={selectedWord._id}
-                  word={selectedWord}
-                  onSave={handleSave}
-                  onCancel={goToWords}
-                  onClose={goToWords}
-                  onConfirmLeaveReady={(fn) => {
-                    confirmLeaveRef.current = fn;
-                  }}
-                />
-              )}
+              ) : detailsForm(selectedWord)
+              }
             </div>
           )}
         </div>
       )}
     </section>
   );
+
 }
