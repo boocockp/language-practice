@@ -69,6 +69,37 @@ export const listByUserAndLanguage = query({
   },
 });
 
+export const create = mutation({
+  args: {
+    language: v.string(),
+    text: v.string(),
+    pos: partOfSpeech,
+    gender: v.optional(gender),
+    meaning: v.string(),
+    tags: v.optional(v.string()),
+  },
+  returns: v.id("words"),
+  handler: async (ctx, args) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Unauthorized");
+    }
+    const textTrimmed = args.text.trim();
+    if (textTrimmed === "") {
+      throw new Error("Text cannot be empty");
+    }
+    return await ctx.db.insert("words", {
+      userId,
+      language: args.language,
+      text: textTrimmed,
+      pos: args.pos,
+      gender: args.gender,
+      meaning: args.meaning,
+      tags: args.tags,
+    });
+  },
+});
+
 export const update = mutation({
   args: {
     wordId: v.id("words"),
@@ -84,12 +115,16 @@ export const update = mutation({
     if (userId === null) {
       throw new Error("Unauthorized");
     }
+    const textTrimmed = args.text.trim();
+    if (textTrimmed === "") {
+      throw new Error("Text cannot be empty");
+    }
     const word = await ctx.db.get("words", args.wordId);
     if (word === null || word.userId !== userId) {
       throw new Error("Word not found or access denied");
     }
     await ctx.db.patch(args.wordId, {
-      text: args.text,
+      text: textTrimmed,
       pos: args.pos,
       gender: args.gender,
       meaning: args.meaning,

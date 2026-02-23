@@ -5,7 +5,7 @@ import { X } from "@phosphor-icons/react";
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
 
 export type WordUpdatePayload = {
-  wordId: Id<"words">;
+  wordId?: Id<"words">;
   text: string;
   pos: Doc<"words">["pos"];
   gender?: Doc<"words">["gender"];
@@ -15,8 +15,16 @@ export type WordUpdatePayload = {
 
 export type ConfirmLeaveFn = () => Promise<boolean>;
 
+const NEW_WORD_DEFAULTS = {
+  text: "",
+  pos: "noun" as const,
+  gender: "" as const,
+  meaning: "",
+  tags: "",
+};
+
 type WordDetailsFormProps = {
-  word: Doc<"words">;
+  word: Doc<"words"> | null;
   onSave: (payload: WordUpdatePayload) => Promise<void>;
   onCancel: () => void;
   onClose: () => void;
@@ -45,13 +53,14 @@ export function WordDetailsForm({
   onConfirmLeaveReady,
   onDirtyChange,
 }: WordDetailsFormProps) {
-  const [text, setText] = useState(word.text);
-  const [pos, setPos] = useState<Doc<"words">["pos"]>(word.pos);
+  const initialValues = word ?? NEW_WORD_DEFAULTS;
+  const [text, setText] = useState(initialValues.text);
+  const [pos, setPos] = useState<Doc<"words">["pos"]>(initialValues.pos);
   const [gender, setGender] = useState<Doc<"words">["gender"] | "">(
-    word.gender ?? "",
+    initialValues.gender ?? "",
   );
-  const [meaning, setMeaning] = useState(word.meaning);
-  const [tags, setTags] = useState(word.tags ?? "");
+  const [meaning, setMeaning] = useState(initialValues.meaning);
+  const [tags, setTags] = useState(initialValues.tags ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
   const pendingLeaveResolveRef = useRef<((value: boolean) => void) | null>(
@@ -66,13 +75,14 @@ export function WordDetailsForm({
     tags,
   };
   const initial = {
-    text: word.text,
-    pos: word.pos,
-    gender: word.gender ?? "",
-    meaning: word.meaning,
-    tags: word.tags ?? "",
+    text: initialValues.text,
+    pos: initialValues.pos,
+    gender: initialValues.gender ?? "",
+    meaning: initialValues.meaning,
+    tags: initialValues.tags ?? "",
   };
   const isDirty = !formValuesEqual(current, initial);
+  const isTextValid = text.trim() !== "";
 
   useEffect(() => {
     onDirtyChange?.(isDirty);
@@ -92,16 +102,18 @@ export function WordDetailsForm({
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!isTextValid) return;
     setIsSubmitting(true);
     try {
-      await onSave({
-        wordId: word._id,
-        text,
+      const payload: WordUpdatePayload = {
+        text: text.trim(),
         pos,
         gender: gender || undefined,
         meaning,
         tags: tags || undefined,
-      });
+      };
+      if (word) payload.wordId = word._id;
+      await onSave(payload);
       onClose();
     } finally {
       setIsSubmitting(false);
@@ -133,7 +145,9 @@ export function WordDetailsForm({
     <>
       <div className="flex flex-col h-full">
         <div className="flex items-start justify-between gap-2 mb-4">
-          <h2 className="text-lg font-semibold">Word details</h2>
+          <h2 className="text-lg font-semibold">
+            {word ? word.meaning : "New Word"}
+          </h2>
           <Button
             type="button"
             variant="secondary"
@@ -211,7 +225,7 @@ export function WordDetailsForm({
             <Button
               type="submit"
               variant="primary"
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isTextValid}
             >
               Save
             </Button>

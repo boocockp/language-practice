@@ -67,6 +67,24 @@ Requirements - Part 3
 - If the details form has been edited but not saved, any attempt to navigate away by using the close button, the browser back button, or clicking a different row in the table will show a modal dialog prompt to confirm that the changes should be abandoned
 - The Cancel button does not show the confirm prompt
 
+Requirements - Part 4
+---------------------
+
+- The user can add a new word
+- There is an Add button on the same row as the 'Words' title, justified to the right, with a '+' icon 
+- Clicking the Add button navigates to a path /words/_new
+- The Word details form is shown, as for editing an existing word
+- The Save button inserts a new word into the database
+- All the other details for Screen Layout, Routing, form fields and Navigation are as for editing a word in Requirements - Part 3
+- Reuse the Word Details Form component
+
+### Other changes
+- Validation of word details inputs: Text cannot be empty
+- Change the title of the Word Details form to be the Meaning of the word when editing an existing word, or 'New Word' when adding a word
+- Remove the text Manage your vocabulary list here.
+
+Implemented: Add button (same row as title, + icon) → /words/_new; WordDetailsForm supports word=null (new-word mode) with title "New Word" and create payload; words.create mutation (auth, text non-empty); validation disables Save when text empty; form title = meaning when editing; paragraph removed. Unit tests for words.create and new-word UI (no duplicate edit navigation tests).
+
 
 Future requirements
 -------------------

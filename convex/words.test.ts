@@ -281,6 +281,44 @@ describe("words.update", () => {
     expect(word?.text).toBe("user-a-word");
   });
 
+  it("throws when text is empty", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "original",
+      pos: "noun",
+      meaning: "first",
+    });
+    await expect(
+      userSession.mutation(api.words.update, {
+        wordId,
+        text: "",
+        pos: "noun",
+        meaning: "first",
+      }),
+    ).rejects.toThrow();
+    const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
+    expect(word?.text).toBe("original");
+  });
+
+  it("throws when text is whitespace only", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const wordId = await insertWord(t, userId, "en", {
+      text: "original",
+      pos: "noun",
+      meaning: "first",
+    });
+    await expect(
+      userSession.mutation(api.words.update, {
+        wordId,
+        text: "   ",
+        pos: "noun",
+        meaning: "first",
+      }),
+    ).rejects.toThrow();
+    const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
+    expect(word?.text).toBe("original");
+  });
+
   it("succeeds when owner and updates only editable fields", async () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
@@ -306,5 +344,68 @@ describe("words.update", () => {
     expect(word?.tags).toBe("new");
     expect(word?.userId).toBe(userId);
     expect(word?.language).toBe("en");
+  });
+});
+
+describe("words.create", () => {
+  let t: ReturnType<typeof convexTest>;
+
+  beforeEach(() => {
+    t = convexTest(schema, modules);
+  });
+
+  it("throws when unauthenticated", async () => {
+    await expect(
+      t.mutation(api.words.create, {
+        language: "en",
+        text: "hello",
+        pos: "noun",
+        meaning: "hi",
+      }),
+    ).rejects.toThrow();
+  });
+
+  it("creates word and returns id when authenticated", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const id = await userSession.mutation(api.words.create, {
+      language: "en",
+      text: "hello",
+      pos: "noun",
+      meaning: "greeting",
+      tags: "basic",
+    });
+    expect(id).toBeDefined();
+    const word = await t.run(async (ctx) => ctx.db.get("words", id));
+    expect(word).not.toBeNull();
+    expect(word?.userId).toBe(userId);
+    expect(word?.language).toBe("en");
+    expect(word?.text).toBe("hello");
+    expect(word?.pos).toBe("noun");
+    expect(word?.meaning).toBe("greeting");
+    expect(word?.tags).toBe("basic");
+  });
+
+  it("throws when text is empty", async () => {
+    const { userSession } = await createUserAndSession(t);
+    await expect(
+      userSession.mutation(api.words.create, {
+        language: "en",
+        text: "",
+        pos: "noun",
+        meaning: "nothing",
+      }),
+    ).rejects.toThrow();
+  });
+
+  it("throws when text is whitespace only", async () => {
+    const { userSession } = await createUserAndSession(t);
+    await expect(
+      userSession.mutation(api.words.create, {
+        language: "en",
+        text: "   ",
+        pos: "noun",
+        meaning: "nothing",
+      }),
+    ).rejects.toThrow();
   });
 });

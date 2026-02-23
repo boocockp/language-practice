@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
-import { Empty, Text } from "@cloudflare/kumo";
+import { Empty, Text, Button } from "@cloudflare/kumo";
+import { Plus } from "@phosphor-icons/react";
 import { useMutation, useQuery } from "convex/react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -23,13 +24,15 @@ export function WordsPage() {
   const confirmLeaveRef = useRef<ConfirmLeaveFn | null>(null);
 
   const words = useQuery(api.words.listByUserAndLanguage, { language });
+  const isNewWord = wordId === "_new";
   const selectedWord = useQuery(
     api.words.getById,
-    wordId && language
+    wordId && wordId !== "_new" && language
       ? { wordId: wordId as Id<"words">, language }
       : "skip",
   );
   const updateWord = useMutation(api.words.update);
+  const createWord = useMutation(api.words.create);
 
   async function handleRowClick(id: Id<"words">) {
     const confirmLeave = confirmLeaveRef.current ?? (() => Promise.resolve(true));
@@ -37,19 +40,39 @@ export function WordsPage() {
     if (ok) navigate(`/words/${id}`);
   }
 
+  async function handleAddClick() {
+    if (showDetails) {
+      const confirmLeave = confirmLeaveRef.current ?? (() => Promise.resolve(true));
+      const ok = await confirmLeave();
+      if (!ok) return;
+    }
+    navigate("/words/_new");
+  }
+
   function goToWords() {
     navigate("/words");
   }
 
   async function handleSave(payload: WordUpdatePayload) {
-    await updateWord({
-      wordId: payload.wordId,
-      text: payload.text,
-      pos: payload.pos,
-      gender: payload.gender,
-      meaning: payload.meaning,
-      tags: payload.tags,
-    });
+    if (payload.wordId) {
+      await updateWord({
+        wordId: payload.wordId,
+        text: payload.text,
+        pos: payload.pos,
+        gender: payload.gender,
+        meaning: payload.meaning,
+        tags: payload.tags,
+      });
+    } else {
+      await createWord({
+        language,
+        text: payload.text,
+        pos: payload.pos,
+        gender: payload.gender,
+        meaning: payload.meaning,
+        tags: payload.tags,
+      });
+    }
     goToWords();
   }
 
@@ -64,8 +87,18 @@ export function WordsPage() {
 
   return (
     <section className="flex flex-col min-h-0 flex-1">
-      <Text variant="heading2">Words</Text>
-      <p className="text-slate-600">Manage your vocabulary list here.</p>
+      <div className="flex items-center justify-between gap-2">
+        <Text variant="heading2">Words</Text>
+        <Button
+          type="button"
+          variant="primary"
+          aria-label="Add word"
+          onClick={handleAddClick}
+        >
+          <Plus size={20} aria-hidden />
+          Add
+        </Button>
+      </div>
 
       {words === undefined ? (
         <p className="text-slate-500 mt-4" aria-busy="true">
@@ -104,7 +137,18 @@ export function WordsPage() {
           )}
           {showDetails && (
             <div className="min-w-0 flex-1 md:min-w-[320px] flex flex-col border border-slate-200 rounded-lg p-4 bg-white">
-              {selectedWord === undefined ? (
+              {isNewWord ? (
+                <WordDetailsForm
+                  key="_new"
+                  word={null}
+                  onSave={handleSave}
+                  onCancel={goToWords}
+                  onClose={goToWords}
+                  onConfirmLeaveReady={(fn) => {
+                    confirmLeaveRef.current = fn;
+                  }}
+                />
+              ) : selectedWord === undefined ? (
                 <p className="text-slate-500" aria-busy="true">
                   Loading…
                 </p>
@@ -123,6 +167,7 @@ export function WordsPage() {
                 </div>
               ) : (
                 <WordDetailsForm
+                  key={selectedWord._id}
                   word={selectedWord}
                   onSave={handleSave}
                   onCancel={goToWords}

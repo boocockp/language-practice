@@ -124,4 +124,82 @@ describe("WordsPage", () => {
     expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
     expect(screen.getByDisplayValue("maison")).toBeInTheDocument();
   });
+
+  it("shows Add button on same row as Words title and shows new-word form when clicked", async () => {
+    const user = userEvent.setup();
+    renderWordsPage("/words");
+    const addButton = screen.getByRole("button", { name: /add/i });
+    expect(addButton).toBeInTheDocument();
+    await user.click(addButton);
+    expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+  });
+
+  it("resets form to new-word defaults when Add is clicked while viewing an existing word", async () => {
+    const user = userEvent.setup();
+    renderWordsPage("/words/word1");
+    expect(screen.getByDisplayValue("maison")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("house")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /add/i }));
+    expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("The word you are learning")).toHaveValue("");
+    expect(screen.getByPlaceholderText("What the word means")).toHaveValue("");
+  });
+
+  it("shows discard confirm dialog when Add is clicked with unsaved changes, then navigates to new word on Discard", async () => {
+    const user = userEvent.setup();
+    renderWordsPage("/words/word1");
+    await user.clear(screen.getByDisplayValue("maison"));
+    await user.type(screen.getByPlaceholderText("The word you are learning"), "edited");
+    await user.click(screen.getByRole("button", { name: /add/i }));
+    const dialog = screen.getByRole("dialog");
+    expect(dialog).toHaveTextContent(/discard|abandon/i);
+    await user.click(screen.getByRole("button", { name: "Discard changes" }));
+    expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("The word you are learning")).toHaveValue("");
+  });
+
+  it("shows discard confirm when Add clicked with unsaved changes, keeps editing on Keep editing", async () => {
+    const user = userEvent.setup();
+    renderWordsPage("/words/word1");
+    await user.clear(screen.getByDisplayValue("maison"));
+    await user.type(screen.getByPlaceholderText("The word you are learning"), "edited");
+    await user.click(screen.getByRole("button", { name: /add/i }));
+    expect(screen.getByRole("dialog")).toHaveTextContent(/discard|abandon/i);
+    await user.click(screen.getByRole("button", { name: "Keep editing" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByDisplayValue("edited")).toBeInTheDocument();
+  });
+
+  it("at /words/_new shows details form with New Word title and create mutation on Save", async () => {
+    const user = userEvent.setup();
+    const createMutation = vi.fn().mockResolvedValue(undefined);
+    let mutationCallIndex = 0;
+    vi.mocked(useMutation).mockImplementation(() => {
+      mutationCallIndex += 1;
+      return (mutationCallIndex === 2
+        ? createMutation
+        : vi.fn().mockResolvedValue(undefined)) as unknown as ReturnType<
+        typeof useMutation
+      >;
+    });
+    renderWordsPage("/words/_new");
+    expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+    await user.type(
+      screen.getByPlaceholderText("The word you are learning"),
+      "test",
+    );
+    await user.type(
+      screen.getByPlaceholderText("What the word means"),
+      "meaning",
+    );
+    await user.click(screen.getByRole("button", { name: "Save" }));
+    expect(createMutation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        language: "en",
+        text: "test",
+        pos: "noun",
+        meaning: "meaning",
+      }),
+    );
+  });
 });

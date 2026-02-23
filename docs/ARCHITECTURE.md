@@ -22,7 +22,7 @@ The user studies one language at a time. The selection is stored per browser tab
 ### Key screens
 - Home: entry point and navigation
 - Practice: show current question, accept answer, show feedback, advance
-- Words: manage word list; word detail view and edit at `/words/:wordId`. Edits are persisted via Convex mutation `words.update`.
+- Words: manage word list; word detail view and edit at `/words/:wordId`; add new word at `/words/_new`. Edits are persisted via Convex mutation `words.update`; new words via `words.create`.
 - Question Types: manage templates/behaviors
 - Stats: show progress/history summaries
 - Settings: learner preferences
