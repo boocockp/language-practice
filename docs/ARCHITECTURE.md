@@ -23,7 +23,7 @@ The user studies one language at a time. The selection is stored per browser tab
 - Home: entry point and navigation
 - Practice: show current question, accept answer, show feedback, advance
 - Words: manage word list; word detail view and edit at `/words/:wordId`; add new word at `/words/_new`. Edits are persisted via Convex mutation `words.update`; new words via `words.create`.
-- Question Types: manage templates/behaviors
+- Question Types: manage question type templates; list at `/question-types`; detail and edit at `/question-types/:questionTypeId`; add new at `/question-types/_new`. Convex: `questionTypes.listByUserAndLanguage`, `questionTypes.getById`, `questionTypes.create`, `questionTypes.update`.
 - Stats: show progress/history summaries
 - Settings: learner preferences
 

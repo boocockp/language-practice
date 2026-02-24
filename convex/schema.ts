@@ -29,8 +29,9 @@ export default defineSchema({
     userId: v.id("users"),
     language: v.string(),
     name: v.string(),
-    promptTemplate: v.string(),
-    enabled: v.boolean(),
+    dataTemplate: v.string(),
+    questionTemplate: v.string(),
+    answerTemplate: v.string(),
   }).index("by_userId_language", ["userId", "language"]),
 
   attempts: defineTable({
