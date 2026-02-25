@@ -12,6 +12,7 @@ import type * as auth from "../auth.js";
 import type * as http from "../http.js";
 import type * as questionTypes from "../questionTypes.js";
 import type * as users from "../users.js";
+import type * as wordTypes from "../wordTypes.js";
 import type * as words from "../words.js";
 
 import type {
@@ -25,6 +26,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   questionTypes: typeof questionTypes;
   users: typeof users;
+  wordTypes: typeof wordTypes;
   words: typeof words;
 }>;
 
