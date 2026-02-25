@@ -3,12 +3,12 @@ import { Button, Dialog, Field, Input } from "@cloudflare/kumo";
 import { X } from "@phosphor-icons/react";
 
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
+import { WORD_TYPES, type WordType } from "../../../convex/words";
 
 export type WordUpdatePayload = {
   wordId?: Id<"words">;
   text: string;
-  pos: Doc<"words">["pos"];
-  gender?: Doc<"words">["gender"];
+  type: WordType;
   meaning: string;
   tags?: string;
 };
@@ -17,8 +17,7 @@ export type ConfirmLeaveFn = () => Promise<boolean>;
 
 const NEW_WORD_DEFAULTS = {
   text: "",
-  pos: "noun" as const,
-  gender: "" as const,
+  type: "nf" as const,
   meaning: "",
   tags: "",
 };
@@ -33,13 +32,12 @@ type WordDetailsFormProps = {
 };
 
 function formValuesEqual(
-  a: { text: string; pos: string; gender: string; meaning: string; tags: string },
-  b: { text: string; pos: string; gender: string; meaning: string; tags: string },
+  a: { text: string; type: string; meaning: string; tags: string },
+  b: { text: string; type: string; meaning: string; tags: string },
 ): boolean {
   return (
     a.text === b.text &&
-    a.pos === b.pos &&
-    a.gender === b.gender &&
+    a.type === b.type &&
     a.meaning === b.meaning &&
     a.tags === b.tags
   );
@@ -55,10 +53,7 @@ export function WordDetailsForm({
 }: WordDetailsFormProps) {
   const initialValues = word ?? NEW_WORD_DEFAULTS;
   const [text, setText] = useState(initialValues.text);
-  const [pos, setPos] = useState<Doc<"words">["pos"]>(initialValues.pos);
-  const [gender, setGender] = useState<Doc<"words">["gender"] | "">(
-    initialValues.gender ?? "",
-  );
+  const [type, setType] = useState<WordType>(initialValues.type);
   const [meaning, setMeaning] = useState(initialValues.meaning);
   const [tags, setTags] = useState(initialValues.tags ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,15 +64,13 @@ export function WordDetailsForm({
 
   const current = {
     text,
-    pos,
-    gender: gender || "",
+    type,
     meaning,
     tags,
   };
   const initial = {
     text: initialValues.text,
-    pos: initialValues.pos,
-    gender: initialValues.gender ?? "",
+    type: initialValues.type,
     meaning: initialValues.meaning,
     tags: initialValues.tags ?? "",
   };
@@ -107,8 +100,7 @@ export function WordDetailsForm({
     try {
       const payload: WordUpdatePayload = {
         text: text.trim(),
-        pos,
-        gender: gender || undefined,
+        type,
         meaning,
         tags: tags || undefined,
       };
@@ -170,37 +162,21 @@ export function WordDetailsForm({
               aria-label="Text"
             />
           </Field>
-          <Field label="Part of speech" required>
+          <Field label="Type" required>
             <select
-              value={pos}
+              value={type}
               onChange={(e) =>
-                setPos(e.target.value as Doc<"words">["pos"])
+                setType(e.target.value as WordType)
               }
               disabled={isSubmitting}
               className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              aria-label="Part of speech"
+              aria-label="Type"
             >
-              <option value="noun">noun</option>
-              <option value="verb">verb</option>
-              <option value="adjective">adjective</option>
-            </select>
-          </Field>
-          <Field label="Gender (optional)">
-            <select
-              value={gender}
-              onChange={(e) =>
-                setGender(
-                  (e.target.value || "") as Doc<"words">["gender"] | "",
-                )
-              }
-              disabled={isSubmitting}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
-              aria-label="Gender"
-            >
-              <option value="">—</option>
-              <option value="M">M</option>
-              <option value="F">F</option>
-              <option value="N">N</option>
+              {WORD_TYPES.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
             </select>
           </Field>
           <Field label="Meaning" required>

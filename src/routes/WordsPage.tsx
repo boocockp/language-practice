@@ -58,8 +58,7 @@ export function WordsPage() {
       await updateWord({
         wordId: payload.wordId,
         text: payload.text,
-        pos: payload.pos,
-        gender: payload.gender,
+        type: payload.type,
         meaning: payload.meaning,
         tags: payload.tags,
       });
@@ -67,8 +66,7 @@ export function WordsPage() {
       await createWord({
         language,
         text: payload.text,
-        pos: payload.pos,
-        gender: payload.gender,
+        type: payload.type,
         meaning: payload.meaning,
         tags: payload.tags,
       });

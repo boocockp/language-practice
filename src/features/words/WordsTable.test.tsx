@@ -17,7 +17,7 @@ function mockWord(overrides: Partial<Doc<"words">> = {}): Doc<"words"> {
     userId: "user1" as Id<"users">,
     language: "fr",
     text: "bonjour",
-    pos: "noun",
+    type: "nf",
     meaning: "hello",
     ...overrides,
   };
@@ -53,15 +53,14 @@ describe("WordsTable", () => {
       mockWord({
         _id: "w1" as Id<"words">,
         text: "maison",
-        pos: "noun",
-        gender: "F",
+        type: "nf",
         meaning: "house",
         tags: "home building",
       }),
       mockWord({
         _id: "w2" as Id<"words">,
         text: "manger",
-        pos: "verb",
+        type: "vtr",
         meaning: "to eat",
         // no tags
       }),
@@ -80,12 +79,10 @@ describe("WordsTable", () => {
 
     const firstRowCells = rows[0].querySelectorAll("td");
     expect(firstRowCells[0]).toHaveTextContent("maison");
-    expect(firstRowCells[0]).toHaveTextContent("Part of speech: noun");
-    expect(firstRowCells[0]).toHaveTextContent("Gender: F");
+    expect(firstRowCells[0]).toHaveTextContent("Type: nf");
     const firstRowBadges = firstRowCells[0].querySelectorAll('span[aria-hidden="true"]');
-    expect(firstRowBadges).toHaveLength(2);
-    expect(firstRowBadges[0]).toHaveTextContent("n");
-    expect(firstRowBadges[1]).toHaveTextContent("f");
+    expect(firstRowBadges).toHaveLength(1);
+    expect(firstRowBadges[0]).toHaveTextContent("nf");
     expect(firstRowCells[1]).toHaveTextContent("house");
     expect(firstRowCells[2]).toHaveTextContent("home building");
 
@@ -93,7 +90,7 @@ describe("WordsTable", () => {
     expect(secondRowCells[0]).toHaveTextContent("manger");
     const secondRowBadges = secondRowCells[0].querySelectorAll('span[aria-hidden="true"]');
     expect(secondRowBadges).toHaveLength(1);
-    expect(secondRowBadges[0]).toHaveTextContent("v");
+    expect(secondRowBadges[0]).toHaveTextContent("vtr");
     expect(secondRowCells[1]).toHaveTextContent("to eat");
     expect(secondRowCells[2]).toHaveTextContent("—");
   });

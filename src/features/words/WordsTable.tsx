@@ -2,53 +2,31 @@ import { Table } from "@cloudflare/kumo";
 import type { ReactNode } from "react";
 
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
+import type { WordType } from "../../../convex/words";
 import { cn } from "../../lib/cn";
 
-const POS_BG: Record<Doc<"words">["pos"], string> = {
-  noun: "bg-green-600 text-white",
-  verb: "bg-red-600 text-white",
-  adjective: "bg-purple-600 text-white",
-};
-const GENDER_BG: Record<NonNullable<Doc<"words">["gender"]>, string> = {
-  M: "bg-blue-600 text-white",
-  F: "bg-fuchsia-600 text-white",
-  N: "bg-teal-600 text-white",
-};
-
-const POS_LETTER: Record<Doc<"words">["pos"], string> = {
-  noun: "n",
-  verb: "v",
-  adjective: "a",
-};
-const GENDER_LETTER: Record<NonNullable<Doc<"words">["gender"]>, string> = {
-  M: "m",
-  F: "f",
-  N: "n",
+const TYPE_BG: Record<WordType, string> = {
+  nf: "bg-fuchsia-500 text-white",
+  nm: "bg-cyan-500 text-white",
+  nmf: "bg-teal-500 text-white",
+  vtr: "bg-red-500 text-white",
+  vi: "bg-orange-500 text-white",
+  adj: "bg-blue-500 text-white",
+  adv: "bg-amber-700 text-white",
 };
 
-function formatWordWithPos(word: Pick<Doc<"words">, "text" | "pos" | "gender">): ReactNode {
-  const posSpan = (
-    <span className={`inline-block px-1 ${POS_BG[word.pos]}`} aria-hidden>
-      {POS_LETTER[word.pos]}
-    </span>
-  );
-  const genderSpan = word.gender ? (
-    <span className={`inline-block px-1 ${GENDER_BG[word.gender]}`} aria-hidden>
-      {GENDER_LETTER[word.gender]}
-    </span>
-  ) : null;
+function formatWordWithType(word: {
+  text: string;
+  type: WordType;
+}): ReactNode {
   return (
     <>
       <span>
         {word.text}
-        <span className="sr-only">
-          , Part of speech: {word.pos}
-          {word.gender ? `, Gender: ${word.gender}` : ""}
-        </span>
+        <span className="sr-only">, Type: {word.type}</span>
       </span>
-      <span>
-        {posSpan}
-        {genderSpan}
+      <span className={`inline-block px-1 ml-auto ${TYPE_BG[word.type]}`} aria-hidden>
+        {word.type}
       </span>
     </>
   );
@@ -102,7 +80,7 @@ export function WordsTable({
               >
                 <Table.Cell>
                   <div className="flex justify-between items-baseline">
-                    {formatWordWithPos(word)}
+                    {formatWordWithType(word)}
                   </div>
                 </Table.Cell>
                 <Table.Cell>{word.meaning}</Table.Cell>

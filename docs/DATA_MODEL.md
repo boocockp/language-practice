@@ -13,6 +13,9 @@ All language-scoped data (`words`, `questionTypes`, and related records) is filt
 ### Standard fields
 Every record will have the Convex standard fields _id and _creationTime
 
+### Type definitions
+- WordType: nf, nm, nmf, vtr, vi, adj, adv
+
 ### `words`
 Represents vocabulary items.  Each word is for a particular language and a particular user. Single-word read, create, and update are done via Convex `words.getById` (query), `words.create` (mutation), and `words.update` (mutation), all scoped by `userId` and language.
 
@@ -20,8 +23,7 @@ Fields:
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
 - `text`: the word/phrase
-- `pos`: the part of speech - 'noun', 'verb', 'adjective'
-- `gender`: for nouns only - 'M', 'F', 'N'
+- `type`: the type of word - WordType
 - `meaning`: translation/gloss
 - `tags`: optional categories - space separated list of tag names
 
@@ -29,12 +31,14 @@ Fields:
 ### `questionTypes`
 Defines how to generate questions from words.
 
-Suggested fields (example):
+Fields:
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
-- `name`
-- `promptTemplate` / parameters needed for generation
-- `enabled`
+- `name`: a descriptive name for this question type
+- `dataTemplate`: the template for generating the question data
+- `questionTemplate`: the template for generating the question
+- `answerTemplate`: the template for generating the answer
+
 
 ### `attempts`
 Stores generated questions + learner responses.

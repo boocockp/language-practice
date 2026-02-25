@@ -28,8 +28,7 @@ function mockWord(overrides: Partial<Doc<"words">> = {}): Doc<"words"> {
     userId: "user1" as Id<"users">,
     language: "fr",
     text: "maison",
-    pos: "noun",
-    gender: "F",
+    type: "nf",
     meaning: "house",
     tags: "home",
     ...overrides,
@@ -197,7 +196,7 @@ describe("WordsPage", () => {
       expect.objectContaining({
         language: "en",
         text: "test",
-        pos: "noun",
+        type: "nf",
         meaning: "meaning",
       }),
     );

@@ -45,6 +45,7 @@ Requirements - Part 3
 ### Details form
 - The form includes all the fields of the `questionTypes` record in @DATA_MODEL.md except userId and language
 - All the fields can be edited
+- The xxxTemplate fields are shown as textareas
 - There is a Save button to save changes
 - There is a Cancel button to abandon any changes 
 - There is also a close button with an X icon in the top right corner of the details view

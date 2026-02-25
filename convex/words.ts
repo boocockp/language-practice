@@ -2,16 +2,9 @@ import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-const partOfSpeech = v.union(
-  v.literal("noun"),
-  v.literal("verb"),
-  v.literal("adjective"),
-);
-const gender = v.union(
-  v.literal("M"),
-  v.literal("F"),
-  v.literal("N"),
-);
+import { wordTypeValidator } from "./wordTypes";
+
+export { WORD_TYPES, type WordType } from "./wordTypes";
 
 const wordDocValidator = v.union(
   v.null(),
@@ -21,8 +14,7 @@ const wordDocValidator = v.union(
     userId: v.id("users"),
     language: v.string(),
     text: v.string(),
-    pos: partOfSpeech,
-    gender: v.optional(gender),
+    type: wordTypeValidator,
     meaning: v.string(),
     tags: v.optional(v.string()),
   }),
@@ -73,8 +65,7 @@ export const create = mutation({
   args: {
     language: v.string(),
     text: v.string(),
-    pos: partOfSpeech,
-    gender: v.optional(gender),
+    type: wordTypeValidator,
     meaning: v.string(),
     tags: v.optional(v.string()),
   },
@@ -92,8 +83,7 @@ export const create = mutation({
       userId,
       language: args.language,
       text: textTrimmed,
-      pos: args.pos,
-      gender: args.gender,
+      type: args.type,
       meaning: args.meaning,
       tags: args.tags,
     });
@@ -104,8 +94,7 @@ export const update = mutation({
   args: {
     wordId: v.id("words"),
     text: v.string(),
-    pos: partOfSpeech,
-    gender: v.optional(gender),
+    type: wordTypeValidator,
     meaning: v.string(),
     tags: v.optional(v.string()),
   },
@@ -125,11 +114,36 @@ export const update = mutation({
     }
     await ctx.db.patch(args.wordId, {
       text: textTrimmed,
-      pos: args.pos,
-      gender: args.gender,
+      type: args.type,
       meaning: args.meaning,
       tags: args.tags,
     });
     return null;
+  },
+});
+
+/**
+ * One-off migration: backfill default `type` for words that don't have it.
+ * Run once after deploying the schema change (Option B).
+ * Existing words get type "nm"; users can correct in the UI.
+ */
+export const backfillType = mutation({
+  args: {},
+  returns: v.number(),
+  handler: async (ctx) => {
+    const userId = await getAuthUserId(ctx);
+    if (userId === null) {
+      throw new Error("Unauthorized");
+    }
+    const words = await ctx.db.query("words").collect();
+    let patched = 0;
+    for (const word of words) {
+      const doc = word as { _id: typeof word._id; type?: string };
+      if (!("type" in doc) || doc.type === undefined) {
+        await ctx.db.patch(word._id, { type: "nm" });
+        patched += 1;
+      }
+    }
+    return patched;
   },
 });

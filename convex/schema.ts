@@ -2,16 +2,7 @@ import { defineSchema, defineTable } from "convex/server";
 import { authTables } from "@convex-dev/auth/server";
 import { v } from "convex/values";
 
-const partOfSpeech = v.union(
-  v.literal("noun"),
-  v.literal("verb"),
-  v.literal("adjective"),
-);
-const gender = v.union(
-  v.literal("M"),
-  v.literal("F"),
-  v.literal("N"),
-);
+import { wordTypeValidator } from "./wordTypes";
 
 export default defineSchema({
   ...authTables,
@@ -19,8 +10,7 @@ export default defineSchema({
     userId: v.id("users"),
     language: v.string(),
     text: v.string(),
-    pos: partOfSpeech,
-    gender: v.optional(gender),
+    type: wordTypeValidator,
     meaning: v.string(),
     tags: v.optional(v.string()),
   }).index("by_userId_language", ["userId", "language"]),

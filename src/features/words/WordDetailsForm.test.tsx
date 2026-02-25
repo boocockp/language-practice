@@ -18,8 +18,7 @@ function mockWord(overrides: Partial<Doc<"words">> = {}): Doc<"words"> {
     userId: "user1" as Id<"users">,
     language: "fr",
     text: "maison",
-    pos: "noun",
-    gender: "F",
+    type: "nf",
     meaning: "house",
     tags: "home building",
     ...overrides,
@@ -53,8 +52,7 @@ describe("WordDetailsForm", () => {
   it("renders all fields with the word values", () => {
     const word = mockWord({
       text: "bonjour",
-      pos: "verb",
-      gender: "M",
+      type: "vtr",
       meaning: "hello",
       tags: "greeting",
     });
@@ -81,7 +79,7 @@ describe("WordDetailsForm", () => {
         wordId: word._id,
         text: "updated",
         meaning: "first",
-        pos: "noun",
+        type: "nf",
       }),
     );
   });
@@ -131,7 +129,7 @@ describe("WordDetailsForm", () => {
       expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
       expect(screen.getByPlaceholderText("The word you are learning")).toHaveValue("");
       expect(screen.getByPlaceholderText("What the word means")).toHaveValue("");
-      expect(screen.getByDisplayValue("noun")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("nf")).toBeInTheDocument();
     });
 
     it("calls onSave without wordId when Save is clicked with valid fields", async () => {
@@ -151,7 +149,7 @@ describe("WordDetailsForm", () => {
       expect(payload).not.toHaveProperty("wordId");
       expect(payload).toMatchObject({
         text: "bonjour",
-        pos: "noun",
+        type: "nf",
         meaning: "hello",
       });
     });

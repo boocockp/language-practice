@@ -36,7 +36,7 @@ async function insertWords(
         userId,
         language,
         text: word,
-        pos: "noun",
+        type: "nf",
         meaning: word,
       });
     }
@@ -143,8 +143,7 @@ async function insertWord(
   language: string,
   word: {
     text: string;
-    pos: "noun" | "verb" | "adjective";
-    gender?: "M" | "F" | "N";
+    type: "nf" | "nm" | "nmf" | "vtr" | "vi" | "adj" | "adv";
     meaning: string;
     tags?: string;
   },
@@ -154,9 +153,8 @@ async function insertWord(
       userId,
       language,
       text: word.text,
-      pos: word.pos,
+      type: word.type,
       meaning: word.meaning,
-      ...(word.gender !== undefined && { gender: word.gender }),
       ...(word.tags !== undefined && { tags: word.tags }),
     });
   });
@@ -173,7 +171,7 @@ describe("words.getById", () => {
     const { userId } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "hello",
-      pos: "noun",
+      type: "nf",
       meaning: "hi",
     });
     const result = await t.query(api.words.getById, {
@@ -188,7 +186,7 @@ describe("words.getById", () => {
     const userB = await createUserAndSession(t, "test-b");
     const wordId = await insertWord(t, userA.userId, "en", {
       text: "user-a-word",
-      pos: "noun",
+      type: "nf",
       meaning: "only for A",
     });
     const result = await userB.userSession.query(api.words.getById, {
@@ -202,7 +200,7 @@ describe("words.getById", () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "fr", {
       text: "bonjour",
-      pos: "noun",
+      type: "nf",
       meaning: "hello",
     });
     const result = await userSession.query(api.words.getById, {
@@ -216,8 +214,7 @@ describe("words.getById", () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "hello",
-      pos: "verb",
-      gender: "M",
+      type: "vtr",
       meaning: "to greet",
       tags: "greeting",
     });
@@ -228,8 +225,7 @@ describe("words.getById", () => {
     expect(result).not.toBeNull();
     expect(result?._id).toBe(wordId);
     expect(result?.text).toBe("hello");
-    expect(result?.pos).toBe("verb");
-    expect(result?.gender).toBe("M");
+    expect(result?.type).toBe("vtr");
     expect(result?.meaning).toBe("to greet");
     expect(result?.tags).toBe("greeting");
   });
@@ -246,14 +242,14 @@ describe("words.update", () => {
     const { userId } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "original",
-      pos: "noun",
+      type: "nf",
       meaning: "first",
     });
     await expect(
       t.mutation(api.words.update, {
         wordId,
         text: "hacked",
-        pos: "noun",
+        type: "nf",
         meaning: "first",
       }),
     ).rejects.toThrow();
@@ -266,14 +262,14 @@ describe("words.update", () => {
     const userB = await createUserAndSession(t, "test-b");
     const wordId = await insertWord(t, userA.userId, "en", {
       text: "user-a-word",
-      pos: "noun",
+      type: "nf",
       meaning: "only for A",
     });
     await expect(
       userB.userSession.mutation(api.words.update, {
         wordId,
         text: "stolen",
-        pos: "noun",
+        type: "nf",
         meaning: "only for A",
       }),
     ).rejects.toThrow();
@@ -285,14 +281,14 @@ describe("words.update", () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "original",
-      pos: "noun",
+      type: "nf",
       meaning: "first",
     });
     await expect(
       userSession.mutation(api.words.update, {
         wordId,
         text: "",
-        pos: "noun",
+        type: "nf",
         meaning: "first",
       }),
     ).rejects.toThrow();
@@ -304,14 +300,14 @@ describe("words.update", () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "original",
-      pos: "noun",
+      type: "nf",
       meaning: "first",
     });
     await expect(
       userSession.mutation(api.words.update, {
         wordId,
         text: "   ",
-        pos: "noun",
+        type: "nf",
         meaning: "first",
       }),
     ).rejects.toThrow();
@@ -323,23 +319,20 @@ describe("words.update", () => {
     const { userId, userSession } = await createUserAndSession(t);
     const wordId = await insertWord(t, userId, "en", {
       text: "original",
-      pos: "noun",
-      gender: "M",
+      type: "nm",
       meaning: "first",
       tags: "old",
     });
     await userSession.mutation(api.words.update, {
       wordId,
       text: "updated",
-      pos: "verb",
-      gender: "F",
+      type: "nf",
       meaning: "second",
       tags: "new",
     });
     const word = await t.run(async (ctx) => ctx.db.get("words", wordId));
     expect(word?.text).toBe("updated");
-    expect(word?.pos).toBe("verb");
-    expect(word?.gender).toBe("F");
+    expect(word?.type).toBe("nf");
     expect(word?.meaning).toBe("second");
     expect(word?.tags).toBe("new");
     expect(word?.userId).toBe(userId);
@@ -359,7 +352,7 @@ describe("words.create", () => {
       t.mutation(api.words.create, {
         language: "en",
         text: "hello",
-        pos: "noun",
+        type: "nf",
         meaning: "hi",
       }),
     ).rejects.toThrow();
@@ -370,7 +363,7 @@ describe("words.create", () => {
     const id = await userSession.mutation(api.words.create, {
       language: "en",
       text: "hello",
-      pos: "noun",
+      type: "nf",
       meaning: "greeting",
       tags: "basic",
     });
@@ -380,7 +373,7 @@ describe("words.create", () => {
     expect(word?.userId).toBe(userId);
     expect(word?.language).toBe("en");
     expect(word?.text).toBe("hello");
-    expect(word?.pos).toBe("noun");
+    expect(word?.type).toBe("nf");
     expect(word?.meaning).toBe("greeting");
     expect(word?.tags).toBe("basic");
   });
@@ -391,7 +384,7 @@ describe("words.create", () => {
       userSession.mutation(api.words.create, {
         language: "en",
         text: "",
-        pos: "noun",
+        type: "nf",
         meaning: "nothing",
       }),
     ).rejects.toThrow();
@@ -403,7 +396,7 @@ describe("words.create", () => {
       userSession.mutation(api.words.create, {
         language: "en",
         text: "   ",
-        pos: "noun",
+        type: "nf",
         meaning: "nothing",
       }),
     ).rejects.toThrow();
