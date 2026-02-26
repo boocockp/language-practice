@@ -4,8 +4,8 @@
 - The user starts a practice session.
 - The app requests the next question from the backend.
 - The user submits an answer.
-- The backend stores the attempt and updates any scheduling/scoring state.
-- The next question selection is informed by prior attempts.
+- The backend stores the question and updates any scheduling/scoring state.
+- The next question selection is informed by prior question results.
 
 ### Responsibilities
 - **Frontend (React)**: routing, UI rendering, local interaction state.

@@ -7,7 +7,7 @@ Overview
 The user can manage the question types that are used to generate practice questions.
 They can list existing question types, add or amend question types, and under certain conditions delete them.
 They can edit several fields of each question type.
-They can see other statistics and information about each question type, based on the question attempts in which it has been used.
+They can see other statistics and information about each question type, based on the questions in which it has been used.
 
 
 Requirements - Part 1

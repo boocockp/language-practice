@@ -24,23 +24,47 @@ Requirements - Stage 1
  - When the user selects a Question Type, the Next Question button is visible
  - When the user clicks Next Question, generate a Question  (see below) and display the Question Text in the Question paragraph.  Hide Next Question and show Check Answer.
  - When the user clicks Check Answer:
-    - set Correct to true if the Answer text area matches the Question Expected Answer, false otherwise.  
+    - set Correct to true if the Answer text area matches the Question Expected Answer (trimmed, case-insensitive), false otherwise.  
     - Show the Expected Answer in the paragraph
     - Show in the results paragraph: If Correct is true,  "Correct" with a tick symbol, else "Wrong" with a cross symbol
+    - Hide the Check Answer button, show Next Question
 - Store the Question in the database    
 
 ### Generate a Question
 
-- See [DATA_MODEL.md](docs/DATA_MODEL.md) for the definition of `questions`
-- Use the Question Type question template to generate the question text
-- Use the Question Type answer template to generate the question expected answer
+- See [DATA_MODEL.md](../DATA_MODEL.md) for the definition of `questions`
+- Use the Question Type data template to generate the data for the question
+- Use the Question Type question template to generate the question text, using the data
+- Use the Question Type answer template to generate the question expected answer, using the data
 - The templates are processed as Handlebars templates using the particular setup for this app - see below
 
-### Using Handlebars
+#### Using Handlebars
 - The Handlebars library is documented at https://handlebarsjs.com/
-- Add a helper function for this app called `word`
+
+#### Generating data for the question
+- The dataTemplate format expects multiple lines, each with the format <name> = <data-expression>
+- We use Handlebars in an unusual way to create the question data, but this allows the user to use one syntax for both the data generation and the question/answer templates
+- From the dataTemplate, create a template where each line is of the format `{{storeData "<name>" ( <data-expression>)}}`
+- Create an isolated Handlebars instance using Handlebars.create
+- Register a storeData helper which has arguments name, value.  It awaits value (which may be a promise), then stores it in a dictionary object with the key name.  The dictionary object is used to collect the data values for the next step, Generate question and answer
+- Also register a set of helpers that the user can call in <data-expression>.  The only one at this stage is `word`, which:
+    - takes one named argument, called `text`
+    - It selects the first word in the database for the current user and language which has `text` equal to the argument
+    - It returns an object with properties `text` and `meaning` from the database record
+- Call Handlebars.compile, then Handlebars.template with the compiled template, ignore the result
+
+#### Generate question and answer
+- Create an isolated Handlebars instance using Handlebars.create
+- Compile the questionTemplate and answerTemplate
+- Call Handlebars.template with each one, passing the data from the previous step
+- On this call Handlebars
+- Add a custom helper function called `word`
 - The `word` helper:
     - takes one named argument, called `text`
     - It selects the first word in the database for the current user and language which has `text` equal to the argument
     - It returns an object with properties `text` and `meaning` from the database record
-    
+
+Notes
+-----
+
+- The name of the `attempts` table is changed to `questions`

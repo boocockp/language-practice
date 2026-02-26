@@ -11,7 +11,7 @@ Intensive vocabulary + grammar practice.
 ## Core concepts (data)
 - `words`: the learner’s vocabulary items
 - `questionTypes`: templates that generate questions from words
-- `attempts`: generated questions + user responses + scoring/metadata for future selection
+- `questis`: generated questions + user responses + scoring/metadata for future selection
 
 ## Stack
 - TypeScript + React (Vite SPA)

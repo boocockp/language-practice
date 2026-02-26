@@ -12,6 +12,6 @@ alwaysApply: false
 - Conceptual collections:
   - `words`
   - `questionTypes`
-  - `attempts`
+  - `questions`
 - Add indexes for frequently-used selection queries.
 

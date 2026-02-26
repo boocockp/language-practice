@@ -24,7 +24,7 @@ export default defineSchema({
     answerTemplate: v.string(),
   }).index("by_userId_language", ["userId", "language"]),
 
-  attempts: defineTable({
+  questions: defineTable({
     userId: v.id("users"),
     wordId: v.id("words"),
     questionTypeId: v.id("questionTypes"),
