@@ -40,21 +40,21 @@ Fields:
 - `answerTemplate`: the template for generating the answer
 
 
-### `attempts`
+### `questions`
 Stores generated questions + learner responses.
 
-Suggested fields (example):
-- `wordId` (reference to `words`)
+Fields:
+- `userId`: the id of the User to which this record belongs
+- `language`: target language as a two-letter code, eg 'en', 'fr'
 - `questionTypeId` (reference to `questionTypes`)
-- `questionText` (or structured question payload)
-- `answerGiven`
-- `isCorrect` / `score`
-- `respondedAt`
-- `durationMs` (optional)
+- `text`: the generated question
+- `expected`: the generated expected answer
+- `answerGiven`: the answer the user entered
+- `isCorrect`: true/false
+- `respondedAt`: date/time
 
 ### Index notes
 You will likely need indexes for:
-- recent attempts by `wordId`
-- recent attempts by `questionTypeId`
-- scheduling queries (e.g. “due” items), once defined
+- questions by `questionTypeId`
+
 
