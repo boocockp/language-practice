@@ -2,7 +2,7 @@
 /// <reference types="vite/client" />
 import { convexTest } from "convex-test";
 import { beforeEach, describe, expect, it } from "vitest";
-import { api } from "./_generated/api";
+import { api, internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import schema from "./schema";
 
@@ -400,5 +400,55 @@ describe("words.create", () => {
         meaning: "nothing",
       }),
     ).rejects.toThrow();
+  });
+});
+
+describe("words.getFirstByText (internal)", () => {
+  let t: ReturnType<typeof convexTest>;
+
+  beforeEach(() => {
+    t = convexTest(schema, modules);
+  });
+
+  it("returns word when found for user and language", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWords(t, userId, "en", ["hello"]);
+    const result = await t.query(internal.words.getFirstByText, {
+      userId,
+      language: "en",
+      text: "hello",
+    });
+    expect(result).toEqual({ text: "hello", meaning: "hello" });
+  });
+
+  it("returns null when no word matches text", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWords(t, userId, "en", ["apple"]);
+    const result = await t.query(internal.words.getFirstByText, {
+      userId,
+      language: "en",
+      text: "banana",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns null when word exists for different user or language", async () => {
+    const userA = await createUserAndSession(t, "a");
+    const userB = await createUserAndSession(t, "b");
+    await insertWords(t, userA.userId, "en", ["hello"]);
+    const resultUserB = await t.query(internal.words.getFirstByText, {
+      userId: userB.userId,
+      language: "en",
+      text: "hello",
+    });
+    expect(resultUserB).toBeNull();
+
+    await insertWords(t, userA.userId, "fr", ["bonjour"]);
+    const resultWrongLang = await t.query(internal.words.getFirstByText, {
+      userId: userA.userId,
+      language: "en",
+      text: "bonjour",
+    });
+    expect(resultWrongLang).toBeNull();
   });
 });

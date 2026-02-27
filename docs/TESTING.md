@@ -5,6 +5,9 @@ Convex function tests
 
 Convex queries and mutations are tested with [convex-test](https://docs.convex.dev/testing/convex-test) and Vitest. Test files live in `convex/**/*.test.ts` and run in the edge-runtime environment.
 
+- **Practice flow**: `practice.submitAnswer` and `practiceActions.generateQuestion` are tested via convex-test. The Handlebars-based question generation logic (dataTemplate, storeData, word helper) is covered by unit tests in `convex/questionGeneration.test.ts`.
+- **Action limitation**: `practiceActions.generateQuestion` passes `initialContext: {}` to the template engine. Word-based templates that require `wordText` (or similar) in context are not exercised at the action level; the `questionGeneration` unit tests cover the word helper logic.
+
 
 React component tests
 ---------------------

@@ -44,14 +44,6 @@ function transformDataTemplate(dataTemplate: string): string {
 }
 
 /**
- * Flush microtasks so async storeData helpers complete before we use the data.
- * setTimeout(0) schedules a macrotask that runs after all pending microtasks.
- */
-function flushMicrotasks(): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, 0));
-}
-
-/**
  * Run the data step: execute dataTemplate with storeData and word helpers,
  * return the collected data dictionary.
  */
@@ -74,7 +66,6 @@ async function runDataStep(
   const transformed = transformDataTemplate(dataTemplate);
   const template = handlebars.compile(transformed);
   template(initialContext, { helpers: { storeData } } as Handlebars.RuntimeOptions);
-  // await flushMicrotasks();
   await Promise.all(Object.entries(data).map(async ([key, value]) => {
     if (value instanceof Promise) {
       data[key] = await value;
@@ -135,7 +126,7 @@ export async function generateQuestion(
     }
   }
 
-  console.log("data", data);
+  // console.log("data", data);
   try {
     return runQuestionAnswerStep(questionTemplate, answerTemplate, data);
   } catch (err) {
