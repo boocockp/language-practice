@@ -54,7 +54,7 @@ Fields:
 - `answerGiven`: optional; the answer the user entered (set when they submit)
 - `isCorrect`: optional; true/false (set when they submit)
 - `respondedAt`: optional; date/time (set when they submit)
-- `wordId`: optional; reference to the word used (if any)
+- `wordIds`: optional; array of word IDs used in the question
 - `score`, `durationMs`: optional; for future scheduling
 
 ### Index notes

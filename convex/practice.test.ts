@@ -343,15 +343,15 @@ describe("practiceActions.generateQuestion (action)", () => {
 
   it("generates question with word helper using type filter", async () => {
     const { userId, userSession } = await createUserAndSession(t);
-    await t.run(async (ctx) => {
-      await ctx.db.insert("words", {
+    const wordId = await t.run(async (ctx) =>
+      ctx.db.insert("words", {
         userId,
         language: "en",
         text: "chat",
         type: "nm",
         meaning: "cat",
-      });
-    });
+      }),
+    );
     const questionTypeId = await insertQuestionType(userId, {
       name: "Word meaning",
       dataTemplate: 'word = word type="nm"',
@@ -366,5 +366,10 @@ describe("practiceActions.generateQuestion (action)", () => {
     expect(result).not.toBeNull();
     expect(result?.text).toBe("What does chat mean?");
     expect(result?.expected).toBe("cat");
+
+    const question = await t.run(async (ctx) =>
+      ctx.db.get("questions", result!.questionId),
+    );
+    expect(question?.wordIds).toEqual([wordId]);
   });
 });

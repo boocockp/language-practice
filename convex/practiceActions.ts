@@ -37,12 +37,16 @@ export const generateQuestion = action({
     const { userId, dataTemplate, questionTemplate, answerTemplate } =
       authData;
 
-    const lookupWord = (options: WordLookupOptions) =>
-      ctx.runAction(internal.words.getRandomByCriteria, {
+    const wordIds: Id<"words">[] = [];
+    const lookupWord = async (options: WordLookupOptions) => {
+      const result = (await ctx.runAction(internal.words.getRandomByCriteria, {
         userId,
         language: args.language,
         ...options,
-      }) as Promise<{ text: string; meaning: string } | null>;
+      })) as { _id: Id<"words">; text: string; meaning: string } | null;
+      if (result?._id) wordIds.push(result._id);
+      return result;
+    };
 
     let result: { text: string; expected: string };
     try {
@@ -67,6 +71,7 @@ export const generateQuestion = action({
         questionTypeId: args.questionTypeId,
         text: result.text,
         expected: result.expected,
+        wordIds: [...new Set(wordIds)],
       },
     )) as Id<"questions">;
 

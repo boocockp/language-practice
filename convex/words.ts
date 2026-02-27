@@ -106,6 +106,7 @@ const getRandomByCriteriaArgs = {
 };
 
 const wordResultValidator = v.object({
+  _id: v.id("words"),
   text: v.string(),
   meaning: v.string(),
 });
@@ -143,7 +144,7 @@ export const getMatchingWordsByCriteria = internalQuery({
       return true;
     });
 
-    return matches.map((w) => ({ text: w.text, meaning: w.meaning }));
+    return matches.map((w) => ({ _id: w._id, text: w.text, meaning: w.meaning }));
   },
 });
 
@@ -158,8 +159,8 @@ export const getRandomByCriteria = internalAction({
   handler: async (
     ctx,
     args,
-  ): Promise<{ text: string; meaning: string } | null> => {
-    const matches: { text: string; meaning: string }[] =
+  ): Promise<{ _id: Id<"words">; text: string; meaning: string } | null> => {
+    const matches: { _id: Id<"words">; text: string; meaning: string }[] =
       await ctx.runQuery(internal.words.getMatchingWordsByCriteria, args);
     if (matches.length === 0) return null;
     const chosen =

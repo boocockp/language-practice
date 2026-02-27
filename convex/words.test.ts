@@ -462,7 +462,7 @@ describe("words.getRandomByCriteria (internal)", () => {
 
   it("returns word matching text (single value)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const wordId = await insertWord(t, userId, "en", {
       text: "chat",
       type: "nm",
       meaning: "cat",
@@ -472,12 +472,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       text: "chat",
     });
-    expect(result).toEqual({ text: "chat", meaning: "cat" });
+    expect(result).toEqual({ _id: wordId, text: "chat", meaning: "cat" });
   });
 
   it("returns word matching text (comma-separated list)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const wordId = await insertWord(t, userId, "en", {
       text: "chaise",
       type: "nf",
       meaning: "chair",
@@ -487,12 +487,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       text: "chat,chaise,table",
     });
-    expect(result).toEqual({ text: "chaise", meaning: "chair" });
+    expect(result).toEqual({ _id: wordId, text: "chaise", meaning: "chair" });
   });
 
   it("returns word matching type (single)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const chienId = await insertWord(t, userId, "en", {
       text: "chien",
       type: "nm",
       meaning: "dog",
@@ -507,13 +507,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       type: "nm",
     });
-    expect(result?.text).toBe("chien");
-    expect(result?.meaning).toBe("dog");
+    expect(result).toEqual({ _id: chienId, text: "chien", meaning: "dog" });
   });
 
   it("returns word matching type (comma-separated list)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const wordId = await insertWord(t, userId, "en", {
       text: "livre",
       type: "nm",
       meaning: "book",
@@ -523,12 +522,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       type: "nm,nf",
     });
-    expect(result?.text).toBe("livre");
+    expect(result).toEqual({ _id: wordId, text: "livre", meaning: "book" });
   });
 
   it("returns word matching tags (one group)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const wordId = await insertWord(t, userId, "en", {
       text: "animal",
       type: "nm",
       meaning: "animal",
@@ -539,12 +538,16 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       tags: "noun",
     });
-    expect(result?.text).toBe("animal");
+    expect(result).toEqual({
+      _id: wordId,
+      text: "animal",
+      meaning: "animal",
+    });
   });
 
   it("returns word matching tags (AND across groups)", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const matchId = await insertWord(t, userId, "en", {
       text: "match",
       type: "nm",
       meaning: "match",
@@ -561,7 +564,11 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       tags: "abc&ghi,jkl",
     });
-    expect(result?.text).toBe("match");
+    expect(result).toEqual({
+      _id: matchId,
+      text: "match",
+      meaning: "match",
+    });
   });
 
   it("returns null when tags do not match (missing tag from one group)", async () => {
@@ -582,7 +589,7 @@ describe("words.getRandomByCriteria (internal)", () => {
 
   it("returns one of user words when no options provided", async () => {
     const { userId } = await createUserAndSession(t);
-    await insertWord(t, userId, "en", {
+    const wordId = await insertWord(t, userId, "en", {
       text: "hello",
       type: "nf",
       meaning: "hi",
@@ -591,7 +598,7 @@ describe("words.getRandomByCriteria (internal)", () => {
       userId,
       language: "en",
     });
-    expect(result).toEqual({ text: "hello", meaning: "hi" });
+    expect(result).toEqual({ _id: wordId, text: "hello", meaning: "hi" });
   });
 
   it("returns null when no matches", async () => {

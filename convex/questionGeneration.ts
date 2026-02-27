@@ -14,7 +14,7 @@ export type WordLookupOptions = {
 
 export type LookupWordFn = (
   options: WordLookupOptions,
-) => Promise<{ text: string; meaning: string } | null>;
+) => Promise<{ _id: string; text: string; meaning: string } | null>;
 
 /**
  * Create the Handlebars word helper that passes hash options to lookupWord.

@@ -51,7 +51,9 @@ describe("questionGeneration.generateQuestion", () => {
 
   it("word helper: stores word data for question/answer templates", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
-      opts.text === "chat" ? { text: "chat", meaning: "cat" } : null;
+      opts.text === "chat"
+        ? { _id: "w1", text: "chat", meaning: "cat" }
+        : null;
 
     const result = await generateQuestion(
       defaultParams({
@@ -161,7 +163,9 @@ describe("questionGeneration.generateQuestion", () => {
 
   it("word helper with type only passes type to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
-      opts.type === "nm,nf" ? { text: "chat", meaning: "cat" } : null;
+      opts.type === "nm,nf"
+        ? { _id: "w1", text: "chat", meaning: "cat" }
+        : null;
 
     const result = await generateQuestion(
       defaultParams({
@@ -176,7 +180,9 @@ describe("questionGeneration.generateQuestion", () => {
 
   it("word helper with tags only passes tags to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
-      opts.tags === "abc&ghi,jkl" ? { text: "xyz", meaning: "something" } : null;
+      opts.tags === "abc&ghi,jkl"
+        ? { _id: "w1", text: "xyz", meaning: "something" }
+        : null;
 
     const result = await generateQuestion(
       defaultParams({
@@ -192,7 +198,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with multiple options passes all to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
       opts.text === "chat" && opts.type === "nm"
-        ? { text: "chat", meaning: "cat" }
+        ? { _id: "w1", text: "chat", meaning: "cat" }
         : null;
 
     const result = await generateQuestion(
@@ -209,7 +215,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with no options passes empty object to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) => {
       expect(opts).toEqual({});
-      return { text: "random", meaning: "any" };
+      return { _id: "w1", text: "random", meaning: "any" };
     };
 
     const result = await generateQuestion(
@@ -229,7 +235,7 @@ describe("createWordHelper", () => {
     const received: WordLookupOptions[] = [];
     const lookupWord: LookupWordFn = async (opts) => {
       received.push(opts);
-      return { text: "got", meaning: "it" };
+      return { _id: "w1", text: "got", meaning: "it" };
     };
     const helper = createWordHelper(lookupWord);
 
@@ -243,7 +249,7 @@ describe("createWordHelper", () => {
 
     const result = await helper.call(null, mockOptions);
     expect(received).toEqual([{ text: "chat", type: "nm", tags: "a&b,c" }]);
-    expect(result).toEqual({ text: "got", meaning: "it" });
+    expect(result).toEqual({ _id: "w1", text: "got", meaning: "it" });
   });
 
   it("treats empty string options as undefined", async () => {

@@ -76,18 +76,6 @@ Implementation notes – Stage 1
 - **word helper** (data step only): Named arg `text`. Looks up the first word for the current user and language with that `text`, returns `{ text, meaning }` or null. Async; used only in the data step.
 - **Question/answer step**: No `word` helper (async would not work). Templates use only the stored data from the data step (e.g. `{{word.text}}`, `{{word.meaning}}`).
 
-Implementation notes – Stage 2
-------------------------------
-
-- **word helper** (data step only): Now supports optional hash options `text`, `type`, `tags`. Implemented via `createWordHelper(lookupWord)` which extracts options from `options.hash` and passes them to `LookupWordFn`. Empty string for an option is treated as not provided.
-- **LookupWordFn**: Signature changed to `(options: WordLookupOptions) => Promise<{ text, meaning } | null>` where `WordLookupOptions = { text?: string; type?: string; tags?: string }`.
-- **getRandomByCriteria** (internal action in words): Calls `getMatchingWordsByCriteria` (internal query) then picks one at random. Implemented as an action so the random selection is not cached. Filters by:
-  - `text`: comma-separated list; word.text must be in the list
-  - `type`: comma-separated list; word.type must be in the list
-  - `tags`: groups joined by `&`; each group is comma-separated; for each group, at least one tag must appear in the word's tags (AND across groups)
-- If no options provided, returns a random word from all words for user+language. From matching words, one is chosen at random via `Math.random()`.
-- **Template syntax**: Comma-separated or special characters in option values require quoted strings in Handlebars (e.g. `word type="nm,nf"`, `word tags="abc&ghi,jkl"`).
-
 Requirements - Stage 2 - Random Word selection by properties
 ----------------------
 
@@ -108,3 +96,29 @@ Requirements - Stage 2 - Random Word selection by properties
 ### Technical notes
 - Refactor the word helper into a separate function that takes a LookupWordFn argument and returns the helper function
 - Create a separate unit test for this function
+
+Implementation notes – Stage 2
+------------------------------
+
+- **word helper** (data step only): Now supports optional hash options `text`, `type`, `tags`. Implemented via `createWordHelper(lookupWord)` which extracts options from `options.hash` and passes them to `LookupWordFn`. Empty string for an option is treated as not provided.
+- **LookupWordFn**: Signature changed to `(options: WordLookupOptions) => Promise<{ text, meaning } | null>` where `WordLookupOptions = { text?: string; type?: string; tags?: string }`.
+- **getRandomByCriteria** (internal action in words): Calls `getMatchingWordsByCriteria` (internal query) then picks one at random. Implemented as an action so the random selection is not cached. Filters by:
+  - `text`: comma-separated list; word.text must be in the list
+  - `type`: comma-separated list; word.type must be in the list
+  - `tags`: groups joined by `&`; each group is comma-separated; for each group, at least one tag must appear in the word's tags (AND across groups)
+- If no options provided, returns a random word from all words for user+language. From matching words, one is chosen at random via `Math.random()`.
+- **Template syntax**: Comma-separated or special characters in option values require quoted strings in Handlebars (e.g. `word type="nm,nf"`, `word tags="abc&ghi,jkl"`).
+
+Implementation notes – Stage 2a
+------------------------------
+
+- **wordIds on questions**: Schema field `wordIds: v.optional(v.array(v.id("words")))` stores the set of word IDs used during generation. Replaces former `wordId` (singular).
+- **LookupWordFn / getRandomByCriteria**: Return type now includes `_id` so the action can collect word IDs. Templates still use only `text` and `meaning`.
+- **practiceActions**: Wraps `lookupWord` to append `result._id` to a `wordIds` array; passes deduplicated `[...new Set(wordIds)]` to `insertGeneratedQuestion`.
+- **insertGeneratedQuestion**: Accepts optional `wordIds` arg and stores it on the question.
+
+Requirements - Stage 2a - Store words used in questions
+----------------------
+
+- Add a field to Question that can store a set of word ids.  This may be an array if Convex supports it, or a string containing a comma-separated list
+- For each word used in a Question, store its id in the Question's words field

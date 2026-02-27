@@ -33,7 +33,7 @@ export default defineSchema({
     answerGiven: v.optional(v.string()),
     isCorrect: v.optional(v.boolean()),
     respondedAt: v.optional(v.number()),
-    wordId: v.optional(v.id("words")),
+    wordIds: v.optional(v.array(v.id("words"))),
     score: v.optional(v.number()),
     durationMs: v.optional(v.number()),
   })
