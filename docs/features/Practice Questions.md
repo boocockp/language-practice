@@ -75,3 +75,36 @@ Implementation notes – Stage 1
 - **dataTemplate**: Each line `<name> = <data-expression>` is transformed to `{{{storeData "<name>" ( <data-expression>)}}}`. The `storeData` helper awaits the value (which may be a Promise) and stores it in a dictionary. Empty dataTemplate passes `{}` to the question/answer step.
 - **word helper** (data step only): Named arg `text`. Looks up the first word for the current user and language with that `text`, returns `{ text, meaning }` or null. Async; used only in the data step.
 - **Question/answer step**: No `word` helper (async would not work). Templates use only the stored data from the data step (e.g. `{{word.text}}`, `{{word.meaning}}`).
+
+Implementation notes – Stage 2
+------------------------------
+
+- **word helper** (data step only): Now supports optional hash options `text`, `type`, `tags`. Implemented via `createWordHelper(lookupWord)` which extracts options from `options.hash` and passes them to `LookupWordFn`. Empty string for an option is treated as not provided.
+- **LookupWordFn**: Signature changed to `(options: WordLookupOptions) => Promise<{ text, meaning } | null>` where `WordLookupOptions = { text?: string; type?: string; tags?: string }`.
+- **getRandomByCriteria** (internal action in words): Calls `getMatchingWordsByCriteria` (internal query) then picks one at random. Implemented as an action so the random selection is not cached. Filters by:
+  - `text`: comma-separated list; word.text must be in the list
+  - `type`: comma-separated list; word.type must be in the list
+  - `tags`: groups joined by `&`; each group is comma-separated; for each group, at least one tag must appear in the word's tags (AND across groups)
+- If no options provided, returns a random word from all words for user+language. From matching words, one is chosen at random via `Math.random()`.
+- **Template syntax**: Comma-separated or special characters in option values require quoted strings in Handlebars (e.g. `word type="nm,nf"`, `word tags="abc&ghi,jkl"`).
+
+Requirements - Stage 2 - Random Word selection by properties
+----------------------
+
+- The word helper has a `type` hash option and a `tags` hash option in addition to the `text` option
+- The `type` option may be a single type name, or a comma-separated list of types
+- The `tags` option is one or more comma-separated lists of tag names, joined with & characters
+- The `text` option may now be a comma-separated list of words
+- None of the options is required
+- No spaces are allowed in the options as Handlebars would treat the part after the space as a separate argument
+- The helper queries the database matching on the options provided as follows:
+    - `type` matches words whose type is one of the types in the list eg 'nm,nf' matches records where type is either 'nm' or 'nf'
+    - `text` matches words whose text is one of the words in the list eg 'chat,chaise' matches records where text is either 'chat' or 'chaise'
+    - `tags` is split into tag lists by the & character.  The tags field in each record is split on spaces.  A record matches if for all of the tag lists, at least one of the tags in the list matches one of the tags in the record
+    - For example if the `tags` option is abc&ghi,jkl it will match a record with tags of 'abc ghi xyz' but not a record with tags of 'ghi pqr'
+    - A record is selected if it matches on all the options provided
+- From all the records selected, one is chosen at random
+
+### Technical notes
+- Refactor the word helper into a separate function that takes a LookupWordFn argument and returns the helper function
+- Create a separate unit test for this function

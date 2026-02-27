@@ -27,6 +27,8 @@ Fields:
 - `meaning`: translation/gloss
 - `tags`: optional categories - space separated list of tag names
 
+**Word lookup for question generation**: The `word` helper in data templates uses `getRandomByCriteria` (internal) to select a random word matching optional `text`, `type`, and `tags` criteria. See Practice Questions feature doc for matching rules.
+
 
 ### `questionTypes`
 Defines how to generate questions from words.

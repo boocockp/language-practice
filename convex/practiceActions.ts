@@ -4,7 +4,10 @@ import { v } from "convex/values";
 import { action } from "./_generated/server";
 import { internal } from "./_generated/api";
 
-import { generateQuestion as runQuestionGeneration } from "./questionGeneration";
+import {
+  generateQuestion as runQuestionGeneration,
+  type WordLookupOptions,
+} from "./questionGeneration";
 
 import type { Id } from "./_generated/dataModel";
 
@@ -34,11 +37,11 @@ export const generateQuestion = action({
     const { userId, dataTemplate, questionTemplate, answerTemplate } =
       authData;
 
-    const lookupWord = (text: string) =>
-      ctx.runQuery(internal.words.getFirstByText, {
+    const lookupWord = (options: WordLookupOptions) =>
+      ctx.runAction(internal.words.getRandomByCriteria, {
         userId,
         language: args.language,
-        text,
+        ...options,
       }) as Promise<{ text: string; meaning: string } | null>;
 
     let result: { text: string; expected: string };

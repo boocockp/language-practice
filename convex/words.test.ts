@@ -452,3 +452,194 @@ describe("words.getFirstByText (internal)", () => {
     expect(resultWrongLang).toBeNull();
   });
 });
+
+describe("words.getRandomByCriteria (internal)", () => {
+  let t: ReturnType<typeof convexTest>;
+
+  beforeEach(() => {
+    t = convexTest(schema, modules);
+  });
+
+  it("returns word matching text (single value)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "chat",
+      type: "nm",
+      meaning: "cat",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      text: "chat",
+    });
+    expect(result).toEqual({ text: "chat", meaning: "cat" });
+  });
+
+  it("returns word matching text (comma-separated list)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "chaise",
+      type: "nf",
+      meaning: "chair",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      text: "chat,chaise,table",
+    });
+    expect(result).toEqual({ text: "chaise", meaning: "chair" });
+  });
+
+  it("returns word matching type (single)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "chien",
+      type: "nm",
+      meaning: "dog",
+    });
+    await insertWord(t, userId, "en", {
+      text: "maison",
+      type: "nf",
+      meaning: "house",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      type: "nm",
+    });
+    expect(result?.text).toBe("chien");
+    expect(result?.meaning).toBe("dog");
+  });
+
+  it("returns word matching type (comma-separated list)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "livre",
+      type: "nm",
+      meaning: "book",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      type: "nm,nf",
+    });
+    expect(result?.text).toBe("livre");
+  });
+
+  it("returns word matching tags (one group)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "animal",
+      type: "nm",
+      meaning: "animal",
+      tags: "noun vocabulary",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      tags: "noun",
+    });
+    expect(result?.text).toBe("animal");
+  });
+
+  it("returns word matching tags (AND across groups)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "match",
+      type: "nm",
+      meaning: "match",
+      tags: "abc ghi xyz",
+    });
+    await insertWord(t, userId, "en", {
+      text: "nomatch",
+      type: "nm",
+      meaning: "nomatch",
+      tags: "ghi pqr",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      tags: "abc&ghi,jkl",
+    });
+    expect(result?.text).toBe("match");
+  });
+
+  it("returns null when tags do not match (missing tag from one group)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "nomatch",
+      type: "nm",
+      meaning: "nomatch",
+      tags: "ghi pqr",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      tags: "abc&ghi,jkl",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns one of user words when no options provided", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "hello",
+      type: "nf",
+      meaning: "hi",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+    });
+    expect(result).toEqual({ text: "hello", meaning: "hi" });
+  });
+
+  it("returns null when no matches", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "apple",
+      type: "nf",
+      meaning: "fruit",
+    });
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+      text: "banana",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("returns null when no words exist for user", async () => {
+    const { userId } = await createUserAndSession(t);
+    const result = await t.action(internal.words.getRandomByCriteria, {
+      userId,
+      language: "en",
+    });
+    expect(result).toBeNull();
+  });
+
+  it("can return different words when multiple match (random selection)", async () => {
+    const { userId } = await createUserAndSession(t);
+    await insertWord(t, userId, "en", {
+      text: "a",
+      type: "nm",
+      meaning: "first",
+    });
+    await insertWord(t, userId, "en", {
+      text: "b",
+      type: "nm",
+      meaning: "second",
+    });
+    const results = new Set<string>();
+    for (let i = 0; i < 20; i++) {
+      const result = await t.action(internal.words.getRandomByCriteria, {
+        userId,
+        language: "en",
+        type: "nm",
+      });
+      expect(result).not.toBeNull();
+      results.add(result!.text);
+    }
+    expect(results.size).toBeGreaterThan(1);
+  });
+});

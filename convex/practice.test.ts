@@ -341,8 +341,30 @@ describe("practiceActions.generateQuestion (action)", () => {
     expect(question?.expected).toBe("4");
   });
 
-  // Word helper with initialContext: The action passes initialContext: {}.
-  // Word-based templates need wordText (etc.) in context; that is not yet
-  // supported by the action. The word helper logic is covered by
-  // questionGeneration.test.ts.
+  it("generates question with word helper using type filter", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    await t.run(async (ctx) => {
+      await ctx.db.insert("words", {
+        userId,
+        language: "en",
+        text: "chat",
+        type: "nm",
+        meaning: "cat",
+      });
+    });
+    const questionTypeId = await insertQuestionType(userId, {
+      name: "Word meaning",
+      dataTemplate: 'word = word type="nm"',
+      questionTemplate: "What does {{word.text}} mean?",
+      answerTemplate: "{{word.meaning}}",
+    });
+
+    const result = await userSession.action(
+      api.practiceActions.generateQuestion,
+      { questionTypeId, language: "en" },
+    );
+    expect(result).not.toBeNull();
+    expect(result?.text).toBe("What does chat mean?");
+    expect(result?.expected).toBe("cat");
+  });
 });

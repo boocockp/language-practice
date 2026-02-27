@@ -6,9 +6,32 @@
 
 import Handlebars from "handlebars";
 
+export type WordLookupOptions = {
+  text?: string;
+  type?: string;
+  tags?: string;
+};
+
 export type LookupWordFn = (
-  text: string,
+  options: WordLookupOptions,
 ) => Promise<{ text: string; meaning: string } | null>;
+
+/**
+ * Create the Handlebars word helper that passes hash options to lookupWord.
+ * Used in the data step for question generation.
+ */
+export function createWordHelper(lookupWord: LookupWordFn) {
+  return function (this: unknown, options: Handlebars.HelperOptions) {
+    const hash = options.hash ?? {};
+    const text =
+      typeof hash.text === "string" && hash.text !== "" ? hash.text : undefined;
+    const type =
+      typeof hash.type === "string" && hash.type !== "" ? hash.type : undefined;
+    const tags =
+      typeof hash.tags === "string" && hash.tags !== "" ? hash.tags : undefined;
+    return lookupWord({ text, type, tags });
+  };
+}
 
 export interface GenerateQuestionParams {
   dataTemplate: string;
@@ -58,11 +81,7 @@ async function runDataStep(
   };
   const handlebars = Handlebars.create();
   handlebars.registerHelper("storeData", storeData);
-  handlebars.registerHelper("word", function (this: unknown, options: Handlebars.HelperOptions) {
-    const text = options.hash?.text;
-    if (typeof text !== "string") return null;
-    return lookupWord(text);
-  });
+  handlebars.registerHelper("word", createWordHelper(lookupWord));
   const transformed = transformDataTemplate(dataTemplate);
   const template = handlebars.compile(transformed);
   template(initialContext, { helpers: { storeData } } as Handlebars.RuntimeOptions);

@@ -1,12 +1,15 @@
 // @vitest-environment edge-runtime
 /// <reference types="vite/client" />
 
+import Handlebars from "handlebars";
 import { describe, expect, it } from "vitest";
 
 import {
+  createWordHelper,
   generateQuestion,
   type GenerateQuestionParams,
   type LookupWordFn,
+  type WordLookupOptions,
 } from "./questionGeneration";
 
 function defaultParams(
@@ -47,8 +50,8 @@ describe("questionGeneration.generateQuestion", () => {
   });
 
   it("word helper: stores word data for question/answer templates", async () => {
-    const lookupWord: LookupWordFn = async (text) =>
-      text === "chat" ? { text: "chat", meaning: "cat" } : null;
+    const lookupWord: LookupWordFn = async (opts) =>
+      opts.text === "chat" ? { text: "chat", meaning: "cat" } : null;
 
     const result = await generateQuestion(
       defaultParams({
@@ -154,5 +157,112 @@ describe("questionGeneration.generateQuestion", () => {
         }),
       ),
     ).rejects.toThrow(/Data template error/);
+  });
+
+  it("word helper with type only passes type to lookup", async () => {
+    const lookupWord: LookupWordFn = async (opts) =>
+      opts.type === "nm,nf" ? { text: "chat", meaning: "cat" } : null;
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'word = word type="nm,nf"',
+        questionTemplate: "{{word.text}}",
+        answerTemplate: "{{word.meaning}}",
+        lookupWord,
+      }),
+    );
+    expect(result).toEqual({ text: "chat", expected: "cat" });
+  });
+
+  it("word helper with tags only passes tags to lookup", async () => {
+    const lookupWord: LookupWordFn = async (opts) =>
+      opts.tags === "abc&ghi,jkl" ? { text: "xyz", meaning: "something" } : null;
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'word = word tags="abc&ghi,jkl"',
+        questionTemplate: "{{word.text}}",
+        answerTemplate: "{{word.meaning}}",
+        lookupWord,
+      }),
+    );
+    expect(result).toEqual({ text: "xyz", expected: "something" });
+  });
+
+  it("word helper with multiple options passes all to lookup", async () => {
+    const lookupWord: LookupWordFn = async (opts) =>
+      opts.text === "chat" && opts.type === "nm"
+        ? { text: "chat", meaning: "cat" }
+        : null;
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'word = word text="chat" type="nm"',
+        questionTemplate: "{{word.text}}",
+        answerTemplate: "{{word.meaning}}",
+        lookupWord,
+      }),
+    );
+    expect(result).toEqual({ text: "chat", expected: "cat" });
+  });
+
+  it("word helper with no options passes empty object to lookup", async () => {
+    const lookupWord: LookupWordFn = async (opts) => {
+      expect(opts).toEqual({});
+      return { text: "random", meaning: "any" };
+    };
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: "word = word",
+        questionTemplate: "{{word.text}}",
+        answerTemplate: "{{word.meaning}}",
+        lookupWord,
+      }),
+    );
+    expect(result).toEqual({ text: "random", expected: "any" });
+  });
+});
+
+describe("createWordHelper", () => {
+  it("passes hash options to lookupWord and returns result", async () => {
+    const received: WordLookupOptions[] = [];
+    const lookupWord: LookupWordFn = async (opts) => {
+      received.push(opts);
+      return { text: "got", meaning: "it" };
+    };
+    const helper = createWordHelper(lookupWord);
+
+    const mockOptions = {
+      hash: { text: "chat", type: "nm", tags: "a&b,c" },
+      fn: () => "",
+      inverse: () => "",
+      data: {},
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
+    } as Handlebars.HelperOptions;
+
+    const result = await helper.call(null, mockOptions);
+    expect(received).toEqual([{ text: "chat", type: "nm", tags: "a&b,c" }]);
+    expect(result).toEqual({ text: "got", meaning: "it" });
+  });
+
+  it("treats empty string options as undefined", async () => {
+    const received: WordLookupOptions[] = [];
+    const lookupWord: LookupWordFn = async (opts) => {
+      received.push(opts);
+      return null;
+    };
+    const helper = createWordHelper(lookupWord);
+
+    const mockOptions = {
+      hash: { text: "", type: "", tags: "" },
+      fn: () => "",
+      inverse: () => "",
+      data: {},
+      loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 0 } },
+    } as Handlebars.HelperOptions;
+
+    await helper.call(null, mockOptions);
+    expect(received).toEqual([{}]);
   });
 });

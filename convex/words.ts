@@ -2,7 +2,13 @@ import type { GenericQueryCtx } from "convex/server";
 import type { DataModel, Id } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
-import { internalQuery, mutation, query } from "./_generated/server";
+import {
+  internalAction,
+  internalQuery,
+  mutation,
+  query,
+} from "./_generated/server";
+import { internal } from "./_generated/api";
 
 import { wordTypeValidator } from "./wordTypes";
 
@@ -32,6 +38,7 @@ export { WORD_TYPES, type WordType } from "./wordTypes";
 /**
  * Internal: look up the first word by text for the given user and language.
  * Used by the practice action for template word helper.
+ * @deprecated Use getRandomByCriteria for the word helper (supports type, tags, random selection).
  */
 export const getFirstByText = internalQuery({
   args: {
@@ -53,6 +60,111 @@ export const getFirstByText = internalQuery({
       .first();
     if (word === null) return null;
     return { text: word.text, meaning: word.meaning };
+  },
+});
+
+/**
+ * Parse comma-separated list, trim each part, filter empty.
+ */
+function parseCommaList(s: string): string[] {
+  return s
+    .split(",")
+    .map((t) => t.trim())
+    .filter((t) => t !== "");
+}
+
+/**
+ * Check if a word matches the tags criteria.
+ * tagsOption format: groups joined by &; each group is comma-separated.
+ * A word matches iff for every group, at least one tag in the group is in the word's tags.
+ */
+function matchesTags(
+  wordTags: string | undefined,
+  tagsOption: string,
+): boolean {
+  const recordTags = new Set(
+    (wordTags ?? "")
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter((t) => t !== ""),
+  );
+  const groups = tagsOption.split("&").map((g) => parseCommaList(g));
+  for (const group of groups) {
+    if (group.length === 0) continue;
+    const hasMatch = group.some((tag) => recordTags.has(tag));
+    if (!hasMatch) return false;
+  }
+  return true;
+}
+
+const getRandomByCriteriaArgs = {
+  userId: v.id("users"),
+  language: v.string(),
+  text: v.optional(v.string()),
+  type: v.optional(v.string()),
+  tags: v.optional(v.string()),
+};
+
+const wordResultValidator = v.object({
+  text: v.string(),
+  meaning: v.string(),
+});
+
+/**
+ * Internal: get list of words matching the given criteria (deterministic, used by getRandomByCriteria action).
+ */
+export const getMatchingWordsByCriteria = internalQuery({
+  args: getRandomByCriteriaArgs,
+  returns: v.array(wordResultValidator),
+  handler: async (ctx, args) => {
+    const candidates = await ctx.db
+      .query("words")
+      .withIndex("by_userId_language", (q) =>
+        q.eq("userId", args.userId).eq("language", args.language),
+      )
+      .collect();
+
+    const textList =
+      args.text && args.text.trim() !== ""
+        ? parseCommaList(args.text)
+        : null;
+    const typeList =
+      args.type && args.type.trim() !== ""
+        ? parseCommaList(args.type)
+        : null;
+    const tagsOption =
+      args.tags && args.tags.trim() !== "" ? args.tags : null;
+
+    const matches = candidates.filter((word) => {
+      if (textList !== null && !textList.includes(word.text)) return false;
+      if (typeList !== null && !typeList.includes(word.type)) return false;
+      if (tagsOption !== null && !matchesTags(word.tags, tagsOption))
+        return false;
+      return true;
+    });
+
+    return matches.map((w) => ({ text: w.text, meaning: w.meaning }));
+  },
+});
+
+/**
+ * Internal: get a random word matching the given criteria for user and language.
+ * Implemented as an action (not a query) so random selection is not cached.
+ * Used by the practice action for the word helper during question generation.
+ */
+export const getRandomByCriteria = internalAction({
+  args: getRandomByCriteriaArgs,
+  returns: v.union(v.null(), wordResultValidator),
+  handler: async (
+    ctx,
+    args,
+  ): Promise<{ text: string; meaning: string } | null> => {
+    const matches: { text: string; meaning: string }[] =
+      await ctx.runQuery(internal.words.getMatchingWordsByCriteria, args);
+    if (matches.length === 0) return null;
+    const chosen =
+      matches[Math.floor(Math.random() * matches.length)] ?? matches[0];
+    return chosen;
   },
 });
 
