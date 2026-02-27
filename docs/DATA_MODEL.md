@@ -49,12 +49,15 @@ Fields:
 - `questionTypeId` (reference to `questionTypes`)
 - `text`: the generated question
 - `expected`: the generated expected answer
-- `answerGiven`: the answer the user entered
-- `isCorrect`: true/false
-- `respondedAt`: date/time
+- `answerGiven`: optional; the answer the user entered (set when they submit)
+- `isCorrect`: optional; true/false (set when they submit)
+- `respondedAt`: optional; date/time (set when they submit)
+- `wordId`: optional; reference to the word used (if any)
+- `score`, `durationMs`: optional; for future scheduling
 
 ### Index notes
-You will likely need indexes for:
 - questions by `questionTypeId`
+- questions by `userId`
+- questions by `userId` and `respondedAt`
 
 

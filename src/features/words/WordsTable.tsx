@@ -2,7 +2,7 @@ import { Table } from "@cloudflare/kumo";
 import type { ReactNode } from "react";
 
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
-import type { WordType } from "../../../convex/words";
+import type { WordType } from "../../../convex/wordTypes";
 import { cn } from "../../lib/cn";
 
 const TYPE_BG: Record<WordType, string> = {

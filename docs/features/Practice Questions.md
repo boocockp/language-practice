@@ -68,3 +68,10 @@ Notes
 -----
 
 - The name of the `attempts` table is changed to `questions`
+
+Implementation notes – Stage 1
+------------------------------
+
+- **dataTemplate**: Each line `<name> = <data-expression>` is transformed to `{{{storeData "<name>" ( <data-expression>)}}}`. The `storeData` helper awaits the value (which may be a Promise) and stores it in a dictionary. Empty dataTemplate passes `{}` to the question/answer step.
+- **word helper** (data step only): Named arg `text`. Looks up the first word for the current user and language with that `text`, returns `{ text, meaning }` or null. Async; used only in the data step.
+- **Question/answer step**: No `word` helper (async would not work). Templates use only the stored data from the data step (e.g. `{{word.text}}`, `{{word.meaning}}`).

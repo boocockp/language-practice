@@ -26,16 +26,18 @@ export default defineSchema({
 
   questions: defineTable({
     userId: v.id("users"),
-    wordId: v.id("words"),
+    language: v.string(),
     questionTypeId: v.id("questionTypes"),
-    questionText: v.string(),
-    answerGiven: v.string(),
-    isCorrect: v.boolean(),
+    text: v.string(),
+    expected: v.string(),
+    answerGiven: v.optional(v.string()),
+    isCorrect: v.optional(v.boolean()),
+    respondedAt: v.optional(v.number()),
+    wordId: v.optional(v.id("words")),
     score: v.optional(v.number()),
-    respondedAt: v.number(),
     durationMs: v.optional(v.number()),
   })
-    .index("by_wordId", ["wordId", "respondedAt"])
-    .index("by_questionTypeId", ["questionTypeId", "respondedAt"])
-    .index("by_userId", ["userId", "respondedAt"]),
+    .index("by_questionTypeId", ["questionTypeId"])
+    .index("by_userId", ["userId"])
+    .index("by_userId_respondedAt", ["userId", "respondedAt"]),
 });

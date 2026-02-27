@@ -3,7 +3,7 @@ import { Button, Dialog, Field, Input } from "@cloudflare/kumo";
 import { X } from "@phosphor-icons/react";
 
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
-import { WORD_TYPES, type WordType } from "../../../convex/words";
+import { WORD_TYPES, type WordType } from "../../../convex/wordTypes";
 
 export type WordUpdatePayload = {
   wordId?: Id<"words">;

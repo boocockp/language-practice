@@ -10,6 +10,10 @@
 
 import type * as auth from "../auth.js";
 import type * as http from "../http.js";
+import type * as practice from "../practice.js";
+import type * as practiceActions from "../practiceActions.js";
+import type * as practiceInternal from "../practiceInternal.js";
+import type * as questionGeneration from "../questionGeneration.js";
 import type * as questionTypes from "../questionTypes.js";
 import type * as users from "../users.js";
 import type * as wordTypes from "../wordTypes.js";
@@ -24,6 +28,10 @@ import type {
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   http: typeof http;
+  practice: typeof practice;
+  practiceActions: typeof practiceActions;
+  practiceInternal: typeof practiceInternal;
+  questionGeneration: typeof questionGeneration;
   questionTypes: typeof questionTypes;
   users: typeof users;
   wordTypes: typeof wordTypes;

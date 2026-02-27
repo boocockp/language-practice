@@ -1,10 +1,60 @@
+import type { GenericQueryCtx } from "convex/server";
+import type { DataModel, Id } from "./_generated/dataModel";
 import { getAuthUserId } from "@convex-dev/auth/server";
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { internalQuery, mutation, query } from "./_generated/server";
 
 import { wordTypeValidator } from "./wordTypes";
 
+/**
+ * Internal helper: look up the first word by text for the given user and language.
+ * Used by the `word` helper during question template execution.
+ */
+export async function lookupWordByText(
+  ctx: GenericQueryCtx<DataModel>,
+  userId: Id<"users">,
+  language: string,
+  text: string,
+): Promise<{ text: string; meaning: string } | null> {
+  const word = await ctx.db
+    .query("words")
+    .withIndex("by_userId_language", (q) =>
+      q.eq("userId", userId).eq("language", language),
+    )
+    .filter((q) => q.eq(q.field("text"), text))
+    .first();
+  if (word === null) return null;
+  return { text: word.text, meaning: word.meaning };
+}
+
 export { WORD_TYPES, type WordType } from "./wordTypes";
+
+/**
+ * Internal: look up the first word by text for the given user and language.
+ * Used by the practice action for template word helper.
+ */
+export const getFirstByText = internalQuery({
+  args: {
+    userId: v.id("users"),
+    language: v.string(),
+    text: v.string(),
+  },
+  returns: v.union(
+    v.null(),
+    v.object({ text: v.string(), meaning: v.string() }),
+  ),
+  handler: async (ctx, args) => {
+    const word = await ctx.db
+      .query("words")
+      .withIndex("by_userId_language", (q) =>
+        q.eq("userId", args.userId).eq("language", args.language),
+      )
+      .filter((q) => q.eq(q.field("text"), args.text))
+      .first();
+    if (word === null) return null;
+    return { text: word.text, meaning: word.meaning };
+  },
+});
 
 const wordDocValidator = v.union(
   v.null(),
@@ -139,8 +189,9 @@ export const backfillType = mutation({
     let patched = 0;
     for (const word of words) {
       const doc = word as { _id: typeof word._id; type?: string };
-      if (!("type" in doc) || doc.type === undefined) {
-        await ctx.db.patch(word._id, { type: "nm" });
+      if (("pos" in doc) ) {
+        // await ctx.db.patch(word._id, { pos: undefined });
+        // await ctx.db.patch(word._id, { gender: undefined });
         patched += 1;
       }
     }
