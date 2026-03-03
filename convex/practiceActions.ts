@@ -8,6 +8,7 @@ import {
   generateQuestion as runQuestionGeneration,
   type WordLookupOptions,
 } from "./questionGeneration";
+import { getTemplateHelpersForLanguage } from "./templateHelpers";
 
 import type { Id } from "./_generated/dataModel";
 
@@ -25,6 +26,7 @@ export const generateQuestion = action({
     }),
   ),
   handler: async (ctx, args) => {
+    console.log("In generateQuestion", args);
     const authData = await ctx.runQuery(
       internal.practiceInternal.getAuthAndQuestionType,
       {
@@ -43,10 +45,18 @@ export const generateQuestion = action({
         userId,
         language: args.language,
         ...options,
-      })) as { _id: Id<"words">; text: string; meaning: string } | null;
+      })) as {
+        _id: Id<"words">;
+        text: string;
+        type: string;
+        meaning: string;
+      } | null;
       if (result?._id) wordIds.push(result._id);
       return result;
     };
+
+    const { templateHelpers, postProcess } =
+      getTemplateHelpersForLanguage(args.language);
 
     let result: { text: string; expected: string };
     try {
@@ -56,6 +66,9 @@ export const generateQuestion = action({
         answerTemplate,
         initialContext: {},
         lookupWord,
+        language: args.language,
+        templateHelpers,
+        postProcess,
       });
     } catch (err) {
       throw new Error(

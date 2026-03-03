@@ -10,7 +10,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 
-import { wordTypeValidator } from "./wordTypes";
+import { wordTypeValidator, type WordType } from "./wordTypes";
 
 /**
  * Internal helper: look up the first word by text for the given user and language.
@@ -108,6 +108,7 @@ const getRandomByCriteriaArgs = {
 const wordResultValidator = v.object({
   _id: v.id("words"),
   text: v.string(),
+  type: wordTypeValidator,
   meaning: v.string(),
 });
 
@@ -144,7 +145,12 @@ export const getMatchingWordsByCriteria = internalQuery({
       return true;
     });
 
-    return matches.map((w) => ({ _id: w._id, text: w.text, meaning: w.meaning }));
+    return matches.map((w) => ({
+      _id: w._id,
+      text: w.text,
+      type: w.type,
+      meaning: w.meaning,
+    }));
   },
 });
 
@@ -159,9 +165,16 @@ export const getRandomByCriteria = internalAction({
   handler: async (
     ctx,
     args,
-  ): Promise<{ _id: Id<"words">; text: string; meaning: string } | null> => {
-    const matches: { _id: Id<"words">; text: string; meaning: string }[] =
-      await ctx.runQuery(internal.words.getMatchingWordsByCriteria, args);
+  ): Promise<{
+    _id: Id<"words">;
+    text: string;
+    type: WordType;
+    meaning: string;
+  } | null> => {
+    const matches = await ctx.runQuery(
+      internal.words.getMatchingWordsByCriteria,
+      args,
+    );
     if (matches.length === 0) return null;
     const chosen =
       matches[Math.floor(Math.random() * matches.length)] ?? matches[0];

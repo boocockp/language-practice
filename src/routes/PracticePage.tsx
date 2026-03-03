@@ -24,6 +24,7 @@ export function PracticePage() {
   } | null>(null);
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<{ isCorrect: boolean } | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const questionTypes = useQuery(
     api.questionTypes.listByUserAndLanguage,
@@ -35,11 +36,14 @@ export function PracticePage() {
   const hasQuestionType = selectedQuestionTypeId !== null;
   const hasCurrentQuestion = currentQuestion !== null;
   const showNextButton =
-    hasQuestionType && (!hasCurrentQuestion || feedback !== null);
+    hasQuestionType &&
+    (!hasCurrentQuestion || feedback !== null) &&
+    !isGenerating;
   const showCheckButton = hasCurrentQuestion && feedback === null;
 
   async function handleNextQuestion() {
     if (selectedQuestionTypeId === null) return;
+    setIsGenerating(true);
     try {
       const result = await generateQuestion({
         questionTypeId: selectedQuestionTypeId,
@@ -56,6 +60,8 @@ export function PracticePage() {
       }
     } catch (err) {
       console.error("Failed to generate question:", err);
+    } finally {
+      setIsGenerating(false);
     }
   }
 
@@ -201,9 +207,11 @@ export function PracticePage() {
                 type="button"
                 variant="primary"
                 onClick={handleNextQuestion}
+                disabled={isGenerating}
                 aria-label="Next question"
+                aria-busy={isGenerating}
               >
-                Next Question
+                {isGenerating ? "Loading…" : "Next Question"}
               </Button>
             )}
             {showCheckButton && (

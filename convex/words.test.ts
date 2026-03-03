@@ -472,7 +472,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       text: "chat",
     });
-    expect(result).toEqual({ _id: wordId, text: "chat", meaning: "cat" });
+    expect(result).toEqual({
+      _id: wordId,
+      text: "chat",
+      type: "nm",
+      meaning: "cat",
+    });
   });
 
   it("returns word matching text (comma-separated list)", async () => {
@@ -487,7 +492,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       text: "chat,chaise,table",
     });
-    expect(result).toEqual({ _id: wordId, text: "chaise", meaning: "chair" });
+    expect(result).toEqual({
+      _id: wordId,
+      text: "chaise",
+      type: "nf",
+      meaning: "chair",
+    });
   });
 
   it("returns word matching type (single)", async () => {
@@ -507,7 +517,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       type: "nm",
     });
-    expect(result).toEqual({ _id: chienId, text: "chien", meaning: "dog" });
+    expect(result).toEqual({
+      _id: chienId,
+      text: "chien",
+      type: "nm",
+      meaning: "dog",
+    });
   });
 
   it("returns word matching type (comma-separated list)", async () => {
@@ -522,7 +537,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       language: "en",
       type: "nm,nf",
     });
-    expect(result).toEqual({ _id: wordId, text: "livre", meaning: "book" });
+    expect(result).toEqual({
+      _id: wordId,
+      text: "livre",
+      type: "nm",
+      meaning: "book",
+    });
   });
 
   it("returns word matching tags (one group)", async () => {
@@ -541,6 +561,7 @@ describe("words.getRandomByCriteria (internal)", () => {
     expect(result).toEqual({
       _id: wordId,
       text: "animal",
+      type: "nm",
       meaning: "animal",
     });
   });
@@ -567,6 +588,7 @@ describe("words.getRandomByCriteria (internal)", () => {
     expect(result).toEqual({
       _id: matchId,
       text: "match",
+      type: "nm",
       meaning: "match",
     });
   });
@@ -598,7 +620,12 @@ describe("words.getRandomByCriteria (internal)", () => {
       userId,
       language: "en",
     });
-    expect(result).toEqual({ _id: wordId, text: "hello", meaning: "hi" });
+    expect(result).toEqual({
+      _id: wordId,
+      text: "hello",
+      type: "nf",
+      meaning: "hi",
+    });
   });
 
   it("returns null when no matches", async () => {

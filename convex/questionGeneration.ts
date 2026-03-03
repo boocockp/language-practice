@@ -14,7 +14,12 @@ export type WordLookupOptions = {
 
 export type LookupWordFn = (
   options: WordLookupOptions,
-) => Promise<{ _id: string; text: string; meaning: string } | null>;
+) => Promise<{
+  _id: string;
+  text: string;
+  type: string;
+  meaning: string;
+} | null>;
 
 /**
  * Create the Handlebars word helper that passes hash options to lookupWord.
@@ -39,6 +44,12 @@ export interface GenerateQuestionParams {
   answerTemplate: string;
   initialContext: Record<string, unknown>;
   lookupWord: LookupWordFn;
+  /** Language code for helper context (e.g. 'fr', 'en') */
+  language?: string;
+  /** Helpers to register for question/answer templates (e.g. noun, verb) */
+  templateHelpers?: Record<string, Handlebars.HelperDelegate>;
+  /** Applied to question and answer text after rendering (e.g. contractions) */
+  postProcess?: (text: string) => string;
 }
 
 export interface GenerateQuestionResult {
@@ -96,20 +107,32 @@ async function runDataStep(
 
 /**
  * Run the question/answer step: compile templates and render with data.
- * No word helper here (async); templates use stored data only.
+ * Registers templateHelpers when provided. Applies postProcess to output when provided.
  */
 function runQuestionAnswerStep(
   questionTemplate: string,
   answerTemplate: string,
   data: Record<string, unknown>,
+  options?: {
+    templateHelpers?: Record<string, Handlebars.HelperDelegate>;
+    postProcess?: (text: string) => string;
+  },
 ): { text: string; expected: string } {
   const handlebars = Handlebars.create();
+  if (options?.templateHelpers) {
+    for (const [name, fn] of Object.entries(options.templateHelpers)) {
+      handlebars.registerHelper(name, fn);
+    }
+  }
   const qTemplate = handlebars.compile(questionTemplate);
   const aTemplate = handlebars.compile(answerTemplate);
-  return {
-    text: qTemplate(data),
-    expected: aTemplate(data),
-  };
+  let text = qTemplate(data);
+  let expected = aTemplate(data);
+  if (options?.postProcess) {
+    text = options.postProcess(text);
+    expected = options.postProcess(expected);
+  }
+  return { text, expected };
 }
 
 /**
@@ -125,6 +148,8 @@ export async function generateQuestion(
     answerTemplate,
     initialContext,
     lookupWord,
+    templateHelpers,
+    postProcess,
   } = params;
 
   let data: Record<string, unknown>;
@@ -147,7 +172,10 @@ export async function generateQuestion(
 
   // console.log("data", data);
   try {
-    return runQuestionAnswerStep(questionTemplate, answerTemplate, data);
+    return runQuestionAnswerStep(questionTemplate, answerTemplate, data, {
+      templateHelpers,
+      postProcess,
+    });
   } catch (err) {
     throw new Error(
       `Question/answer template error: ${err instanceof Error ? err.message : String(err)}`,

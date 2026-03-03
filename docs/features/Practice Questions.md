@@ -113,9 +113,16 @@ Implementation notes – Stage 2a
 ------------------------------
 
 - **wordIds on questions**: Schema field `wordIds: v.optional(v.array(v.id("words")))` stores the set of word IDs used during generation. Replaces former `wordId` (singular).
-- **LookupWordFn / getRandomByCriteria**: Return type now includes `_id` so the action can collect word IDs. Templates still use only `text` and `meaning`.
+- **LookupWordFn / getRandomByCriteria**: Return type now includes `_id` and `type` so the action can collect word IDs and template helpers can use gender. Templates use `text`, `meaning`, and (for noun/verb helpers) `type`.
 - **practiceActions**: Wraps `lookupWord` to append `result._id` to a `wordIds` array; passes deduplicated `[...new Set(wordIds)]` to `insertGeneratedQuestion`.
 - **insertGeneratedQuestion**: Accepts optional `wordIds` arg and stores it on the question.
+
+Template helpers (noun, verb)
+-----------------------------
+
+- **noun** and **verb** helpers are available in question and answer templates (not in the data template) when the question language is French.
+- Implemented as RosaeNLG wrappers in `practiceActions`; the full rendered output is post-processed for contractions/elisions.
+- Word results from the data step now include `type` for gender agreement. See `docs/features/Template Helpers.md`.
 
 Requirements - Stage 2a - Store words used in questions
 ----------------------

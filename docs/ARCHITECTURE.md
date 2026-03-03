@@ -27,3 +27,7 @@ The user studies one language at a time. The selection is stored per browser tab
 - Stats: show progress/history summaries
 - Settings: learner preferences
 
+### Template helpers (question/answer generation)
+
+Question and answer templates support language-specific Handlebars helpers (e.g. `noun`, `verb`) for grammatical correctness. These live in `convex/templateHelpers.ts` as wrappers around `rosaenlg-lib` and are only active for supported languages (French initially). The full rendered output is post-processed for contractions and elisions. See `docs/features/Template Helpers.md`.
+

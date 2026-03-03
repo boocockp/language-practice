@@ -52,7 +52,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper: stores word data for question/answer templates", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
       opts.text === "chat"
-        ? { _id: "w1", text: "chat", meaning: "cat" }
+        ? { _id: "w1", text: "chat", type: "nm", meaning: "cat" }
         : null;
 
     const result = await generateQuestion(
@@ -164,7 +164,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with type only passes type to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
       opts.type === "nm,nf"
-        ? { _id: "w1", text: "chat", meaning: "cat" }
+        ? { _id: "w1", text: "chat", type: "nm", meaning: "cat" }
         : null;
 
     const result = await generateQuestion(
@@ -181,7 +181,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with tags only passes tags to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
       opts.tags === "abc&ghi,jkl"
-        ? { _id: "w1", text: "xyz", meaning: "something" }
+        ? { _id: "w1", text: "xyz", type: "nm", meaning: "something" }
         : null;
 
     const result = await generateQuestion(
@@ -198,7 +198,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with multiple options passes all to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) =>
       opts.text === "chat" && opts.type === "nm"
-        ? { _id: "w1", text: "chat", meaning: "cat" }
+        ? { _id: "w1", text: "chat", type: "nm", meaning: "cat" }
         : null;
 
     const result = await generateQuestion(
@@ -215,7 +215,7 @@ describe("questionGeneration.generateQuestion", () => {
   it("word helper with no options passes empty object to lookup", async () => {
     const lookupWord: LookupWordFn = async (opts) => {
       expect(opts).toEqual({});
-      return { _id: "w1", text: "random", meaning: "any" };
+      return { _id: "w1", text: "random", type: "nm", meaning: "any" };
     };
 
     const result = await generateQuestion(
@@ -228,6 +228,63 @@ describe("questionGeneration.generateQuestion", () => {
     );
     expect(result).toEqual({ text: "random", expected: "any" });
   });
+
+  it("templateHelpers are registered and used in question/answer templates", async () => {
+    const nounCalls: unknown[] = [];
+    const verbCalls: unknown[] = [];
+
+    const templateHelpers: Record<string, Handlebars.HelperDelegate> = {
+      noun: (options: Handlebars.HelperOptions) => {
+        nounCalls.push(options.hash);
+        const word = options.hash?.word as { text?: string } | undefined;
+        return word?.text ? `[noun:${word.text}]` : "";
+      },
+      verb: (options: Handlebars.HelperOptions) => {
+        verbCalls.push(options.hash);
+        const word = options.hash?.word as { text?: string } | undefined;
+        return word?.text ? `[verb:${word.text}]` : "";
+      },
+    };
+
+    const foo = { text: "chat", type: "nm", meaning: "cat" };
+    const bar = { text: "manger", type: "vtr", meaning: "eat" };
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'foo = lookup this "foo"\nbar = lookup this "bar"',
+        questionTemplate: "{{noun word=foo}}",
+        answerTemplate: '{{verb word=bar subject=foo tense="PRESENT"}}',
+        initialContext: { foo, bar },
+        templateHelpers,
+      }),
+    );
+
+    expect(nounCalls).toHaveLength(1);
+    expect((nounCalls[0] as Record<string, unknown>).word).toEqual(foo);
+    expect(verbCalls).toHaveLength(1);
+    expect((verbCalls[0] as Record<string, unknown>).word).toEqual(bar);
+    expect((verbCalls[0] as Record<string, unknown>).subject).toEqual(foo);
+    expect((verbCalls[0] as Record<string, unknown>).tense).toBe("PRESENT");
+    expect(result).toEqual({
+      text: "[noun:chat]",
+      expected: "[verb:manger]",
+    });
+  });
+
+  it("postProcess is applied to question and answer output", async () => {
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: "",
+        questionTemplate: "raw question",
+        answerTemplate: "raw answer",
+        postProcess: (t) => `[processed:${t}]`,
+      }),
+    );
+    expect(result).toEqual({
+      text: "[processed:raw question]",
+      expected: "[processed:raw answer]",
+    });
+  });
 });
 
 describe("createWordHelper", () => {
@@ -235,7 +292,7 @@ describe("createWordHelper", () => {
     const received: WordLookupOptions[] = [];
     const lookupWord: LookupWordFn = async (opts) => {
       received.push(opts);
-      return { _id: "w1", text: "got", meaning: "it" };
+      return { _id: "w1", text: "got", type: "nm", meaning: "it" };
     };
     const helper = createWordHelper(lookupWord);
 
@@ -249,7 +306,7 @@ describe("createWordHelper", () => {
 
     const result = await helper.call(null, mockOptions);
     expect(received).toEqual([{ text: "chat", type: "nm", tags: "a&b,c" }]);
-    expect(result).toEqual({ _id: "w1", text: "got", meaning: "it" });
+    expect(result).toEqual({ _id: "w1", text: "got", type: "nm", meaning: "it" });
   });
 
   it("treats empty string options as undefined", async () => {

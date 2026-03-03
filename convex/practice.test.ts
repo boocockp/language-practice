@@ -269,11 +269,12 @@ describe("practiceActions.generateQuestion (action)", () => {
       questionTemplate: string;
       answerTemplate: string;
     },
+    language = "en",
   ): Promise<Id<"questionTypes">> {
     return await t.run(async (ctx) =>
       ctx.db.insert("questionTypes", {
         userId,
-        language: "en",
+        language,
         name: qt.name,
         dataTemplate: qt.dataTemplate,
         questionTemplate: qt.questionTemplate,
@@ -371,5 +372,77 @@ describe("practiceActions.generateQuestion (action)", () => {
       ctx.db.get("questions", result!.questionId),
     );
     expect(question?.wordIds).toEqual([wordId]);
+  });
+
+  it("generates French question with noun helper (definite article)", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    await t.run(async (ctx) =>
+      ctx.db.insert("words", {
+        userId,
+        language: "fr",
+        text: "chat",
+        type: "nm",
+        meaning: "cat",
+      }),
+    );
+    const questionTypeId = await insertQuestionType(
+      userId,
+      {
+        name: "Noun phrase",
+        dataTemplate: 'noun = word text="chat"',
+        questionTemplate: '{{noun word=noun art="def"}}',
+        answerTemplate: "le chat",
+      },
+      "fr",
+    );
+
+    const result = await userSession.action(
+      api.practiceActions.generateQuestion,
+      { questionTypeId, language: "fr" },
+    );
+    expect(result).not.toBeNull();
+    // RosaeNLG/postProcess may capitalize
+    expect(result?.text.toLowerCase()).toBe("le chat");
+    expect(result?.expected.toLowerCase()).toBe("le chat");
+  });
+
+  it("generates French question with verb helper (conjugated)", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    await t.run(async (ctx) => {
+      await ctx.db.insert("words", {
+        userId,
+        language: "fr",
+        text: "chat",
+        type: "nm",
+        meaning: "cat",
+      });
+      await ctx.db.insert("words", {
+        userId,
+        language: "fr",
+        text: "manger",
+        type: "vtr",
+        meaning: "to eat",
+      });
+    });
+    const questionTypeId = await insertQuestionType(
+      userId,
+      {
+        name: "Verb conjugation",
+        dataTemplate: 'noun = word text="chat"\nverb = word text="manger"',
+        questionTemplate:
+          'Le chat ___. Réponse: {{verb word=verb subject=noun tense="PRESENT"}}',
+        answerTemplate: '{{verb word=verb subject=noun tense="PRESENT"}}',
+      },
+      "fr",
+    );
+
+    const result = await userSession.action(
+      api.practiceActions.generateQuestion,
+      { questionTypeId, language: "fr" },
+    );
+    expect(result).not.toBeNull();
+    expect(result?.text).toContain("mange");
+    // RosaeNLG may capitalize
+    expect(result?.expected.toLowerCase()).toBe("mange");
   });
 });
