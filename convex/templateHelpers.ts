@@ -5,8 +5,12 @@ import type Handlebars from "handlebars";
 
 import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
 import FrenchVerbs, { Tense } from 'french-verbs'
+import { LanguageCommonFrench } from "rosaenlg-commons";
+import {filter} from "rosaenlg-filter";
 
 const verbLookup = createVerbLookupProxy(irregularVerbs);
+const langCommon = new LanguageCommonFrench();
+langCommon.init()
 
 /** Map app language to RosaeNLG locale */
 function toNlgLocale(language: string): string {
@@ -19,20 +23,6 @@ function toNlgLocale(language: string): string {
   };
   return map[language] ?? language;
 }
-
-// const nlgCache = new Map<string, NlgLib>();
-
-// function getNlgLib(locale: string): NlgLib {
-//   let nlg = nlgCache.get(locale);
-//   if (!nlg) {
-//     nlg = new NlgLib({ language: locale, renderDebug: false });
-//     if (locale === "fr_FR") {
-//       nlg.verbsManager.setEmbeddedVerbs(createVerbLookupProxy(irregularVerbs));
-//     }
-//     nlgCache.set(locale, nlg);
-//   }
-//   return nlg;
-// }
 
 /** Map WordType to RosaeNLG gender for noun/subject agreement */
 function wordTypeToGender(type: string | undefined): "M" | "F" | "N" {
@@ -107,13 +97,7 @@ function createVerbHelper(locale: string): Handlebars.HelperDelegate {
 }
 
 function createPostProcess(locale: string): (text: string) => string {
-  return text => text;
-  // const nlg = getNlgLib(locale);
-  // return (text: string) => {
-  //   nlg.spy.setPugHtml(text);
-  //   return nlg.getFiltered();
-  //   // return "postProcess " + text;
-  // };
+  return text => filter(text, langCommon, {});
 }
 
 /**
