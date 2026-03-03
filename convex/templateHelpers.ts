@@ -1,9 +1,9 @@
 "use node";
 
 import type Handlebars from "handlebars";
-console.log("In templateHelpers before import");
 import { NlgLib } from "rosaenlg-lib";
-console.log("In templateHelpers after import");
+
+import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
 
 
 /** Map app language to RosaeNLG locale */
@@ -23,9 +23,10 @@ const nlgCache = new Map<string, NlgLib>();
 function getNlgLib(locale: string): NlgLib {
   let nlg = nlgCache.get(locale);
   if (!nlg) {
-    console.log("In templateHelpers creating ", locale);
     nlg = new NlgLib({ language: locale, renderDebug: false });
-    console.log("In templateHelpers created ", locale);
+    if (locale === "fr_FR") {
+      nlg.verbsManager.setEmbeddedVerbs(createVerbLookupProxy(irregularVerbs));
+    }
     nlgCache.set(locale, nlg);
   }
   return nlg;
@@ -48,12 +49,7 @@ function wordTypeToGender(type: string | undefined): "M" | "F" | "N" {
 type WordObj = { text: string; type?: string; meaning?: string } | null;
 
 function createNounHelper(locale: string): Handlebars.HelperDelegate {
-  console.log("In createNounHelper before getNlgLib", locale);
   const nlg = getNlgLib(locale);
-  // return function (this: unknown, options: Handlebars.HelperOptions) {
-  //   console.log("In createNounHelper before getNlgLib", locale);
-  //   return "noun helper " + ((options?.hash as { word?: WordObj })?.word as WordObj)?.text;
-  // }
   return function (this: unknown, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
     const word = hash.word as WordObj;
@@ -63,8 +59,6 @@ function createNounHelper(locale: string): Handlebars.HelperDelegate {
     const adj2 = hash.adj2 as WordObj | undefined;
     const art = hash.art as string | undefined;
     const num = hash.num as string | undefined;
-
-    console.log("In createNounHelper", word.text, num, art, adj?.text, adj2?.text);
 
     const params: Record<string, unknown> = {
       number: num === "P" ? "P" : "S",
@@ -82,7 +76,6 @@ function createNounHelper(locale: string): Handlebars.HelperDelegate {
     if (adjTexts.length > 0) params.adjPos = "AFTER";
 
     nlg.spy.setPugHtml("");
-    console.log("In createNounHelper before valueManager", word.text, params);
     nlg.valueManager.value(word.text, params as never);
     return nlg.getFiltered();
   };
@@ -90,18 +83,12 @@ function createNounHelper(locale: string): Handlebars.HelperDelegate {
 
 function createVerbHelper(locale: string): Handlebars.HelperDelegate {
   const nlg = getNlgLib(locale);
-  // return function (this: unknown, options: Handlebars.HelperOptions) {
-  //   console.log("In createVerbHelper before getNlgLib", locale);
-  //   return "verb helper " + ((options?.hash as { word?: WordObj })?.word as WordObj)?.text;
-  // } 
   return function (this: unknown, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
     const word = hash.word as WordObj;
     const subject = hash.subject as WordObj;
     const tense = hash.tense as string | undefined;
     const num = hash.num as string | undefined;
-
-    console.log("In createVerbHelper", word?.text, subject?.text, tense, num);
 
     if (!word || typeof word.text !== "string") return "";
     if (!subject || typeof subject.text !== "string") return "";
@@ -114,14 +101,12 @@ function createVerbHelper(locale: string): Handlebars.HelperDelegate {
       number,
     );
 
-    console.log("In createVerbHelper before getAgreeVerb", subjectAnon, person, word.text, tense);
     const result = nlg.verbsManager.getAgreeVerb(
       subjectAnon,
       person as "3S" | "3P",
       { verb: word.text, tense: tense as "present" | "past" | "future" },
       {},
     );
-    console.log("In createVerbHelper after getAgreeVerb", result);
     return result;
   };
 }

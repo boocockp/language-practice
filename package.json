@@ -12,7 +12,8 @@
     "test": "vitest",
     "test:once": "vitest run",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:coverage": "vitest run --coverage --coverage.reporter=text"
+    "test:coverage": "vitest run --coverage --coverage.reporter=text",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@auth/core": "^0.37.0",
@@ -47,6 +48,7 @@
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
     "jsdom": "^28.1.0",
+    "patch-package": "^8.0.1",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.48.0",

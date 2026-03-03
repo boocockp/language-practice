@@ -24,4 +24,5 @@
 
 ### Notes
 - This is an SPA: deploy needs a rewrite-to-`index.html` rule for all routes.
+- **French verb conjugation**: We patch `rosaenlg-lib` with patch-package so it does not load the 6MB `french-verbs-lefff` conjugations file. After `npm install`, the `postinstall` script runs `patch-package` to apply `patches/rosaenlg-lib+4.4.0.patch`. Convex uses a rule-based verb lookup (regular rules + irregular dictionary) instead; see `docs/features/Verb conjugation.md`.
 

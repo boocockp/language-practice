@@ -1,0 +1,13 @@
+diff --git a/node_modules/rosaenlg-lib/dist/LanguageFrench.js b/node_modules/rosaenlg-lib/dist/LanguageFrench.js
+index 62de143..b4a882f 100644
+--- a/node_modules/rosaenlg-lib/dist/LanguageFrench.js
++++ b/node_modules/rosaenlg-lib/dist/LanguageFrench.js
+@@ -14,7 +14,7 @@ const french_adjectives_wrapper_1 = require("french-adjectives-wrapper");
+ const french_determiners_1 = require("french-determiners");
+ const french_ordinals_1 = require("french-ordinals");
+ const french_verbs_1 = require("french-verbs");
+-const conjugations_json_1 = __importDefault(require("french-verbs-lefff/dist/conjugations.json"));
++const conjugations_json_1 = { default: {} };
+ const french_words_1 = require("french-words");
+ const words_json_1 = __importDefault(require("french-words-gender-lefff/dist/words.json"));
+ const lefff_helper_1 = require("lefff-helper");

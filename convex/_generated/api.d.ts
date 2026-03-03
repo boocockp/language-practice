@@ -9,6 +9,11 @@
  */
 
 import type * as auth from "../auth.js";
+import type * as frenchConjugation_index from "../frenchConjugation/index.js";
+import type * as frenchConjugation_irregularVerbs from "../frenchConjugation/irregularVerbs.js";
+import type * as frenchConjugation_regularVerbRules from "../frenchConjugation/regularVerbRules.js";
+import type * as frenchConjugation_verbInfo from "../frenchConjugation/verbInfo.js";
+import type * as frenchConjugation_verbLookupProxy from "../frenchConjugation/verbLookupProxy.js";
 import type * as http from "../http.js";
 import type * as practice from "../practice.js";
 import type * as practiceActions from "../practiceActions.js";
@@ -28,6 +33,11 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   auth: typeof auth;
+  "frenchConjugation/index": typeof frenchConjugation_index;
+  "frenchConjugation/irregularVerbs": typeof frenchConjugation_irregularVerbs;
+  "frenchConjugation/regularVerbRules": typeof frenchConjugation_regularVerbRules;
+  "frenchConjugation/verbInfo": typeof frenchConjugation_verbInfo;
+  "frenchConjugation/verbLookupProxy": typeof frenchConjugation_verbLookupProxy;
   http: typeof http;
   practice: typeof practice;
   practiceActions: typeof practiceActions;
