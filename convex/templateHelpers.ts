@@ -1,10 +1,12 @@
 "use node";
 
 import type Handlebars from "handlebars";
-import { NlgLib } from "rosaenlg-lib";
+// import { NlgLib } from "rosaenlg-lib";
 
 import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
+import FrenchVerbs, { Tense } from 'french-verbs'
 
+const verbLookup = createVerbLookupProxy(irregularVerbs);
 
 /** Map app language to RosaeNLG locale */
 function toNlgLocale(language: string): string {
@@ -18,19 +20,19 @@ function toNlgLocale(language: string): string {
   return map[language] ?? language;
 }
 
-const nlgCache = new Map<string, NlgLib>();
+// const nlgCache = new Map<string, NlgLib>();
 
-function getNlgLib(locale: string): NlgLib {
-  let nlg = nlgCache.get(locale);
-  if (!nlg) {
-    nlg = new NlgLib({ language: locale, renderDebug: false });
-    if (locale === "fr_FR") {
-      nlg.verbsManager.setEmbeddedVerbs(createVerbLookupProxy(irregularVerbs));
-    }
-    nlgCache.set(locale, nlg);
-  }
-  return nlg;
-}
+// function getNlgLib(locale: string): NlgLib {
+//   let nlg = nlgCache.get(locale);
+//   if (!nlg) {
+//     nlg = new NlgLib({ language: locale, renderDebug: false });
+//     if (locale === "fr_FR") {
+//       nlg.verbsManager.setEmbeddedVerbs(createVerbLookupProxy(irregularVerbs));
+//     }
+//     nlgCache.set(locale, nlg);
+//   }
+//   return nlg;
+// }
 
 /** Map WordType to RosaeNLG gender for noun/subject agreement */
 function wordTypeToGender(type: string | undefined): "M" | "F" | "N" {
@@ -49,40 +51,43 @@ function wordTypeToGender(type: string | undefined): "M" | "F" | "N" {
 type WordObj = { text: string; type?: string; meaning?: string } | null;
 
 function createNounHelper(locale: string): Handlebars.HelperDelegate {
-  const nlg = getNlgLib(locale);
   return function (this: unknown, options: Handlebars.HelperOptions) {
-    const hash = options.hash ?? {};
-    const word = hash.word as WordObj;
-    if (!word || typeof word.text !== "string") return "";
-
-    const adj = hash.adj as WordObj | undefined;
-    const adj2 = hash.adj2 as WordObj | undefined;
-    const art = hash.art as string | undefined;
-    const num = hash.num as string | undefined;
-
-    const params: Record<string, unknown> = {
-      number: num === "P" ? "P" : "S",
-      gender: wordTypeToGender(word.type),
-    };
-
-    if (art === "def") params.det = "DEFINITE";
-    else if (art === "ind") params.det = "INDEFINITE";
-
-    const adjTexts = [adj?.text, adj2?.text].filter(
-      (t): t is string => typeof t === "string" && t !== "",
-    );
-    if (adjTexts.length === 1) params.adj = adjTexts[0];
-    else if (adjTexts.length > 1) params.adj = adjTexts;
-    if (adjTexts.length > 0) params.adjPos = "AFTER";
-
-    nlg.spy.setPugHtml("");
-    nlg.valueManager.value(word.text, params as never);
-    return nlg.getFiltered();
+    return "noun helper";
   };
+  // const nlg = getNlgLib(locale);
+  // return function (this: unknown, options: Handlebars.HelperOptions) {
+  //   const hash = options.hash ?? {};
+  //   const word = hash.word as WordObj;
+  //   if (!word || typeof word.text !== "string") return "";
+
+  //   const adj = hash.adj as WordObj | undefined;
+  //   const adj2 = hash.adj2 as WordObj | undefined;
+  //   const art = hash.art as string | undefined;
+  //   const num = hash.num as string | undefined;
+
+  //   const params: Record<string, unknown> = {
+  //     number: num === "P" ? "P" : "S",
+  //     gender: wordTypeToGender(word.type),
+  //   };
+
+  //   if (art === "def") params.det = "DEFINITE";
+  //   else if (art === "ind") params.det = "INDEFINITE";
+
+  //   const adjTexts = [adj?.text, adj2?.text].filter(
+  //     (t): t is string => typeof t === "string" && t !== "",
+  //   );
+  //   if (adjTexts.length === 1) params.adj = adjTexts[0];
+  //   else if (adjTexts.length > 1) params.adj = adjTexts;
+  //   if (adjTexts.length > 0) params.adjPos = "AFTER";
+
+  //   nlg.spy.setPugHtml("");
+  //   nlg.valueManager.value(word.text, params as never);
+  //   return nlg.getFiltered();
+  // };
 }
 
 function createVerbHelper(locale: string): Handlebars.HelperDelegate {
-  const nlg = getNlgLib(locale);
+  // const nlg = getNlgLib(locale);
   return function (this: unknown, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
     const word = hash.word as WordObj;
@@ -95,29 +100,20 @@ function createVerbHelper(locale: string): Handlebars.HelperDelegate {
     if (!tense || typeof tense !== "string") return "";
 
     const number = num === "P" ? "P" : "S";
-    const person = number === "P" ? "3P" : "3S";
-    const subjectAnon = nlg.genderNumberManager.getAnonymous(
-      wordTypeToGender(subject.type),
-      number,
-    );
+    const personIndex = number === "P" ? 5 : 2;
 
-    const result = nlg.verbsManager.getAgreeVerb(
-      subjectAnon,
-      person as "3S" | "3P",
-      { verb: word.text, tense: tense as "present" | "past" | "future" },
-      {},
-    );
-    return result;
+    return FrenchVerbs.getConjugation(verbLookup, word.text, tense as Tense, personIndex, {}, false, undefined, undefined, 'Act')
   };
 }
 
 function createPostProcess(locale: string): (text: string) => string {
-  const nlg = getNlgLib(locale);
-  return (text: string) => {
-    nlg.spy.setPugHtml(text);
-    return nlg.getFiltered();
-    // return "postProcess " + text;
-  };
+  return text => text;
+  // const nlg = getNlgLib(locale);
+  // return (text: string) => {
+  //   nlg.spy.setPugHtml(text);
+  //   return nlg.getFiltered();
+  //   // return "postProcess " + text;
+  // };
 }
 
 /**
