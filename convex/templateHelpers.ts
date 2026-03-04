@@ -1,16 +1,19 @@
 "use node";
 
 import type Handlebars from "handlebars";
-// import { NlgLib } from "rosaenlg-lib";
 
+/// <reference path="./rosaenlg-pluralize-fr.d.ts" />
+import { agree } from "french-adjectives";
 import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
-import FrenchVerbs, { Tense } from 'french-verbs'
+import FrenchVerbs from "french-verbs";
+import type { Tense } from "french-verbs";
 import { LanguageCommonFrench } from "rosaenlg-commons";
-import {filter} from "rosaenlg-filter";
+import { filter } from "rosaenlg-filter";
+import pluralizeFr from "rosaenlg-pluralize-fr";
 
 const verbLookup = createVerbLookupProxy(irregularVerbs);
 const langCommon = new LanguageCommonFrench();
-langCommon.init()
+langCommon.init();
 
 /** Map app language to RosaeNLG locale */
 function toNlgLocale(language: string): string {
@@ -38,46 +41,57 @@ function wordTypeToGender(type: string | undefined): "M" | "F" | "N" {
   }
 }
 
-type WordObj = { text: string; type?: string; meaning?: string } | null;
+type GendersMF = "M" | "F";
 
-function createNounHelper(locale: string): Handlebars.HelperDelegate {
-  return function (this: unknown, options: Handlebars.HelperOptions) {
-    return "noun helper";
-  };
-  // const nlg = getNlgLib(locale);
-  // return function (this: unknown, options: Handlebars.HelperOptions) {
-  //   const hash = options.hash ?? {};
-  //   const word = hash.word as WordObj;
-  //   if (!word || typeof word.text !== "string") return "";
-
-  //   const adj = hash.adj as WordObj | undefined;
-  //   const adj2 = hash.adj2 as WordObj | undefined;
-  //   const art = hash.art as string | undefined;
-  //   const num = hash.num as string | undefined;
-
-  //   const params: Record<string, unknown> = {
-  //     number: num === "P" ? "P" : "S",
-  //     gender: wordTypeToGender(word.type),
-  //   };
-
-  //   if (art === "def") params.det = "DEFINITE";
-  //   else if (art === "ind") params.det = "INDEFINITE";
-
-  //   const adjTexts = [adj?.text, adj2?.text].filter(
-  //     (t): t is string => typeof t === "string" && t !== "",
-  //   );
-  //   if (adjTexts.length === 1) params.adj = adjTexts[0];
-  //   else if (adjTexts.length > 1) params.adj = adjTexts;
-  //   if (adjTexts.length > 0) params.adjPos = "AFTER";
-
-  //   nlg.spy.setPugHtml("");
-  //   nlg.valueManager.value(word.text, params as never);
-  //   return nlg.getFiltered();
-  // };
+/** Determiner for French: def → le/la/les, ind → un/une/des, otherwise "". */
+function getDeterminer(
+  gender: GendersMF,
+  number: "S" | "P",
+  art: string | undefined
+): string {
+  if (art === "def") {
+    if (number === "P") return "les";
+    return gender === "F" ? "la" : "le";
+  }
+  if (art === "ind") {
+    if (number === "P") return "des";
+    return gender === "F" ? "une" : "un";
+  }
+  return "";
 }
 
-function createVerbHelper(locale: string): Handlebars.HelperDelegate {
-  // const nlg = getNlgLib(locale);
+type WordObj = { text: string; type?: string; meaning?: string } | null;
+
+function createNounHelper(_locale: string): Handlebars.HelperDelegate {
+  return function (this: unknown, options: Handlebars.HelperOptions) {
+    const hash = options.hash ?? {};
+    const word = hash.word as WordObj;
+    if (!word || typeof word.text !== "string") return "";
+
+    const adj = hash.adj as WordObj | undefined;
+    const adj2 = hash.adj2 as WordObj | undefined;
+    const art = hash.art as string | undefined;
+    const num = hash.num as string | undefined;
+
+    const g = wordTypeToGender(word.type);
+    const gender: GendersMF = g === "N" ? "M" : g;
+    const number = num === "P" ? "P" : "S";
+    const nounText = word.text;
+    const nounForm = number === "P" ? pluralizeFr(nounText) : nounText;
+    const det = getDeterminer(gender, number, art);
+
+    const adjTexts = [adj?.text, adj2?.text].filter(
+      (t): t is string => typeof t === "string" && t !== ""
+    );
+    const agreedAdjs = adjTexts.map((adjText) =>
+      agree(adjText, gender, number, nounText, false, undefined)
+    );
+    const phraseParts = [det, nounForm, ...agreedAdjs].filter(Boolean);
+    return phraseParts.join(" ");
+  };
+}
+
+function createVerbHelper(_locale: string): Handlebars.HelperDelegate {
   return function (this: unknown, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
     const word = hash.word as WordObj;
@@ -96,7 +110,7 @@ function createVerbHelper(locale: string): Handlebars.HelperDelegate {
   };
 }
 
-function createPostProcess(locale: string): (text: string) => string {
+function createPostProcess(_locale: string): (text: string) => string {
   return text => filter(text, langCommon, {});
 }
 
