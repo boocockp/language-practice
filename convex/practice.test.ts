@@ -390,7 +390,7 @@ describe("practiceActions.generateQuestion (action)", () => {
       {
         name: "Noun phrase",
         dataTemplate: 'noun = word text="chat"',
-        questionTemplate: '{{noun word=noun art="def"}}',
+        questionTemplate: '{{noun noun art="def"}}',
         answerTemplate: "le chat",
       },
       "fr",
@@ -430,8 +430,8 @@ describe("practiceActions.generateQuestion (action)", () => {
         name: "Verb conjugation",
         dataTemplate: 'noun = word text="chat"\nverb = word text="manger"',
         questionTemplate:
-          'Le chat ___. Réponse: {{verb word=verb subject=noun tense="PRESENT"}}',
-        answerTemplate: '{{verb word=verb subject=noun tense="PRESENT"}}',
+          'Le chat ___. Réponse: {{verb verb subject=noun tense="PRESENT"}}',
+        answerTemplate: '{{verb verb subject=noun tense="PRESENT"}}',
       },
       "fr",
     );

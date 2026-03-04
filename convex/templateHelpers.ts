@@ -63,9 +63,8 @@ function getDeterminer(
 type WordObj = { text: string; type?: string; meaning?: string } | null;
 
 function createNounHelper(_locale: string): Handlebars.HelperDelegate {
-  return function (this: unknown, options: Handlebars.HelperOptions) {
+  return function (this: unknown, word: WordObj, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
-    const word = hash.word as WordObj;
     if (!word || typeof word.text !== "string") return "";
 
     const adj = hash.adj as WordObj | undefined;
@@ -92,9 +91,8 @@ function createNounHelper(_locale: string): Handlebars.HelperDelegate {
 }
 
 function createVerbHelper(_locale: string): Handlebars.HelperDelegate {
-  return function (this: unknown, options: Handlebars.HelperOptions) {
+  return function (this: unknown, word: WordObj, options: Handlebars.HelperOptions) {
     const hash = options.hash ?? {};
-    const word = hash.word as WordObj;
     const subject = hash.subject as WordObj;
     const tense = hash.tense as string | undefined;
     const num = hash.num as string | undefined;

@@ -26,7 +26,7 @@ describe("getTemplateHelpersForLanguage", () => {
 
     const result = await generateQuestion({
       dataTemplate: 'noun = word text="chat"',
-      questionTemplate: '{{noun word=noun art="def"}}',
+      questionTemplate: '{{noun noun art="def"}}',
       answerTemplate: "le chat",
       initialContext: {},
       lookupWord,
@@ -51,7 +51,7 @@ describe("getTemplateHelpersForLanguage", () => {
 
     const result = await generateQuestion({
       dataTemplate: 'noun = word text="chat"',
-      questionTemplate: '{{noun word=noun art="ind"}}',
+      questionTemplate: '{{noun noun art="ind"}}',
       answerTemplate: "un chat",
       initialContext: {},
       lookupWord,
@@ -76,7 +76,7 @@ describe("getTemplateHelpersForLanguage", () => {
 
     const result = await generateQuestion({
       dataTemplate: 'noun = word text="chat"',
-      questionTemplate: '{{noun word=noun art="def" num="P"}}',
+      questionTemplate: '{{noun noun art="def" num="P"}}',
       answerTemplate: "les chats",
       initialContext: {},
       lookupWord,
@@ -101,7 +101,7 @@ describe("getTemplateHelpersForLanguage", () => {
 
     const result = await generateQuestion({
       dataTemplate: 'noun = word text="chat"',
-      questionTemplate: '{{noun word=noun art="ind" num="P"}}',
+      questionTemplate: '{{noun noun art="ind" num="P"}}',
       answerTemplate: "des chats",
       initialContext: {},
       lookupWord,
@@ -129,7 +129,7 @@ describe("getTemplateHelpersForLanguage", () => {
     const result = await generateQuestion({
       dataTemplate:
         'noun = word text="chat"\nadj = word text="grand"',
-      questionTemplate: '{{noun word=noun adj=adj art="def"}}',
+      questionTemplate: '{{noun noun adj=adj art="def"}}',
       answerTemplate: "le chat grand",
       initialContext: {},
       lookupWord,
@@ -157,7 +157,7 @@ describe("getTemplateHelpersForLanguage", () => {
     const result = await generateQuestion({
       dataTemplate:
         'noun = word text="maison"\nadj = word text="grand"',
-      questionTemplate: '{{noun word=noun adj=adj art="def"}}',
+      questionTemplate: '{{noun noun adj=adj art="def"}}',
       answerTemplate: "la maison grande",
       initialContext: {},
       lookupWord,
@@ -186,8 +186,8 @@ describe("getTemplateHelpersForLanguage", () => {
     const result = await generateQuestion({
       dataTemplate: 'noun = word text="chat"\nverb = word text="manger"',
       questionTemplate:
-        'Le chat ___. Réponse: {{verb word=verb subject=noun tense="PRESENT"}}',
-      answerTemplate: '{{verb word=verb subject=noun tense="PRESENT"}}',
+        'Le chat ___. Réponse: {{verb verb subject=noun tense="PRESENT"}}',
+      answerTemplate: '{{verb verb subject=noun tense="PRESENT"}}',
       initialContext: {},
       lookupWord,
       language: "fr",

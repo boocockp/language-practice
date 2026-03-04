@@ -234,15 +234,15 @@ describe("questionGeneration.generateQuestion", () => {
     const verbCalls: unknown[] = [];
 
     const templateHelpers: Record<string, Handlebars.HelperDelegate> = {
-      noun: (options: Handlebars.HelperOptions) => {
-        nounCalls.push(options.hash);
-        const word = options.hash?.word as { text?: string } | undefined;
-        return word?.text ? `[noun:${word.text}]` : "";
+      noun: (word: unknown, options: Handlebars.HelperOptions) => {
+        nounCalls.push({ word, ...options.hash });
+        const w = word as { text?: string } | null;
+        return w?.text ? `[noun:${w.text}]` : "";
       },
-      verb: (options: Handlebars.HelperOptions) => {
-        verbCalls.push(options.hash);
-        const word = options.hash?.word as { text?: string } | undefined;
-        return word?.text ? `[verb:${word.text}]` : "";
+      verb: (word: unknown, options: Handlebars.HelperOptions) => {
+        verbCalls.push({ word, ...options.hash });
+        const w = word as { text?: string } | null;
+        return w?.text ? `[verb:${w.text}]` : "";
       },
     };
 
@@ -252,8 +252,8 @@ describe("questionGeneration.generateQuestion", () => {
     const result = await generateQuestion(
       defaultParams({
         dataTemplate: 'foo = lookup this "foo"\nbar = lookup this "bar"',
-        questionTemplate: "{{noun word=foo}}",
-        answerTemplate: '{{verb word=bar subject=foo tense="PRESENT"}}',
+        questionTemplate: "{{noun foo}}",
+        answerTemplate: '{{verb bar subject=foo tense="PRESENT"}}',
         initialContext: { foo, bar },
         templateHelpers,
       }),
