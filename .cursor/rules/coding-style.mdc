@@ -1,0 +1,23 @@
+---
+description: Coding style conventions for frontend and backend
+globs: src/**/*.{ts,tsx}, convex/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Coding style conventions
+
+- Prefer functional coding style.
+- Use map, find, filter, reduce, some, every, concat, slice, splice instead of for loops
+- Use native functions of arrays, Map and Set where they exist
+- Use es-toolkit functions where no native function exists
+- Use optional chaining and nullish coalescing where appropriate
+- Use template literals for string concatenation
+- Use arrow functions for callbacks
+- Use arrow functions instead of function() {...} style
+- Use destructuring for object and array properties
+- Use spread operator for array and object concatenation
+- Use rest parameters for function arguments
+- Use default parameters for function arguments
+- Use type annotations for function arguments and return values
+- Use type assertions for type conversion
+- Use type guards for type checking
