@@ -24,6 +24,7 @@
     "convex": "^1.31.7",
     "es-toolkit": "^1.45.0",
     "handlebars": "^4.7.8",
+    "handlebars-async-helpers": "^1.0.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.13.0",

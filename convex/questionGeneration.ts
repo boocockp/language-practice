@@ -170,7 +170,6 @@ export async function generateQuestion(
     }
   }
 
-  // console.log("data", data);
   try {
     return runQuestionAnswerStep(questionTemplate, answerTemplate, data, {
       templateHelpers,

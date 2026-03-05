@@ -4,13 +4,14 @@ User Feature: Auto Translation
 Overview
 --------
 
-When defining a Question Type, the user can ask for either the Question, Answer or both to be translated into the user's own language.
+When defining a Question Type, the user can use a translation of either the Question or the Answer, into the user's own language, in the other template.
 This will enable questions that ask the user to translate sentences to or from the target language.
 Translation is done by an API call to a translation service, which will be Libretranslate initially, but may change in the future
 
 Requirements
 ------------
 
+- Two new helpers: translateQuestion and translateAnswer (no arguments)
 - Question Type has two extra boolean fields: Translate Question and Translate Answer.
 - Show these on the UI as checkboxes below the Question Template and Answer Template fields respectively
 - The Question Template and Answer Template are always written in the Question language
@@ -26,3 +27,11 @@ Technical Notes
 - Use the translate wrapper library described here: https://github.com/franciscop/translate
 - Use environment variables for the libretranslate url and the api key
 
+Examples
+--------
+
+### Translate into own language
+
+Question: What does {{}}
+
+### Translate into own language

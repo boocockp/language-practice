@@ -26,7 +26,6 @@ export const generateQuestion = action({
     }),
   ),
   handler: async (ctx, args) => {
-    console.log("In generateQuestion", args);
     const authData = await ctx.runQuery(
       internal.practiceInternal.getAuthAndQuestionType,
       {
