@@ -1,10 +1,23 @@
+"use node";
+
 /**
  * Question generation from Handlebars templates.
- * Data step: dataTemplate + storeData + word helper → data dict
+ * Data step: dataTemplate + storeData + word helper → data dict (line-by-line, accumulating context)
  * Question/answer step: questionTemplate, answerTemplate + data → { text, expected }
+ * Uses handlebars-async-helpers so all template execution is async and one Handlebars instance is shared.
  */
 
 import Handlebars from "handlebars";
+
+/** Wrapped Handlebars instance from handlebars-async-helpers; compile returns a Promise-returning template. */
+type AsyncHandlebars = Omit<typeof Handlebars, "compile"> & {
+  compile: (template: string) => (context: unknown) => Promise<string>;
+};
+
+async function getAsyncHandlebars(): Promise<(hbs: typeof Handlebars) => AsyncHandlebars> {
+  const mod = await import("handlebars-async-helpers");
+  return (mod.default ?? mod) as (hbs: typeof Handlebars) => AsyncHandlebars;
+}
 
 export type WordLookupOptions = {
   text?: string;
@@ -23,7 +36,7 @@ export type LookupWordFn = (
 
 /**
  * Create the Handlebars word helper that passes hash options to lookupWord.
- * Used in the data step for question generation.
+ * Used in the data step for question generation. Returns a Promise; callers must await.
  */
 export function createWordHelper(lookupWord: LookupWordFn) {
   return function (this: unknown, options: Handlebars.HelperOptions) {
@@ -57,86 +70,76 @@ export interface GenerateQuestionResult {
   expected: string;
 }
 
-/**
- * Transform dataTemplate lines "<name> = <data-expression>" into
- * "{{{storeData '<name>' ( <data-expression>)}}}"
- */
-function transformDataTemplate(dataTemplate: string): string {
-  return dataTemplate
-    .split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
-      if (trimmed === "") return "";
-      const eqIndex = trimmed.indexOf("=");
-      if (eqIndex === -1) return line;
-      const name = trimmed.slice(0, eqIndex).trim();
-      const expr = trimmed.slice(eqIndex + 1).trim();
-      if (!name || !expr) return line;
-      return `{{{storeData "${name}" (${expr})}}}`;
-    })
-    .join("\n");
+/** Parsed line: name = data-expression (only for lines that match that pattern) */
+function parseDataTemplateLines(
+  dataTemplate: string,
+): Array<{ name: string; expr: string }> {
+  const lines: Array<{ name: string; expr: string }> = [];
+  for (const line of dataTemplate.split("\n")) {
+    const trimmed = line.trim();
+    if (trimmed === "") continue;
+    const eqIndex = trimmed.indexOf("=");
+    if (eqIndex === -1) continue;
+    const name = trimmed.slice(0, eqIndex).trim();
+    const expr = trimmed.slice(eqIndex + 1).trim();
+    if (!name || !expr) continue;
+    lines.push({ name, expr });
+  }
+  return lines;
 }
 
 /**
- * Run the data step: execute dataTemplate with storeData and word helpers,
- * return the collected data dictionary.
+ * Run the data step: execute dataTemplate line-by-line with accumulating context.
+ * Each line either evaluates expr as a template (if expr contains "{{") or uses storeData(expr).
+ * The same context is passed to each line so earlier values can be used in later lines.
  */
 async function runDataStep(
+  hb: AsyncHandlebars,
   dataTemplate: string,
   initialContext: Record<string, unknown>,
-  lookupWord: LookupWordFn,
 ): Promise<Record<string, unknown>> {
-  const data: Record<string, unknown> = {};
-  const storeData = async (key: string, value: unknown) => {
-    data[key] = value;
-  };
-  const handlebars = Handlebars.create();
-  handlebars.registerHelper("storeData", storeData);
-  handlebars.registerHelper("word", createWordHelper(lookupWord));
-  const transformed = transformDataTemplate(dataTemplate);
-  const template = handlebars.compile(transformed);
-  template(initialContext, { helpers: { storeData } } as Handlebars.RuntimeOptions);
-  await Promise.all(Object.entries(data).map(async ([key, value]) => {
-    if (value instanceof Promise) {
-      data[key] = await value;
-      }
-    }),
-  );
-  return data;
+  const context: Record<string, unknown> = { ...initialContext };
+  const lines = parseDataTemplateLines(dataTemplate);
+
+  for (const { name, expr } of lines) {
+    if (expr.includes("{{")) {
+      const template = hb.compile(expr);
+      const result = await template(context);
+      context[name] = result;
+    } else {
+      const storeDataLine = `{{{storeData "${name}" (${expr})}}}`;
+      const template = hb.compile(storeDataLine);
+      await template(context);
+    }
+  }
+  return context;
 }
 
 /**
- * Run the question/answer step: compile templates and render with data.
- * Registers templateHelpers when provided. Applies postProcess to output when provided.
+ * Run the question/answer step: compile and run templates with the shared Handlebars instance.
+ * Applies postProcess to output when provided.
  */
-function runQuestionAnswerStep(
+async function runQuestionAnswerStep(
+  hb: AsyncHandlebars,
   questionTemplate: string,
   answerTemplate: string,
   data: Record<string, unknown>,
-  options?: {
-    templateHelpers?: Record<string, Handlebars.HelperDelegate>;
-    postProcess?: (text: string) => string;
-  },
-): { text: string; expected: string } {
-  const handlebars = Handlebars.create();
-  if (options?.templateHelpers) {
-    for (const [name, fn] of Object.entries(options.templateHelpers)) {
-      handlebars.registerHelper(name, fn);
-    }
-  }
-  const qTemplate = handlebars.compile(questionTemplate);
-  const aTemplate = handlebars.compile(answerTemplate);
-  let text = qTemplate(data);
-  let expected = aTemplate(data);
-  if (options?.postProcess) {
-    text = options.postProcess(text);
-    expected = options.postProcess(expected);
+  postProcess?: (text: string) => string,
+): Promise<{ text: string; expected: string }> {
+  const qTemplate = hb.compile(questionTemplate);
+  const aTemplate = hb.compile(answerTemplate);
+  let text = await qTemplate(data);
+  let expected = await aTemplate(data);
+  if (postProcess) {
+    text = postProcess(text);
+    expected = postProcess(expected);
   }
   return { text, expected };
 }
 
 /**
  * Generate question text and expected answer from a question type.
+ * Uses a single async Handlebars instance for data and question/answer steps.
  * @throws Error on template compile or runtime errors
  */
 export async function generateQuestion(
@@ -152,17 +155,31 @@ export async function generateQuestion(
     postProcess,
   } = params;
 
+  const hb = (await getAsyncHandlebars())(Handlebars);
+
+  const storeData = async function (
+    this: Record<string, unknown>,
+    key: string,
+    value: unknown,
+  ) {
+    const resolved = await Promise.resolve(value);
+    this[key] = resolved;
+  };
+  hb.registerHelper("storeData", storeData);
+  hb.registerHelper("word", createWordHelper(lookupWord));
+  if (templateHelpers) {
+    for (const [name, fn] of Object.entries(templateHelpers)) {
+      hb.registerHelper(name, fn);
+    }
+  }
+
   let data: Record<string, unknown>;
   const dataTemplateTrimmed = dataTemplate.trim();
   if (dataTemplateTrimmed === "") {
     data = {};
   } else {
     try {
-      data = await runDataStep(
-        dataTemplate,
-        initialContext,
-        lookupWord,
-      );
+      data = await runDataStep(hb, dataTemplate, initialContext);
     } catch (err) {
       throw new Error(
         `Data template error: ${err instanceof Error ? err.message : String(err)}`,
@@ -171,10 +188,13 @@ export async function generateQuestion(
   }
 
   try {
-    return runQuestionAnswerStep(questionTemplate, answerTemplate, data, {
-      templateHelpers,
+    return await runQuestionAnswerStep(
+      hb,
+      questionTemplate,
+      answerTemplate,
+      data,
       postProcess,
-    });
+    );
   } catch (err) {
     throw new Error(
       `Question/answer template error: ${err instanceof Error ? err.message : String(err)}`,

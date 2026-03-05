@@ -43,26 +43,18 @@ Requirements - Stage 1
 
 #### Generating data for the question
 - The dataTemplate format expects multiple lines, each with the format <name> = <data-expression>
-- We use Handlebars in an unusual way to create the question data, but this allows the user to use one syntax for both the data generation and the question/answer templates
-- From the dataTemplate, create a template where each line is of the format `{{storeData "<name>" ( <data-expression>)}}`
-- Create an isolated Handlebars instance using Handlebars.create
-- Register a storeData helper which has arguments name, value.  It awaits value (which may be a promise), then stores it in a dictionary object with the key name.  The dictionary object is used to collect the data values for the next step, Generate question and answer
-- Also register a set of helpers that the user can call in <data-expression>.  The only one at this stage is `word`, which:
-    - takes one named argument, called `text`
-    - It selects the first word in the database for the current user and language which has `text` equal to the argument
-    - It returns an object with properties `text` and `meaning` from the database record
-- Call Handlebars.compile, then Handlebars.template with the compiled template, ignore the result
+- A single async Handlebars instance (using handlebars-async-helpers) is used for both the data step and the question/answer step. All helpers (e.g. storeData, word, noun, verb) are registered on this instance and are available in every template.
+- The data step runs line by line. The same context object is used for each line in turn, so values stored on earlier lines can be used in later lines.
+- A data-expression is processed in one of two ways:
+  - If it contains a pair of left braces `{{` anywhere, it is treated as a Handlebars template: the expression is compiled and run with the current context, and the resulting string is stored under the associated name.
+  - If it contains no braces, it is wrapped in a storeData expression: `{{{storeData "<name>" ( <data-expression>)}}}`. The storeData helper awaits the value (which may be a promise from e.g. the word helper), then stores it in the context under the given name.
+- Only lines that match `<name> = <data-expression>` are processed; blank lines and malformed lines are skipped.
+- Each template execution is awaited so async helpers (e.g. word) work correctly as subexpressions.
 
 #### Generate question and answer
-- Create an isolated Handlebars instance using Handlebars.create
-- Compile the questionTemplate and answerTemplate
-- Call Handlebars.template with each one, passing the data from the previous step
-- On this call Handlebars
-- Add a custom helper function called `word`
-- The `word` helper:
-    - takes one named argument, called `text`
-    - It selects the first word in the database for the current user and language which has `text` equal to the argument
-    - It returns an object with properties `text` and `meaning` from the database record
+- The same Handlebars instance from the data step is used. Compile the questionTemplate and answerTemplate, then await each template with the data from the data step.
+- The data is the accumulated context produced by the data step (so all stored names are available).
+- Language-specific helpers (e.g. noun, verb) and post-process for contractions/elisions are applied when configured for the question language.
 
 Notes
 -----
@@ -72,9 +64,10 @@ Notes
 Implementation notes – Stage 1
 ------------------------------
 
-- **dataTemplate**: Each line `<name> = <data-expression>` is transformed to `{{{storeData "<name>" ( <data-expression>)}}}`. The `storeData` helper awaits the value (which may be a Promise) and stores it in a dictionary. Empty dataTemplate passes `{}` to the question/answer step.
-- **word helper** (data step only): Named arg `text`. Looks up the first word for the current user and language with that `text`, returns `{ text, meaning }` or null. Async; used only in the data step.
-- **Question/answer step**: No `word` helper (async would not work). Templates use only the stored data from the data step (e.g. `{{word.text}}`, `{{word.meaning}}`).
+- **dataTemplate**: Lines `<name> = <data-expression>` are processed line by line. If the expression contains `{{`, it is compiled and run as a template and the string result is stored under `name` in the context. Otherwise the line is rendered as `{{{storeData "<name>" ( <data-expression>)}}}` and the storeData helper (which awaits the value) stores the result in the same context. The same context is passed to each line so earlier values can be used in later lines. Empty dataTemplate passes `{}` to the question/answer step.
+- **Async Handlebars**: One Handlebars instance is created via handlebars-async-helpers and used for both the data step and the question/answer step. All helpers (storeData, word, and when configured noun/verb etc.) are registered on this instance. Template execution is awaited.
+- **word helper**: Named arg `text` (and later `type`, `tags`). Looks up a word for the current user and language; returns `{ _id, text, type, meaning }` or null. Available in the data template (and in question/answer templates via the stored data).
+- **Question/answer step**: Uses the same Handlebars instance and the accumulated data (context) from the data step. No separate `word` helper is needed in the template at render time—templates use the stored data (e.g. `{{word.text}}`, `{{word.meaning}}`).
 
 Requirements - Stage 2 - Random Word selection by properties
 ----------------------
@@ -120,9 +113,9 @@ Implementation notes – Stage 2a
 Template helpers (noun, verb)
 -----------------------------
 
-- **noun** and **verb** helpers are available in question and answer templates (not in the data template) when the question language is French.
-- Implemented as RosaeNLG wrappers in `practiceActions`; the full rendered output is post-processed for contractions/elisions.
-- Word results from the data step now include `type` for gender agreement. See `docs/features/Template Helpers.md`.
+- **noun** and **verb** helpers are available in the data template, question template, and answer template when the question language is French (same Handlebars instance and helpers for all steps).
+- Implemented in `convex/templateHelpers.ts`; the full rendered output is post-processed for contractions/elisions.
+- Word results from the data step include `type` for gender agreement. See `docs/features/Template Helpers.md`.
 
 Requirements - Stage 2a - Store words used in questions
 ----------------------

@@ -7,6 +7,8 @@ The sections affected are 'Generating data for the question' and 'Generate quest
 It reverses an earlier decision and introduces the handlebars-async-helpers package.  
 This will make the data and question/answer templates easier for users to write, and also allow more capabilities.
 
+**Implemented.** See Practice Questions.md for the current behaviour (single async Handlebars instance, line-by-line data step, data-expression as template or storeData).
+
 ## Requirements
 
 - Wrap Handlebars instances in an asyncHelpers - see docs for handlebars-async-helpers

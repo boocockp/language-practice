@@ -12,7 +12,7 @@ Requirements
 - All helpers used in the templates have a different implementation depending on the language of the question
 - At this stage, only implement the helpers for a question language of French
 - The final result of the handlebars template must be processed to contractions and/or elisions in the target language
-- These helpers are only available in the question and answer templates, not in the data template
+- These helpers are available in the data template, question template, and answer template (one Handlebars instance is used for all steps, with all helpers registered).
 
 Initial helpers
 ---------------
@@ -55,7 +55,7 @@ Implementation notes
 
 - **Approach**: The **verb** helper uses `french-verbs` with a rule-based conjugation proxy (see docs/features/Verb conjugation.md). The **noun** helper uses `rosaenlg-pluralize-fr`, `french-adjectives`, and the word's type (nm/nf/nmf) for gender; no NlgLib. Post-process uses `rosaenlg-filter` for French contractions and elisions.
 - **French only** for this stage. Helpers and post-process are registered only when the question language is French (`fr` → `fr_FR`).
-- **Where**: Helpers are implemented in `convex/templateHelpers.ts`; `practiceActions.generateQuestion` registers them for the question/answer template step (not the data step).
+- **Where**: Helpers are implemented in `convex/templateHelpers.ts`; `practiceActions.generateQuestion` registers them on the single async Handlebars instance used for both the data step and the question/answer step, so they are available in data, question, and answer templates.
 - **Post-process**: The full rendered question and answer text are passed through the filter for French contractions and elisions (e.g. "la aile" → "l'aile").
 - **Word type to gender**: `nm` → M, `nf` → F, `nmf` → M for noun/subject agreement.
 - **Supported French tenses**: PRESENT, FUTUR, IMPARFAIT, PASSE_SIMPLE, PASSE_COMPOSE, PLUS_QUE_PARFAIT, CONDITIONNEL_PRESENT, SUBJONCTIF_PRESENT, IMPERATIF_PRESENT, INFINITIF, PARTICIPE_PRESENT, PARTICIPE_PASSE, etc. See https://rosaenlg.org/rosaenlg/4.4.0/mixins_ref/verbs_french.html

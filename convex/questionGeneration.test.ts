@@ -285,6 +285,48 @@ describe("questionGeneration.generateQuestion", () => {
       expected: "[processed:raw answer]",
     });
   });
+
+  it("context accumulation: later line can use earlier line value", async () => {
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'a = lookup this "first"\nb = {{a}}',
+        questionTemplate: "{{a}}-{{b}}",
+        answerTemplate: "{{b}}",
+        initialContext: { first: "A" },
+      }),
+    );
+    expect(result).toEqual({ text: "A-A", expected: "A" });
+  });
+
+  it("data-expression containing {{ is evaluated as template and stored", async () => {
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: 'x = {{lookup this "key"}}',
+        questionTemplate: "{{x}}",
+        answerTemplate: "{{x}}",
+        initialContext: { key: "hello" },
+      }),
+    );
+    expect(result).toEqual({ text: "hello", expected: "hello" });
+  });
+
+  it("async helper as subexpression: storeData awaits word result", async () => {
+    const lookupWord: LookupWordFn = async (opts) =>
+      opts.text === "dog"
+        ? { _id: "w1", text: "dog", type: "nm", meaning: "chien" }
+        : null;
+
+    const result = await generateQuestion(
+      defaultParams({
+        dataTemplate: "w = word text=wordText",
+        questionTemplate: "{{w.text}}",
+        answerTemplate: "{{w.meaning}}",
+        initialContext: { wordText: "dog" },
+        lookupWord,
+      }),
+    );
+    expect(result).toEqual({ text: "dog", expected: "chien" });
+  });
 });
 
 describe("createWordHelper", () => {

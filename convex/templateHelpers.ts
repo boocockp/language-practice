@@ -62,20 +62,26 @@ function getDeterminer(
 
 type WordObj = { text: string; type?: string; meaning?: string } | null;
 
+/** Await a value that may be a Promise (for async subexpressions). */
+async function resolveArg<T>(v: T | Promise<T>): Promise<T> {
+  return Promise.resolve(v) as Promise<T>;
+}
+
 function createNounHelper(_locale: string): Handlebars.HelperDelegate {
-  return function (this: unknown, word: WordObj, options: Handlebars.HelperOptions) {
+  return async function (this: unknown, word: unknown, options: Handlebars.HelperOptions) {
+    const w = await resolveArg(word) as WordObj;
     const hash = options.hash ?? {};
-    if (!word || typeof word.text !== "string") return "";
+    const adj = await resolveArg(hash.adj) as WordObj | undefined;
+    const adj2 = await resolveArg(hash.adj2) as WordObj | undefined;
+    const art = await resolveArg(hash.art) as string | undefined;
+    const num = await resolveArg(hash.num) as string | undefined;
 
-    const adj = hash.adj as WordObj | undefined;
-    const adj2 = hash.adj2 as WordObj | undefined;
-    const art = hash.art as string | undefined;
-    const num = hash.num as string | undefined;
+    if (!w || typeof w.text !== "string") return "";
 
-    const g = wordTypeToGender(word.type);
+    const g = wordTypeToGender(w.type);
     const gender: GendersMF = g === "N" ? "M" : g;
     const number = num === "P" ? "P" : "S";
-    const nounText = word.text;
+    const nounText = w.text;
     const nounForm = number === "P" ? pluralizeFr(nounText) : nounText;
     const det = getDeterminer(gender, number, art);
 
@@ -91,20 +97,21 @@ function createNounHelper(_locale: string): Handlebars.HelperDelegate {
 }
 
 function createVerbHelper(_locale: string): Handlebars.HelperDelegate {
-  return function (this: unknown, word: WordObj, options: Handlebars.HelperOptions) {
+  return async function (this: unknown, word: unknown, options: Handlebars.HelperOptions) {
+    const w = await resolveArg(word) as WordObj;
     const hash = options.hash ?? {};
-    const subject = hash.subject as WordObj;
-    const tense = hash.tense as string | undefined;
-    const num = hash.num as string | undefined;
+    const subject = await resolveArg(hash.subject) as WordObj;
+    const tense = await resolveArg(hash.tense) as string | undefined;
+    const num = await resolveArg(hash.num) as string | undefined;
 
-    if (!word || typeof word.text !== "string") return "";
+    if (!w || typeof w.text !== "string") return "";
     if (!subject || typeof subject.text !== "string") return "";
     if (!tense || typeof tense !== "string") return "";
 
     const number = num === "P" ? "P" : "S";
     const personIndex = number === "P" ? 5 : 2;
 
-    return FrenchVerbs.getConjugation(verbLookup, word.text, tense as Tense, personIndex, {}, false, undefined, undefined, 'Act')
+    return FrenchVerbs.getConjugation(verbLookup, w.text, tense as Tense, personIndex, {}, false, undefined, undefined, 'Act')
   };
 }
 
