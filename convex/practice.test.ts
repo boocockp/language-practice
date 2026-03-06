@@ -406,6 +406,24 @@ describe("practiceActions.generateQuestion (action)", () => {
     expect(result?.expected.toLowerCase()).toBe("le chat");
   });
 
+  it("accepts optional userLanguage and succeeds (translate helper registered when provided)", async () => {
+    const { userId, userSession } = await createUserAndSession(t);
+    const questionTypeId = await insertQuestionType(userId, {
+      name: "QT",
+      dataTemplate: "",
+      questionTemplate: "Translate this: hello",
+      answerTemplate: "bonjour",
+    });
+
+    const result = await userSession.action(
+      api.practiceActions.generateQuestion,
+      { questionTypeId, language: "en", userLanguage: "fr" },
+    );
+    expect(result).not.toBeNull();
+    expect(result?.text).toBe("Translate this: hello");
+    expect(result?.expected).toBe("bonjour");
+  });
+
   it("generates French question with verb helper (conjugated)", async () => {
     const { userId, userSession } = await createUserAndSession(t);
     await t.run(async (ctx) => {

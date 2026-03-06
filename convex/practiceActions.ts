@@ -8,7 +8,8 @@ import {
   generateQuestion as runQuestionGeneration,
   type WordLookupOptions,
 } from "./questionGeneration";
-import { getTemplateHelpersForLanguage } from "./templateHelpers";
+import { createTranslator } from "./translation";
+import { createTranslateHelper, getTemplateHelpersForLanguage } from "./templateHelpers";
 
 import type { Id } from "./_generated/dataModel";
 
@@ -16,6 +17,7 @@ export const generateQuestion = action({
   args: {
     questionTypeId: v.id("questionTypes"),
     language: v.string(),
+    userLanguage: v.optional(v.string()),
   },
   returns: v.union(
     v.null(),
@@ -54,8 +56,25 @@ export const generateQuestion = action({
       return result;
     };
 
-    const { templateHelpers, postProcess } =
+    const { templateHelpers: baseHelpers, postProcess } =
       getTemplateHelpersForLanguage(args.language);
+
+    let templateHelpers = baseHelpers;
+    if (args.userLanguage !== undefined && args.userLanguage !== "") {
+      const translator = createTranslator({
+        url: process.env.LIBRETRANSLATE_URL,
+        apiKey: process.env.LIBRETRANSLATE_API_KEY,
+      });
+      const translateHelper = createTranslateHelper(
+        args.language,
+        args.userLanguage,
+        translator,
+      );
+      templateHelpers = {
+        ...(baseHelpers ?? {}),
+        translate: translateHelper,
+      };
+    }
 
     let result: { text: string; expected: string };
     try {

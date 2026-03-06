@@ -4,20 +4,23 @@ User Feature: Auto Translation
 Overview
 --------
 
-When defining a Question Type, the user can use a translation of either the Question or the Answer, into the user's own language, in the other template.
+In Question Type templates, the user can use a helper that translates a given text into the user's own language.
 This will enable questions that ask the user to translate sentences to or from the target language.
 Translation is done by an API call to a translation service, which will be Libretranslate initially, but may change in the future
 
 Requirements
 ------------
 
-- Two new helpers: translateQuestion and translateAnswer (no arguments)
-- Question Type has two extra boolean fields: Translate Question and Translate Answer.
-- Show these on the UI as checkboxes below the Question Template and Answer Template fields respectively
-- The Question Template and Answer Template are always written in the Question language
-- When a Question is generated, after generating the text and expected, call the translation service for either of the two fields if they are marked as to be translated
+- New helper: translate <text>
 - The translation is from the language of the Question Type into the user's language
-- Get the user's language from the language of the browser
+- Get the user's language from the language of the browser (We may introduce a user profile with preferred language later)
+
+Implementation
+--------------
+
+- **Helper**: `{{translate someText}}` in data, question, or answer templates. One positional argument (the text to translate).
+- **Direction**: From the question type language (e.g. French) into the user's language. User language is taken from `navigator.language` on the client and passed as `userLanguage` when generating a question.
+- **Registration**: The translate helper is only registered when the client passes a non-empty `userLanguage` to the generate-question action. If a template uses `{{translate ...}}` and `userLanguage` is not provided, question generation will fail (helper not registered).
 
 Technical Notes
 ---------------
@@ -27,11 +30,12 @@ Technical Notes
 - Use the translate wrapper library described here: https://github.com/franciscop/translate
 - Use environment variables for the libretranslate url and the api key
 
-Examples
---------
+**Convex environment variables** (set in Convex dashboard or via `npx convex env set`):
 
-### Translate into own language
+- `LIBRETRANSLATE_URL` (optional): LibreTranslate API base URL. Default: `https://libretranslate.com`. Use this for a self-hosted instance.
+- `LIBRETRANSLATE_API_KEY` (optional): API key for the LibreTranslate service (required by some public or self-hosted instances).
 
-Question: What does {{}}
+**Code locations**:
 
-### Translate into own language
+- `convex/translation.ts`: Self-contained translation module; `createTranslator(config?)` returns a function `(text, from, to) => Promise<string>`. Uses the `translate` npm package with engine `libre`.
+- `convex/templateHelpers.ts`: `createTranslateHelper(fromLang, toLang, translateFn)` creates the Handlebars helper. The action in `convex/practiceActions.ts` merges this helper into template helpers when `userLanguage` is provided.

@@ -67,6 +67,31 @@ async function resolveArg<T>(v: T | Promise<T>): Promise<T> {
   return Promise.resolve(v) as Promise<T>;
 }
 
+export type TranslateFn = (
+  text: string,
+  from: string,
+  to: string,
+) => Promise<string>;
+
+/**
+ * Creates the Handlebars translate helper: {{translate someText}}
+ * Translates text from fromLang (question type language) to toLang (user language).
+ * Resolves someText if it is a Promise; if fromLang === toLang returns text unchanged.
+ */
+export function createTranslateHelper(
+  fromLang: string,
+  toLang: string,
+  translateFn: TranslateFn,
+): Handlebars.HelperDelegate {
+  return async function (this: unknown, text: unknown) {
+    const resolved = await resolveArg(text);
+    if (resolved === undefined || resolved === null) return "";
+    const str = typeof resolved === "string" ? resolved.trim() : String(resolved).trim();
+    if (str === "" || fromLang === toLang) return typeof resolved === "string" ? resolved : String(resolved);
+    return translateFn(str, fromLang, toLang);
+  };
+}
+
 function createNounHelper(_locale: string): Handlebars.HelperDelegate {
   return async function (this: unknown, word: unknown, options: Handlebars.HelperOptions) {
     const w = await resolveArg(word) as WordObj;

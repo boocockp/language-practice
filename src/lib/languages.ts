@@ -41,3 +41,14 @@ export function getLanguageFlag(code: string): string {
 export function isSupportedLanguage(code: string): code is (typeof LANGUAGES)[number]["code"] {
   return LANGUAGE_MAP.has(code);
 }
+
+/**
+ * Returns a 2-letter language code suitable for the translate API.
+ * Uses navigator.language when available (browser); falls back to "en" for SSR or unknown.
+ * Normalizes locale forms like "en-US" to "en". Any 2-letter code is passed through for the API.
+ */
+export function getBrowserLanguageCode(): string {
+  if (typeof navigator === "undefined" || !navigator.language) return "en";
+  const code = navigator.language.slice(0, 2).toLowerCase();
+  return code || "en";
+}

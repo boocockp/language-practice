@@ -21,6 +21,7 @@ import type * as practiceInternal from "../practiceInternal.js";
 import type * as questionGeneration from "../questionGeneration.js";
 import type * as questionTypes from "../questionTypes.js";
 import type * as templateHelpers from "../templateHelpers.js";
+import type * as translation from "../translation.js";
 import type * as users from "../users.js";
 import type * as wordTypes from "../wordTypes.js";
 import type * as words from "../words.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   questionGeneration: typeof questionGeneration;
   questionTypes: typeof questionTypes;
   templateHelpers: typeof templateHelpers;
+  translation: typeof translation;
   users: typeof users;
   wordTypes: typeof wordTypes;
   words: typeof words;

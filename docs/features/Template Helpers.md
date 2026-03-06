@@ -50,6 +50,14 @@ Description:
 
 Return a conjugated verb using `word`, for the third person and number given, in the tense given, agreeing with the subject if necessary.
 
+### translate
+
+See **docs/features/Auto Translation.md** for full details.
+
+- **Usage**: `{{translate someText}}` — one positional argument (the text to translate).
+- **Direction**: From the question type language into the user's language (from the browser: `navigator.language`).
+- **Availability**: The translate helper is only registered when the client passes `userLanguage` to the generate-question action. Implemented in `convex/templateHelpers.ts` via `createTranslateHelper`; translation is done by `convex/translation.ts` using the LibreTranslate API.
+
 Implementation notes
 --------------------
 

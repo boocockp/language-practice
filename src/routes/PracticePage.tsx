@@ -7,6 +7,7 @@ import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { useAuth } from "../contexts/AuthContext";
 import { useCurrentLanguage } from "../contexts/CurrentLanguageContext";
+import { getBrowserLanguageCode } from "../lib/languages";
 
 const BORDERED_BLOCK =
   "border border-slate-200 rounded-lg p-3 min-h-[2.5rem] bg-slate-50";
@@ -48,6 +49,7 @@ export function PracticePage() {
       const result = await generateQuestion({
         questionTypeId: selectedQuestionTypeId,
         language,
+        userLanguage: getBrowserLanguageCode(),
       });
       if (result) {
         setCurrentQuestion({

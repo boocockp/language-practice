@@ -169,6 +169,7 @@ describe("PracticePage", () => {
     expect(generateQuestion).toHaveBeenCalledWith({
       questionTypeId: "qt1",
       language: "en",
+      userLanguage: expect.any(String),
     });
   });
 

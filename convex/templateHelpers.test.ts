@@ -3,7 +3,81 @@
 import { describe, expect, it } from "vitest";
 
 import { generateQuestion } from "./questionGeneration";
-import { getTemplateHelpersForLanguage } from "./templateHelpers";
+import {
+  createTranslateHelper,
+  getTemplateHelpersForLanguage,
+} from "./templateHelpers";
+
+describe("translate helper", () => {
+  it("renders stubbed translation when fromLang !== toLang", async () => {
+    const translateFn = async (
+      text: string,
+      from: string,
+      to: string,
+    ): Promise<string> => {
+      expect(from).toBe("fr");
+      expect(to).toBe("en");
+      return text === "bonjour" ? "hello" : text === "merci" ? "thanks" : text;
+    };
+    const translateHelper = createTranslateHelper("fr", "en", translateFn);
+    const templateHelpers = { translate: translateHelper };
+
+    const result = await generateQuestion({
+      dataTemplate: "",
+      questionTemplate: '{{translate "bonjour"}}',
+      answerTemplate: '{{translate "merci"}}',
+      initialContext: {},
+      lookupWord: async () => null,
+      language: "fr",
+      templateHelpers,
+    });
+
+    expect(result.text).toBe("hello");
+    expect(result.expected).toBe("thanks");
+  });
+
+  it("returns text unchanged when fromLang === toLang", async () => {
+    const translateFn = async (): Promise<string> => {
+      throw new Error("should not be called");
+    };
+    const translateHelper = createTranslateHelper("en", "en", translateFn);
+    const templateHelpers = { translate: translateHelper };
+
+    const result = await generateQuestion({
+      dataTemplate: "",
+      questionTemplate: '{{translate "hello"}}',
+      answerTemplate: '{{translate "world"}}',
+      initialContext: {},
+      lookupWord: async () => null,
+      language: "en",
+      templateHelpers,
+    });
+
+    expect(result.text).toBe("hello");
+    expect(result.expected).toBe("world");
+  });
+
+  it("returns empty string when translate receives empty string", async () => {
+    const translateFn = async (): Promise<string> => {
+      throw new Error("should not be called");
+    };
+    const translateHelper = createTranslateHelper("fr", "en", translateFn);
+    const templateHelpers = { translate: translateHelper };
+
+    const result = await generateQuestion({
+      dataTemplate: "",
+      questionTemplate: '{{translate ""}}',
+      answerTemplate: "x",
+      initialContext: {},
+      lookupWord: async () => null,
+      language: "fr",
+      templateHelpers,
+    });
+
+    expect(result.text).toBe("");
+    expect(result.expected).toBe("x");
+  });
+});
 
 describe("getTemplateHelpersForLanguage", () => {
   it("returns undefined for non-French languages", () => {

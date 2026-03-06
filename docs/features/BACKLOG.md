@@ -1,7 +1,6 @@
 Backlog
 =======
 
-- Auto translate
 - Pronoun helpers
 - Helper syntax improvements
 - Question sessions
@@ -26,3 +25,4 @@ Done
 - Store words used in questions
 - Noun helpers - ~~introduce NLG~~
 - Verb helpers
+- Auto translate
