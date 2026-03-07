@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useReducer } from "react";
 import { Button, Dialog, Field, Input } from "@cloudflare/kumo";
 import { X } from "@phosphor-icons/react";
 
@@ -21,6 +21,45 @@ const NEW_WORD_DEFAULTS = {
     meaning: "",
     tags: "",
 };
+
+type WordFormState = {
+    text: string;
+    type: WordType;
+    meaning: string;
+    tags: string;
+    isSubmitting: boolean;
+    showDiscardConfirm: boolean;
+};
+
+type WordFormAction =
+    | { type: "SET_FIELD"; payload: Partial<Pick<WordFormState, "text" | "type" | "meaning" | "tags">> }
+    | { type: "SET_SUBMITTING"; payload: boolean }
+    | { type: "SHOW_DISCARD_CONFIRM"; payload: boolean };
+
+function getInitialWordFormState(word: Doc<"words"> | null): WordFormState {
+    const v = word ?? NEW_WORD_DEFAULTS;
+    return {
+        text: v.text,
+        type: v.type,
+        meaning: v.meaning,
+        tags: v.tags ?? "",
+        isSubmitting: false,
+        showDiscardConfirm: false,
+    };
+}
+
+function wordFormReducer(state: WordFormState, action: WordFormAction): WordFormState {
+    switch (action.type) {
+        case "SET_FIELD":
+            return { ...state, ...action.payload };
+        case "SET_SUBMITTING":
+            return { ...state, isSubmitting: action.payload };
+        case "SHOW_DISCARD_CONFIRM":
+            return { ...state, showDiscardConfirm: action.payload };
+        default:
+            return state;
+    }
+}
 
 type WordDetailsFormProps = {
     word: Doc<"words"> | null;
@@ -47,19 +86,18 @@ export function WordDetailsForm({
     onDirtyChange,
 }: WordDetailsFormProps) {
     const initialValues = word ?? NEW_WORD_DEFAULTS;
-    const [text, setText] = useState(initialValues.text);
-    const [type, setType] = useState<WordType>(initialValues.type);
-    const [meaning, setMeaning] = useState(initialValues.meaning);
-    const [tags, setTags] = useState(initialValues.tags ?? "");
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+    const [state, dispatch] = useReducer(
+        wordFormReducer,
+        word,
+        (w): WordFormState => getInitialWordFormState(w),
+    );
     const pendingLeaveResolveRef = useRef<((value: boolean) => void) | null>(null);
 
     const current = {
-        text,
-        type,
-        meaning,
-        tags,
+        text: state.text,
+        type: state.type,
+        meaning: state.meaning,
+        tags: state.tags,
     };
     const initial = {
         text: initialValues.text,
@@ -68,7 +106,7 @@ export function WordDetailsForm({
         tags: initialValues.tags ?? "",
     };
     const isDirty = !formValuesEqual(current, initial);
-    const isTextValid = text.trim() !== "";
+    const isTextValid = state.text.trim() !== "";
 
     useEffect(() => {
         onDirtyChange?.(isDirty);
@@ -76,7 +114,7 @@ export function WordDetailsForm({
 
     const confirmLeave = useCallback((): Promise<boolean> => {
         if (!isDirty) return Promise.resolve(true);
-        setShowDiscardConfirm(true);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: true });
         return new Promise((resolve) => {
             pendingLeaveResolveRef.current = resolve;
         });
@@ -89,25 +127,25 @@ export function WordDetailsForm({
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!isTextValid) return;
-        setIsSubmitting(true);
+        dispatch({ type: "SET_SUBMITTING", payload: true });
         try {
             const payload: WordUpdatePayload = {
-                text: text.trim(),
-                type,
-                meaning,
-                tags: tags || undefined,
+                text: state.text.trim(),
+                type: state.type,
+                meaning: state.meaning,
+                tags: state.tags || undefined,
             };
             if (word) payload.wordId = word._id;
             await onSave(payload);
             onClose();
         } finally {
-            setIsSubmitting(false);
+            dispatch({ type: "SET_SUBMITTING", payload: false });
         }
     }
 
     function handleCloseClick() {
         if (isDirty) {
-            setShowDiscardConfirm(true);
+            dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: true });
         } else {
             onClose();
         }
@@ -116,14 +154,14 @@ export function WordDetailsForm({
     function handleConfirmDiscard() {
         pendingLeaveResolveRef.current?.(true);
         pendingLeaveResolveRef.current = null;
-        setShowDiscardConfirm(false);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: false });
         onClose();
     }
 
     function handleKeepEditing() {
         pendingLeaveResolveRef.current?.(false);
         pendingLeaveResolveRef.current = null;
-        setShowDiscardConfirm(false);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: false });
     }
 
     return (
@@ -138,18 +176,18 @@ export function WordDetailsForm({
                 <form onSubmit={handleSubmit} className="space-y-4 flex-1 min-h-0 flex flex-col">
                     <Field label="Text" required>
                         <Input
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.text}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { text: e.target.value } })}
+                            disabled={state.isSubmitting}
                             placeholder="The word you are learning"
                             aria-label="Text"
                         />
                     </Field>
                     <Field label="Type" required>
                         <select
-                            value={type}
-                            onChange={(e) => setType(e.target.value as WordType)}
-                            disabled={isSubmitting}
+                            value={state.type}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { type: e.target.value as WordType } })}
+                            disabled={state.isSubmitting}
                             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                             aria-label="Type"
                         >
@@ -162,34 +200,37 @@ export function WordDetailsForm({
                     </Field>
                     <Field label="Meaning" required>
                         <Input
-                            value={meaning}
-                            onChange={(e) => setMeaning(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.meaning}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { meaning: e.target.value } })}
+                            disabled={state.isSubmitting}
                             placeholder="What the word means"
                             aria-label="Meaning"
                         />
                     </Field>
                     <Field label="Tags (optional)">
                         <Input
-                            value={tags}
-                            onChange={(e) => setTags(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.tags}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { tags: e.target.value } })}
+                            disabled={state.isSubmitting}
                             placeholder="Space-separated tags"
                             aria-label="Tags"
                         />
                     </Field>
                     <div className="flex gap-2 pt-2 mt-auto">
-                        <Button type="submit" variant="primary" disabled={isSubmitting || !isTextValid}>
+                        <Button type="submit" variant="primary" disabled={state.isSubmitting || !isTextValid}>
                             Save
                         </Button>
-                        <Button type="button" variant="secondary" disabled={isSubmitting} onClick={onCancel}>
+                        <Button type="button" variant="secondary" disabled={state.isSubmitting} onClick={onCancel}>
                             Cancel
                         </Button>
                     </div>
                 </form>
             </div>
 
-            <Dialog.Root open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
+            <Dialog.Root
+                open={state.showDiscardConfirm}
+                onOpenChange={(open) => dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: open })}
+            >
                 <Dialog size="sm" className="p-6">
                     <Dialog.Title>Discard changes?</Dialog.Title>
                     <Dialog.Description>You have unsaved changes. Do you want to discard them?</Dialog.Description>

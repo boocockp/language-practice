@@ -2,15 +2,16 @@
 
 ### Commands
 
-- dev: `npm run dev`
-- build: `npm run build`
-- lint: `npm run lint`
-- typecheck: `npm run typecheck`
-- format: `npm run format` / lint:format: `npm run lint:format`
-- check: `npm run check` (runs typecheck, lint, and lint:format in parallel)
-- convex dev (interactive): `npx convex dev`
+Use **pnpm** for install and scripts (npm works too).
 
-You can use pnpm instead of npm if you prefer: `pnpm install`, `pnpm run check`, etc.
+- dev: `pnpm run dev` (or `pnpm dev`)
+- build: `pnpm run build`
+- lint: `pnpm run lint`
+- typecheck: `pnpm run typecheck`
+- format: `pnpm run format` / lint:format: `pnpm run lint:format`
+- check: `pnpm run check` (runs typecheck, lint, and lint:format in parallel)
+- doctor: `pnpm run doctor` (React health audit; use `pnpm run doctor:verbose` for file/line details)
+- convex dev (interactive): `pnpm exec convex dev`
 
 ### Architecture intentions
 
@@ -32,4 +33,4 @@ You can use pnpm instead of npm if you prefer: `pnpm install`, `pnpm run check`,
 ### Notes
 
 - This is an SPA: deploy needs a rewrite-to-`index.html` rule for all routes.
-- **French verb conjugation**: We patch `rosaenlg-lib` with patch-package so it does not load the 6MB `french-verbs-lefff` conjugations file. After `npm install`, the `postinstall` script runs `patch-package` to apply `patches/rosaenlg-lib+4.4.0.patch`. Convex uses a rule-based verb lookup (regular rules + irregular dictionary) instead; see `docs/features/Verb conjugation.md`.
+- **French verb conjugation**: We patch `rosaenlg-lib` with patch-package so it does not load the 6MB `french-verbs-lefff` conjugations file. After `pnpm install`, the `postinstall` script runs `patch-package` to apply `patches/rosaenlg-lib+4.4.0.patch`. Convex uses a rule-based verb lookup (regular rules + irregular dictionary) instead; see `docs/features/Verb conjugation.md`.

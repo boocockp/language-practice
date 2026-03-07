@@ -25,27 +25,27 @@ The generated questions and the user's response are stored in another collection
 
 Prerequisites:
 
-- Node.js + npm
+- Node.js + pnpm (e.g. `corepack enable && corepack prepare pnpm@10.30.3 --activate`)
 
 Install:
 
 ```
-npm install
+pnpm install
 ```
 
 Run:
 
 ```
-npm run dev
+pnpm run dev
 ```
 
 Scripts:
 
-- `npm run dev`
-- `npm run build`
-- `npm run preview`
-- `npm run lint`
-- `npm run typecheck`
+- `pnpm run dev`
+- `pnpm run build`
+- `pnpm run preview`
+- `pnpm run lint`
+- `pnpm run typecheck`
 
 ## Convex setup (first time)
 

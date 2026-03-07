@@ -9,8 +9,6 @@ export const LANGUAGES = [
     { code: "en", name: "English", flag: "🇬🇧" },
 ] as const;
 
-export const LANGUAGE_CODES = LANGUAGES.map((l) => l.code);
-
 const LANGUAGE_MAP = new Map<string, string>(LANGUAGES.map((l) => [l.code, l.name]));
 
 const FLAG_MAP = new Map<string, string>(LANGUAGES.map((l) => [l.code, l.flag]));

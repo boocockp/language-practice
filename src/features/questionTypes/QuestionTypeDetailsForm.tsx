@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useReducer } from "react";
 import { Button, Dialog, Field, Input } from "@cloudflare/kumo";
 import { X } from "@phosphor-icons/react";
 
@@ -20,6 +20,58 @@ const NEW_QUESTION_TYPE_DEFAULTS = {
     questionTemplate: "",
     answerTemplate: "",
 };
+
+type QuestionTypeFormState = {
+    name: string;
+    dataTemplate: string;
+    questionTemplate: string;
+    answerTemplate: string;
+    isSubmitting: boolean;
+    showDiscardConfirm: boolean;
+};
+
+type QuestionTypeFormAction =
+    | {
+          type: "SET_FIELD";
+          payload: Partial<
+              Pick<
+                  QuestionTypeFormState,
+                  "name" | "dataTemplate" | "questionTemplate" | "answerTemplate"
+              >
+          >;
+      }
+    | { type: "SET_SUBMITTING"; payload: boolean }
+    | { type: "SHOW_DISCARD_CONFIRM"; payload: boolean };
+
+function getInitialQuestionTypeFormState(
+    questionType: Doc<"questionTypes"> | null,
+): QuestionTypeFormState {
+    const v = questionType ?? NEW_QUESTION_TYPE_DEFAULTS;
+    return {
+        name: v.name,
+        dataTemplate: v.dataTemplate,
+        questionTemplate: v.questionTemplate,
+        answerTemplate: v.answerTemplate,
+        isSubmitting: false,
+        showDiscardConfirm: false,
+    };
+}
+
+function questionTypeFormReducer(
+    state: QuestionTypeFormState,
+    action: QuestionTypeFormAction,
+): QuestionTypeFormState {
+    switch (action.type) {
+        case "SET_FIELD":
+            return { ...state, ...action.payload };
+        case "SET_SUBMITTING":
+            return { ...state, isSubmitting: action.payload };
+        case "SHOW_DISCARD_CONFIRM":
+            return { ...state, showDiscardConfirm: action.payload };
+        default:
+            return state;
+    }
+}
 
 type QuestionTypeDetailsFormProps = {
     questionType: Doc<"questionTypes"> | null;
@@ -63,19 +115,18 @@ export function QuestionTypeDetailsForm({
     onDirtyChange,
 }: QuestionTypeDetailsFormProps) {
     const initialValues = questionType ?? NEW_QUESTION_TYPE_DEFAULTS;
-    const [name, setName] = useState(initialValues.name);
-    const [dataTemplate, setDataTemplate] = useState(initialValues.dataTemplate);
-    const [questionTemplate, setQuestionTemplate] = useState(initialValues.questionTemplate);
-    const [answerTemplate, setAnswerTemplate] = useState(initialValues.answerTemplate);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+    const [state, dispatch] = useReducer(
+        questionTypeFormReducer,
+        questionType,
+        (qt): QuestionTypeFormState => getInitialQuestionTypeFormState(qt),
+    );
     const pendingLeaveResolveRef = useRef<((value: boolean) => void) | null>(null);
 
     const current = {
-        name,
-        dataTemplate,
-        questionTemplate,
-        answerTemplate,
+        name: state.name,
+        dataTemplate: state.dataTemplate,
+        questionTemplate: state.questionTemplate,
+        answerTemplate: state.answerTemplate,
     };
     const initial = {
         name: initialValues.name,
@@ -84,7 +135,7 @@ export function QuestionTypeDetailsForm({
         answerTemplate: initialValues.answerTemplate,
     };
     const isDirty = !formValuesEqual(current, initial);
-    const isNameValid = name.trim() !== "";
+    const isNameValid = state.name.trim() !== "";
 
     useEffect(() => {
         onDirtyChange?.(isDirty);
@@ -92,7 +143,7 @@ export function QuestionTypeDetailsForm({
 
     const confirmLeave = useCallback((): Promise<boolean> => {
         if (!isDirty) return Promise.resolve(true);
-        setShowDiscardConfirm(true);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: true });
         return new Promise((resolve) => {
             pendingLeaveResolveRef.current = resolve;
         });
@@ -105,25 +156,25 @@ export function QuestionTypeDetailsForm({
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!isNameValid) return;
-        setIsSubmitting(true);
+        dispatch({ type: "SET_SUBMITTING", payload: true });
         try {
             const payload: QuestionTypeUpdatePayload = {
-                name: name.trim(),
-                dataTemplate,
-                questionTemplate,
-                answerTemplate,
+                name: state.name.trim(),
+                dataTemplate: state.dataTemplate,
+                questionTemplate: state.questionTemplate,
+                answerTemplate: state.answerTemplate,
             };
             if (questionType) payload.questionTypeId = questionType._id;
             await onSave(payload);
             onClose();
         } finally {
-            setIsSubmitting(false);
+            dispatch({ type: "SET_SUBMITTING", payload: false });
         }
     }
 
     function handleCloseClick() {
         if (isDirty) {
-            setShowDiscardConfirm(true);
+            dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: true });
         } else {
             onClose();
         }
@@ -132,14 +183,14 @@ export function QuestionTypeDetailsForm({
     function handleConfirmDiscard() {
         pendingLeaveResolveRef.current?.(true);
         pendingLeaveResolveRef.current = null;
-        setShowDiscardConfirm(false);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: false });
         onClose();
     }
 
     function handleKeepEditing() {
         pendingLeaveResolveRef.current?.(false);
         pendingLeaveResolveRef.current = null;
-        setShowDiscardConfirm(false);
+        dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: false });
     }
 
     return (
@@ -154,18 +205,20 @@ export function QuestionTypeDetailsForm({
                 <form onSubmit={handleSubmit} className="space-y-4 flex-1 min-h-0 flex flex-col">
                     <Field label="Name" required>
                         <Input
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.name}
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { name: e.target.value } })}
+                            disabled={state.isSubmitting}
                             placeholder="Descriptive name for this question type"
                             aria-label="Name"
                         />
                     </Field>
                     <Field label="Data template">
                         <textarea
-                            value={dataTemplate}
-                            onChange={(e) => setDataTemplate(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.dataTemplate}
+                            onChange={(e) =>
+                                dispatch({ type: "SET_FIELD", payload: { dataTemplate: e.target.value } })
+                            }
+                            disabled={state.isSubmitting}
                             className={textareaClassName}
                             placeholder="Template for question data"
                             aria-label="Data template"
@@ -174,9 +227,11 @@ export function QuestionTypeDetailsForm({
                     </Field>
                     <Field label="Question template">
                         <textarea
-                            value={questionTemplate}
-                            onChange={(e) => setQuestionTemplate(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.questionTemplate}
+                            onChange={(e) =>
+                                dispatch({ type: "SET_FIELD", payload: { questionTemplate: e.target.value } })
+                            }
+                            disabled={state.isSubmitting}
                             className={textareaClassName}
                             placeholder="Template for the question text"
                             aria-label="Question template"
@@ -185,9 +240,11 @@ export function QuestionTypeDetailsForm({
                     </Field>
                     <Field label="Answer template">
                         <textarea
-                            value={answerTemplate}
-                            onChange={(e) => setAnswerTemplate(e.target.value)}
-                            disabled={isSubmitting}
+                            value={state.answerTemplate}
+                            onChange={(e) =>
+                                dispatch({ type: "SET_FIELD", payload: { answerTemplate: e.target.value } })
+                            }
+                            disabled={state.isSubmitting}
                             className={textareaClassName}
                             placeholder="Template for the answer"
                             aria-label="Answer template"
@@ -195,17 +252,20 @@ export function QuestionTypeDetailsForm({
                         />
                     </Field>
                     <div className="flex gap-2 pt-2 mt-auto">
-                        <Button type="submit" variant="primary" disabled={isSubmitting || !isNameValid}>
+                        <Button type="submit" variant="primary" disabled={state.isSubmitting || !isNameValid}>
                             Save
                         </Button>
-                        <Button type="button" variant="secondary" disabled={isSubmitting} onClick={onCancel}>
+                        <Button type="button" variant="secondary" disabled={state.isSubmitting} onClick={onCancel}>
                             Cancel
                         </Button>
                     </div>
                 </form>
             </div>
 
-            <Dialog.Root open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
+            <Dialog.Root
+                open={state.showDiscardConfirm}
+                onOpenChange={(open) => dispatch({ type: "SHOW_DISCARD_CONFIRM", payload: open })}
+            >
                 <Dialog size="sm" className="p-6">
                     <Dialog.Title>Discard changes?</Dialog.Title>
                     <Dialog.Description>You have unsaved changes. Do you want to discard them?</Dialog.Description>

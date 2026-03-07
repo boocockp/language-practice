@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import { Button, Empty, Select, Text, Textarea } from "@cloudflare/kumo";
 import { Check, X } from "@phosphor-icons/react";
 import { useAction, useMutation, useQuery } from "convex/react";
@@ -11,62 +11,111 @@ import { getBrowserLanguageCode } from "../lib/languages";
 
 const BORDERED_BLOCK = "border border-slate-200 rounded-lg p-3 min-h-[2.5rem] bg-slate-50";
 
-export function PracticePage() {
-    const { user } = useAuth();
-    const { language } = useCurrentLanguage();
-    const [selectedQuestionTypeId, setSelectedQuestionTypeId] = useState<Id<"questionTypes"> | null>(null);
-    const [currentQuestion, setCurrentQuestion] = useState<{
+type PracticeState = {
+    selectedQuestionTypeId: Id<"questionTypes"> | null;
+    currentQuestion: {
         questionId: Id<"questions">;
         text: string;
         expected: string;
-    } | null>(null);
-    const [answer, setAnswer] = useState("");
-    const [feedback, setFeedback] = useState<{ isCorrect: boolean } | null>(null);
-    const [isGenerating, setIsGenerating] = useState(false);
+    } | null;
+    answer: string;
+    feedback: { isCorrect: boolean } | null;
+    isGenerating: boolean;
+};
+
+type PracticeAction =
+    | { type: "SELECT_QUESTION_TYPE"; payload: Id<"questionTypes"> | null }
+    | {
+          type: "SET_CURRENT_QUESTION";
+          payload: {
+              questionId: Id<"questions">;
+              text: string;
+              expected: string;
+          } | null;
+      }
+    | { type: "SET_ANSWER"; payload: string }
+    | { type: "SET_FEEDBACK"; payload: { isCorrect: boolean } | null }
+    | { type: "SET_GENERATING"; payload: boolean };
+
+const initialPracticeState: PracticeState = {
+    selectedQuestionTypeId: null,
+    currentQuestion: null,
+    answer: "",
+    feedback: null,
+    isGenerating: false,
+};
+
+function practiceReducer(state: PracticeState, action: PracticeAction): PracticeState {
+    switch (action.type) {
+        case "SELECT_QUESTION_TYPE":
+            return { ...state, selectedQuestionTypeId: action.payload };
+        case "SET_CURRENT_QUESTION":
+            return { ...state, currentQuestion: action.payload };
+        case "SET_ANSWER":
+            return { ...state, answer: action.payload };
+        case "SET_FEEDBACK":
+            return { ...state, feedback: action.payload };
+        case "SET_GENERATING":
+            return { ...state, isGenerating: action.payload };
+        default:
+            return state;
+    }
+}
+
+export function PracticePage() {
+    const { user } = useAuth();
+    const { language } = useCurrentLanguage();
+    const [state, dispatch] = useReducer(practiceReducer, initialPracticeState);
 
     const questionTypes = useQuery(api.questionTypes.listByUserAndLanguage, { language });
     const generateQuestion = useAction(api.practiceActions.generateQuestion);
     const submitAnswer = useMutation(api.practice.submitAnswer);
 
-    const hasQuestionType = selectedQuestionTypeId !== null;
-    const hasCurrentQuestion = currentQuestion !== null;
-    const showNextButton = hasQuestionType && (!hasCurrentQuestion || feedback !== null) && !isGenerating;
-    const showCheckButton = hasCurrentQuestion && feedback === null;
+    const hasQuestionType = state.selectedQuestionTypeId !== null;
+    const hasCurrentQuestion = state.currentQuestion !== null;
+    const showNextButton =
+        hasQuestionType && (!hasCurrentQuestion || state.feedback !== null) && !state.isGenerating;
+    const showCheckButton = hasCurrentQuestion && state.feedback === null;
 
     async function handleNextQuestion() {
-        if (selectedQuestionTypeId === null) return;
-        setIsGenerating(true);
+        if (state.selectedQuestionTypeId === null) return;
+        dispatch({ type: "SET_GENERATING", payload: true });
         try {
             const result = await generateQuestion({
-                questionTypeId: selectedQuestionTypeId,
+                questionTypeId: state.selectedQuestionTypeId,
                 language,
                 userLanguage: getBrowserLanguageCode(),
             });
             if (result) {
-                setCurrentQuestion({
-                    questionId: result.questionId,
-                    text: result.text,
-                    expected: result.expected,
+                dispatch({
+                    type: "SET_CURRENT_QUESTION",
+                    payload: {
+                        questionId: result.questionId,
+                        text: result.text,
+                        expected: result.expected,
+                    },
                 });
-                setAnswer("");
-                setFeedback(null);
+                dispatch({ type: "SET_ANSWER", payload: "" });
+                dispatch({ type: "SET_FEEDBACK", payload: null });
             }
         } catch (err) {
             console.error("Failed to generate question:", err);
         } finally {
-            setIsGenerating(false);
+            dispatch({ type: "SET_GENERATING", payload: false });
         }
     }
 
     async function handleCheckAnswer() {
-        if (!currentQuestion) return;
+        if (!state.currentQuestion) return;
         try {
             await submitAnswer({
-                questionId: currentQuestion.questionId,
-                answerGiven: answer,
+                questionId: state.currentQuestion.questionId,
+                answerGiven: state.answer,
             });
-            const isCorrect = answer.trim().toLowerCase() === currentQuestion.expected.trim().toLowerCase();
-            setFeedback({ isCorrect });
+            const isCorrect =
+                state.answer.trim().toLowerCase() ===
+                state.currentQuestion.expected.trim().toLowerCase();
+            dispatch({ type: "SET_FEEDBACK", payload: { isCorrect } });
         } catch (err) {
             console.error("Failed to submit answer:", err);
         }
@@ -92,8 +141,10 @@ export function PracticePage() {
                     <Select
                         label="Question Type"
                         placeholder="Select a Question Type"
-                        value={selectedQuestionTypeId}
-                        onValueChange={(v) => setSelectedQuestionTypeId((v as Id<"questionTypes">) ?? null)}
+                        value={state.selectedQuestionTypeId}
+                        onValueChange={(v) =>
+                            dispatch({ type: "SELECT_QUESTION_TYPE", payload: (v as Id<"questionTypes">) ?? null })
+                        }
                         renderValue={(id) => {
                             if (id == null) return "Select a Question Type";
                             const qt = questionTypes.find((q) => q._id === id);
@@ -113,7 +164,7 @@ export function PracticePage() {
                             Question
                         </label>
                         <div id="question-display" className={BORDERED_BLOCK} aria-label="Question">
-                            {currentQuestion?.text ?? ""}
+                            {state.currentQuestion?.text ?? ""}
                         </div>
                     </div>
 
@@ -124,8 +175,8 @@ export function PracticePage() {
                         <Textarea
                             id="answer-input"
                             placeholder="Enter your answer"
-                            value={answer}
-                            onChange={(e) => setAnswer(e.target.value)}
+                            value={state.answer}
+                            onChange={(e) => dispatch({ type: "SET_ANSWER", payload: e.target.value })}
                             disabled={!hasCurrentQuestion}
                             className="min-h-[4rem]"
                             aria-label="Answer"
@@ -137,7 +188,9 @@ export function PracticePage() {
                             Expected Answer
                         </label>
                         <div id="expected-display" className={BORDERED_BLOCK} aria-label="Expected Answer">
-                            {feedback !== null && currentQuestion ? currentQuestion.expected : ""}
+                            {state.feedback !== null && state.currentQuestion
+                                ? state.currentQuestion.expected
+                                : ""}
                         </div>
                     </div>
 
@@ -146,8 +199,8 @@ export function PracticePage() {
                             Result
                         </label>
                         <div id="result-display" className={BORDERED_BLOCK} aria-label="Result">
-                            {feedback !== null &&
-                                (feedback.isCorrect ? (
+                            {state.feedback !== null &&
+                                (state.feedback.isCorrect ? (
                                     <span className="flex items-center gap-2 text-green-700">
                                         <Check size={20} aria-hidden />
                                         Correct
@@ -167,11 +220,11 @@ export function PracticePage() {
                                 type="button"
                                 variant="primary"
                                 onClick={handleNextQuestion}
-                                disabled={isGenerating}
+                                disabled={state.isGenerating}
                                 aria-label="Next question"
-                                aria-busy={isGenerating}
+                                aria-busy={state.isGenerating}
                             >
-                                {isGenerating ? "Loading…" : "Next Question"}
+                                {state.isGenerating ? "Loading…" : "Next Question"}
                             </Button>
                         )}
                         {showCheckButton && (
@@ -180,7 +233,7 @@ export function PracticePage() {
                                 variant="secondary"
                                 onClick={handleCheckAnswer}
                                 aria-label="Check answer"
-                                disabled={answer.trim() === ""}
+                                disabled={state.answer.trim() === ""}
                             >
                                 Check Answer
                             </Button>

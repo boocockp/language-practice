@@ -1,0 +1,5 @@
+{
+    "ignore": {
+        "files": ["dist", "convex/_generated", "stuff/**", "scripts/**", "**/*.test.{ts,tsx}", "**/*.spec.{ts,tsx}"]
+    }
+}

@@ -22,7 +22,7 @@ function MockAuthProvider({ children }: { children: React.ReactNode }) {
     return <AuthContext.Provider value={defaultAuthValue}>{children}</AuthContext.Provider>;
 }
 
-export type AuthOverrides = Partial<AuthContextValue>;
+type AuthOverrides = Partial<AuthContextValue>;
 
 function AuthOverrideProvider({ overrides, children }: { overrides: AuthOverrides; children: React.ReactNode }) {
     const value: AuthContextValue = {

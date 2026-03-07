@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button, Dialog, Field, Input } from "@cloudflare/kumo";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -12,15 +12,6 @@ export function LoginModal({ open, onOpenChange }: LoginModalProps) {
     const [step, setStep] = useState<"signIn" | "signUp">("signIn");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-
-    // Reset form state when modal is opened so previous errors and step don't persist
-    useEffect(() => {
-        if (open) {
-            setError(null);
-            setStep("signIn");
-            setIsSubmitting(false);
-        }
-    }, [open]);
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();

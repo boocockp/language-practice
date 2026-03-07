@@ -8,7 +8,7 @@
     "env": {
         "builtin": true
     },
-    "ignorePatterns": ["dist", "convex/_generated"],
+    "ignorePatterns": ["dist", "convex/_generated", "stuff", "scripts"],
     "overrides": [
         {
             "files": ["**/*.{ts,tsx}"],

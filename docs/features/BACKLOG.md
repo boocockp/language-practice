@@ -12,7 +12,6 @@
 
 ## Technical
 
-- Use better tools: https://cpojer.net/posts/fastest-frontend-tooling
 - Use react doctor https://github.com/millionco/react-doctor
 - Use conjugation rules to reduce size of convex/frenchConjugation/irregularVerbsData.json
 
@@ -23,3 +22,4 @@
 - Noun helpers - ~~introduce NLG~~
 - Verb helpers
 - Auto translate
+- Use better tools: https://cpojer.net/posts/fastest-frontend-tooling

@@ -21,7 +21,7 @@ Intensive vocabulary + grammar practice.
 - Convex backend service
 
 ## Definition of done
-- `npm run typecheck` and `npm run lint` pass
+- `pnpm run typecheck` and `pnpm run lint` pass
 - UI remains accessible (labels, focus, keyboard navigation)
 - Business logic for selection/scoring lives in Convex functions (not in route components)
 - Update docs when behavior/data changes (`docs/ARCHITECTURE.md`, `docs/DATA_MODEL.md`)
