@@ -86,11 +86,7 @@ export function WordDetailsForm({
     onDirtyChange,
 }: WordDetailsFormProps) {
     const initialValues = word ?? NEW_WORD_DEFAULTS;
-    const [state, dispatch] = useReducer(
-        wordFormReducer,
-        word,
-        (w): WordFormState => getInitialWordFormState(w),
-    );
+    const [state, dispatch] = useReducer(wordFormReducer, word, (w): WordFormState => getInitialWordFormState(w));
     const pendingLeaveResolveRef = useRef<((value: boolean) => void) | null>(null);
 
     const current = {
@@ -186,7 +182,9 @@ export function WordDetailsForm({
                     <Field label="Type" required>
                         <select
                             value={state.type}
-                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { type: e.target.value as WordType } })}
+                            onChange={(e) =>
+                                dispatch({ type: "SET_FIELD", payload: { type: e.target.value as WordType } })
+                            }
                             disabled={state.isSubmitting}
                             className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
                             aria-label="Type"

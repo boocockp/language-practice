@@ -165,7 +165,11 @@ export function AppLayout() {
                 <Outlet />
             </main>
 
-            <LoginModal key={loginModalOpen ? "open" : "closed"} open={loginModalOpen} onOpenChange={setLoginModalOpen} />
+            <LoginModal
+                key={loginModalOpen ? "open" : "closed"}
+                open={loginModalOpen}
+                onOpenChange={setLoginModalOpen}
+            />
         </div>
     );
 }

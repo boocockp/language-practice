@@ -34,18 +34,13 @@ type QuestionTypeFormAction =
     | {
           type: "SET_FIELD";
           payload: Partial<
-              Pick<
-                  QuestionTypeFormState,
-                  "name" | "dataTemplate" | "questionTemplate" | "answerTemplate"
-              >
+              Pick<QuestionTypeFormState, "name" | "dataTemplate" | "questionTemplate" | "answerTemplate">
           >;
       }
     | { type: "SET_SUBMITTING"; payload: boolean }
     | { type: "SHOW_DISCARD_CONFIRM"; payload: boolean };
 
-function getInitialQuestionTypeFormState(
-    questionType: Doc<"questionTypes"> | null,
-): QuestionTypeFormState {
+function getInitialQuestionTypeFormState(questionType: Doc<"questionTypes"> | null): QuestionTypeFormState {
     const v = questionType ?? NEW_QUESTION_TYPE_DEFAULTS;
     return {
         name: v.name,
@@ -57,10 +52,7 @@ function getInitialQuestionTypeFormState(
     };
 }
 
-function questionTypeFormReducer(
-    state: QuestionTypeFormState,
-    action: QuestionTypeFormAction,
-): QuestionTypeFormState {
+function questionTypeFormReducer(state: QuestionTypeFormState, action: QuestionTypeFormAction): QuestionTypeFormState {
     switch (action.type) {
         case "SET_FIELD":
             return { ...state, ...action.payload };
@@ -215,9 +207,7 @@ export function QuestionTypeDetailsForm({
                     <Field label="Data template">
                         <textarea
                             value={state.dataTemplate}
-                            onChange={(e) =>
-                                dispatch({ type: "SET_FIELD", payload: { dataTemplate: e.target.value } })
-                            }
+                            onChange={(e) => dispatch({ type: "SET_FIELD", payload: { dataTemplate: e.target.value } })}
                             disabled={state.isSubmitting}
                             className={textareaClassName}
                             placeholder="Template for question data"

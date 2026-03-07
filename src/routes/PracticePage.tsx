@@ -73,8 +73,7 @@ export function PracticePage() {
 
     const hasQuestionType = state.selectedQuestionTypeId !== null;
     const hasCurrentQuestion = state.currentQuestion !== null;
-    const showNextButton =
-        hasQuestionType && (!hasCurrentQuestion || state.feedback !== null) && !state.isGenerating;
+    const showNextButton = hasQuestionType && (!hasCurrentQuestion || state.feedback !== null) && !state.isGenerating;
     const showCheckButton = hasCurrentQuestion && state.feedback === null;
 
     async function handleNextQuestion() {
@@ -112,9 +111,7 @@ export function PracticePage() {
                 questionId: state.currentQuestion.questionId,
                 answerGiven: state.answer,
             });
-            const isCorrect =
-                state.answer.trim().toLowerCase() ===
-                state.currentQuestion.expected.trim().toLowerCase();
+            const isCorrect = state.answer.trim().toLowerCase() === state.currentQuestion.expected.trim().toLowerCase();
             dispatch({ type: "SET_FEEDBACK", payload: { isCorrect } });
         } catch (err) {
             console.error("Failed to submit answer:", err);
@@ -188,9 +185,7 @@ export function PracticePage() {
                             Expected Answer
                         </label>
                         <div id="expected-display" className={BORDERED_BLOCK} aria-label="Expected Answer">
-                            {state.feedback !== null && state.currentQuestion
-                                ? state.currentQuestion.expected
-                                : ""}
+                            {state.feedback !== null && state.currentQuestion ? state.currentQuestion.expected : ""}
                         </div>
                     </div>
 
