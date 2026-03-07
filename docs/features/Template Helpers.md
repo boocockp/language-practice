@@ -54,7 +54,7 @@ See **docs/features/Auto Translation.md** for full details.
 
 ## Implementation notes
 
-- **Approach**: The **verb** helper uses `french-verbs` with a rule-based conjugation proxy (see docs/features/Verb conjugation.md). The **noun** helper uses `rosaenlg-pluralize-fr`, `french-adjectives`, and the word's type (nm/nf/nmf) for gender; no NlgLib. Post-process uses `rosaenlg-filter` for French contractions and elisions.
+- **Approach**: The **verb** helper uses vendored `french-verbs` with a rule-based conjugation proxy (see docs/features/Verb conjugation.md). The **noun** helper uses vendored pluralize (French), vendored `french-adjectives`, and the word's type (nm/nf/nmf) for gender; no NlgLib. Post-process uses vendored `rosaenlg-filter` for French contractions and elisions (plus npm `titlecase-french`).
 - **French only** for this stage. Helpers and post-process are registered only when the question language is French (`fr` → `fr_FR`).
 - **Where**: Helpers are implemented in `convex/templateHelpers.ts`; `practiceActions.generateQuestion` registers them on the single async Handlebars instance used for both the data step and the question/answer step, so they are available in data, question, and answer templates.
 - **Post-process**: The full rendered question and answer text are passed through the filter for French contractions and elisions (e.g. "la aile" → "l'aile").
@@ -83,8 +83,8 @@ The implementation uses self-contained functions from RosaeNLG packages and is d
 
 ## Approach
 
-- Use the function exported by module 'rosaenlg-pluralize-fr' to form the plural
-- Use the function exported by module 'french-adjectives' to agree the adjectives
+- Use the function in `convex/lib/pluralizeFr.ts` (vendored from rosaenlg-pluralize-fr) to form the plural
+- Use the function exported by vendored module `french-adjectives` to agree the adjectives
 - Use the gender of the noun word-object supplied
 - The determiner is chosen according to gender and number: le/la/les for the definite article, un/une/des for the indefinite article
 - Concatenate the determiner, noun, adjective1 and adjective2 to return the result

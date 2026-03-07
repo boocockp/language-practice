@@ -2,14 +2,13 @@
 
 import type Handlebars from "handlebars";
 
-/// <reference path="./rosaenlg-pluralize-fr.d.ts" />
-import { agree } from "french-adjectives";
+import { agree } from "./vendor/french-adjectives";
 import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
-import FrenchVerbs from "french-verbs";
-import type { Tense } from "french-verbs";
-import { LanguageCommonFrench } from "rosaenlg-commons";
-import { filter } from "rosaenlg-filter";
-import pluralizeFr from "rosaenlg-pluralize-fr";
+import FrenchVerbs from "./vendor/french-verbs";
+import type { Tense } from "./vendor/french-verbs";
+import { LanguageCommonFrench } from "./vendor/rosaenlg-commons";
+import { filter } from "./vendor/rosaenlg-filter";
+import { pluralizeFr } from "./vendor/pluralizeFr";
 
 const verbLookup = createVerbLookupProxy(irregularVerbs);
 const langCommon = new LanguageCommonFrench();

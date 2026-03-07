@@ -4,5 +4,13 @@
     "tabWidth": 4,
     "endOfLine": "lf",
     "insertFinalNewline": true,
-    "ignorePatterns": ["dist/**", "convex/_generated/**", "stuff/**", "scripts/**", ".cursor/**", "node_modules/**"],
+    "ignorePatterns": [
+        "dist/**",
+        "convex/_generated/**",
+        "convex/vendor/**",
+        "stuff/**",
+        "scripts/**",
+        ".cursor/**",
+        "node_modules/**",
+    ],
 }

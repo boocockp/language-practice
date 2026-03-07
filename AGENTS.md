@@ -33,4 +33,4 @@ Use **pnpm** for install and scripts (npm works too).
 ### Notes
 
 - This is an SPA: deploy needs a rewrite-to-`index.html` rule for all routes.
-- **French verb conjugation**: We patch `rosaenlg-lib` with patch-package so it does not load the 6MB `french-verbs-lefff` conjugations file. After `pnpm install`, the `postinstall` script runs `patch-package` to apply `patches/rosaenlg-lib+4.4.0.patch`. Convex uses a rule-based verb lookup (regular rules + irregular dictionary) instead; see `docs/features/Verb conjugation.md`.
+- **French verb conjugation**: French NLG helpers use **vendored** code from the rosaenlg repo (see `convex/vendor/`): pluralize-fr, rosaenlg-commons, rosaenlg-filter, french-verbs, french-adjectives, french-contractions. The only npm packages used for NLG are `titlecase-french` (filter) and `french-verbs-lefff` (devDep, for `scripts/buildIrregularVerbs.mjs` and the conjugation regression test). Verb conjugation uses a rule-based lookup (regular rules + irregular dictionary); see `docs/features/Verb conjugation.md`.

@@ -32,8 +32,8 @@
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
         "react-router-dom": "^7.13.0",
-        "rosaenlg": "^4.4.0",
         "tailwind-merge": "^3.4.1",
+        "titlecase-french": "^1.0.1",
         "translate": "^3.0.1"
     },
     "devDependencies": {
@@ -49,7 +49,11 @@
         "@typescript/native-preview": "^7.0.0-dev.20260307.1",
         "@vitejs/plugin-react": "^5.1.1",
         "@vitest/coverage-v8": "^4.0.18",
+        "better-title-case": "^1.0.1",
         "convex-test": "^0.0.41",
+        "english-a-an": "3.4.0",
+        "english-a-an-list": "3.4.0",
+        "french-verbs-lefff": "3.4.0",
         "jsdom": "^28.1.0",
         "npm-run-all2": "^8.0.4",
         "oxfmt": "^0.36.0",

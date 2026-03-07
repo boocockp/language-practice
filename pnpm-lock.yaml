@@ -44,12 +44,12 @@ importers:
       react-router-dom:
         specifier: ^7.13.0
         version: 7.13.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      rosaenlg:
-        specifier: ^4.4.0
-        version: 4.4.0
       tailwind-merge:
         specifier: ^3.4.1
         version: 3.5.0
+      titlecase-french:
+        specifier: ^1.0.1
+        version: 1.0.1
       translate:
         specifier: ^3.0.1
         version: 3.0.1
@@ -90,9 +90,21 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.0.18
         version: 4.0.18(vitest@4.0.18(@edge-runtime/vm@5.0.0)(@types/node@24.12.0)(jiti@2.6.1)(jsdom@28.1.0)(lightningcss@1.31.1)(yaml@2.8.2))
+      better-title-case:
+        specifier: ^1.0.1
+        version: 1.0.1
       convex-test:
         specifier: ^0.0.41
         version: 0.0.41(convex@1.32.0(react@19.2.4))
+      english-a-an:
+        specifier: 3.4.0
+        version: 3.4.0
+      english-a-an-list:
+        specifier: 3.4.0
+        version: 3.4.0
+      french-verbs-lefff:
+        specifier: 3.4.0
+        version: 3.4.0
       jsdom:
         specifier: ^28.1.0
         version: 28.1.0
@@ -1450,9 +1462,6 @@ packages:
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
 
-  '@types/babel-types@7.0.16':
-    resolution: {integrity: sha512-5QXs9GBFTNTmilLlWBhnsprqpjfrotyrnzUdwDrywEL/DA4LuCWQT300BTOXA3Y9ngT9F2uvmCoIxI6z8DlJEA==}
-
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -1464,9 +1473,6 @@ packages:
 
   '@types/babel__traverse@7.28.0':
     resolution: {integrity: sha512-8PvcXf70gTDZBgt9ptxJ8elBeBjcLOAcOtoO/mPJjtji1+CdGbHgm77om1GrsPxsiE+uXIpNSK64UYaIwQXd4Q==}
-
-  '@types/babylon@6.16.9':
-    resolution: {integrity: sha512-sEKyxMVEowhcr8WLfN0jJYe4gS4Z9KC2DGz0vqfC7+MXFbmvOF7jSjALC77thvAO2TLgFUPa9vDeOak+AcUrZA==}
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
@@ -1489,9 +1495,6 @@ packages:
   '@types/node@24.12.0':
     resolution: {integrity: sha512-GYDxsZi3ChgmckRT9HPU0WEhKLP08ev/Yfcq2AstjrDASOYCSXeyjDsHg4v5t4jOj7cyDX3vmprafKlWIG9MXQ==}
 
-  '@types/numeral@0.0.28':
-    resolution: {integrity: sha512-Sjsy10w6XFHDktJJdXzBJmoondAKW+LcGpRFH+9+zXEDj0cOH8BxJuZA9vUDSMAzU1YRJlsPKmZEEiTYDlICLw==}
-
   '@types/react-dom@19.2.3':
     resolution: {integrity: sha512-jp2L/eY6fn+KgVVQAOqYItbF0VY/YApe5Mz2F0aykSO8gx31bYCZyvSeYxCHKvzHG5eZjc+zyaS5BrBWya2+kQ==}
     peerDependencies:
@@ -1500,14 +1503,8 @@ packages:
   '@types/react@19.2.14':
     resolution: {integrity: sha512-ilcTH/UniCkMdtexkoCN0bI7pMcJDvmQFPvuPvmEaYA/NSfFTAgdUSLAoVjaRJm7+6PvcM+q1zYOwS4wTYMF9w==}
 
-  '@types/snowball-stemmers@0.6.2':
-    resolution: {integrity: sha512-ihEXPKPKfIP/Ht8FN+UPqqg1kPNrV+Uo+eQtqB+K4sLmTBll3OM1bKj7OlsN4v12qk4O7D0MjczJG7NPAxgpyQ==}
-
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@types/wink-tokenizer@4.0.6':
-    resolution: {integrity: sha512-FSQP7MwLDWgSkYw1sJMmN4SFBJt/W6bDaHy/quOG2aq5DOB/ilHfY4x3IsAhGUmA45y3H29tM0tbq0Ut1LD7/Q==}
 
   '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260307.1':
     resolution: {integrity: sha512-VpnrMP4iDLSTT9Hg/KrHwuIHLZr5dxYPMFErfv3ZDA0tv48u2H1lBhHVVMMopCuskuX3C35EOJbxLkxCJd6zDw==}
@@ -1603,11 +1600,6 @@ packages:
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  acorn@7.4.1:
-    resolution: {integrity: sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
@@ -1650,33 +1642,12 @@ packages:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
 
-  assert-never@1.4.0:
-    resolution: {integrity: sha512-5oJg84os6NMQNl27T9LnZkvvqzvAnHu03ShCnoj6bsJwS7L8AO4lf+C/XjK/nvzEqQB744moC6V128RucQd1jA==}
-
   assertion-error@2.0.1:
     resolution: {integrity: sha512-Izi8RQcffqCeNVgFigKli1ssklIbpHnCYc6AknXGYoB6grJqyeby7jv12JUQgmTAnIDnbck1uxksT4dzN3PWBA==}
     engines: {node: '>=12'}
 
-  ast-types@0.14.2:
-    resolution: {integrity: sha512-O0yuUDnZeQDL+ncNGlJ78BiO4jnYI3bvMsD5prT0/nsgijG/LpNBIr63gTjVTNsiGkgQhiyCShTgxt8oXOrklA==}
-    engines: {node: '>=4'}
-
   ast-v8-to-istanbul@0.3.12:
     resolution: {integrity: sha512-BRRC8VRZY2R4Z4lFIL35MwNXmwVqBityvOIwETtsCSwvjl0IdgFsy9NhdaA6j74nUdtJJlIypeRhpDam19Wq3g==}
-
-  babel-runtime@6.26.0:
-    resolution: {integrity: sha512-ITKNuq2wKlW1fJg9sSW52eepoYgZBggvOAHC0u/CYu/qxQ9EVzThCgR69BnSXLHjy2f7SY5zaQ4yt7H9ZVxY2g==}
-
-  babel-types@6.26.0:
-    resolution: {integrity: sha512-zhe3V/26rCWsEZK8kZN+HaQj5yQ1CilTObixFzKW1UWjqG7618Twz6YEsCnjfg5gBcJh02DrpCkS9h98ZqDY+g==}
-
-  babel-walk@3.0.0-canary-5:
-    resolution: {integrity: sha512-GAwkz0AihzY5bkwIY5QDR+LvsRQgB/B+1foMPvi0FZPMl5fjD7ICiznUiBdLYMH1QYe6vqu4gWYytZOccLouFw==}
-    engines: {node: '>= 10.0.0'}
-
-  babylon@6.18.0:
-    resolution: {integrity: sha512-q/UEjfGJ2Cm3oKV71DJz9d25TPnq5rhBVL2Q4fA5wcC3jcrdn7+SssEybFIxwAvvP+YCsCYNKughoF33GxgycQ==}
-    hasBin: true
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -1745,9 +1716,6 @@ packages:
   character-entities-legacy@3.0.0:
     resolution: {integrity: sha512-RpPp0asT/6ufRm//AJVwpViZbGM/MkjQFxJccQRHmISF/22NBtsHqAWmL+/pmkPWoIUJdWyeVleTl1wydHATVQ==}
 
-  character-parser@2.2.0:
-    resolution: {integrity: sha512-+UqJQjFEFaTAs3bNsF2j2kEN1baG/zghZbdqoYEDxGZtJo9LBzl1A+m0D4n3qKx8N2FNv8/Xp6yV9mQmBuptaw==}
-
   ci-info@3.9.0:
     resolution: {integrity: sha512-NIxF55hv4nSqQswkAeiOi1r83xy8JldOFDTWiug55KBu9Jnblncd2U6ViHmYgHf01TPZS77NJBhBMKdWj9HQMQ==}
     engines: {node: '>=8'}
@@ -1781,12 +1749,6 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  constantinople@3.1.2:
-    resolution: {integrity: sha512-yePcBqEFhLOqSBtwYOGGS1exHo/s1xjekXiinh4itpNQGCu4KA1euPh1fg07N2wMITZXQkBz75Ntdt1ctGZouw==}
-
-  constantinople@4.0.1:
-    resolution: {integrity: sha512-vCrqcSIq4//Gx74TXXCGnHpulY1dskqLTFGDmhrGxzeXL8lF8kvXv6mpNWlJj1uD4DW23D4ljAqbY4RRaaUZIw==}
-
   convert-source-map@2.0.0:
     resolution: {integrity: sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==}
 
@@ -1815,10 +1777,6 @@ packages:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
     engines: {node: '>=18'}
 
-  core-js@2.6.12:
-    resolution: {integrity: sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==}
-    deprecated: core-js@<3.23.3 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Some versions have web compatibility issues. Please, upgrade your dependencies to the actual version of core-js.
-
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -1843,10 +1801,6 @@ packages:
 
   date-fns-jalali@4.1.0-0:
     resolution: {integrity: sha512-hTIP/z+t+qKwBDcmmsnmjWTduxCg+5KfdqWQvb2X/8C9+knYY6epN/pfxdDuyVlSVeFz0sM5eEfwIUQ70U4ckg==}
-
-  date-fns@2.30.0:
-    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
-    engines: {node: '>=0.11'}
 
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
@@ -1881,9 +1835,6 @@ packages:
   devlop@1.1.0:
     resolution: {integrity: sha512-RWmIqhcFf1lRYBvNmr7qTNuyCt/7/ns2jbpp1+PalgE/rDQcBT0fioSMUpJ93irlUhC5hrg4cYqe6U+0ImW0rA==}
 
-  doctypes@1.1.0:
-    resolution: {integrity: sha512-LLBi6pEqS6Do3EKQ3J0NqHWV5hhb78Pi8vvESYwyOy2c31ZEZVdtitdzsQsKb7878PEERhzUk0ftqGhG6Mz+pQ==}
-
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
 
@@ -1900,43 +1851,12 @@ packages:
   electron-to-chromium@1.5.307:
     resolution: {integrity: sha512-5z3uFKBWjiNR44nFcYdkcXjKMbg5KXNdciu7mhTPo9tB7NbqSNP2sSnGR+fqknZSCwKkBN+oxiiajWs4dT6ORg==}
 
-  emoji-regex@9.2.2:
-    resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
-
   english-a-an-list@3.4.0:
     resolution: {integrity: sha512-CR9+E+YxnukbZfeQjqZ9+OZbq93vWcdVtTMD37NwNpqsnKeE03FKgZUzoku8lEe8DVydXkIU7WcUT4hBecPFcw==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   english-a-an@3.4.0:
     resolution: {integrity: sha512-x7ipCivpTiAdSiUDfXZfQPJIAyvXfUUKlADDG4gXo2dCZJoe77ziNuMZR5IXm5TNVLPnPusXl6X579aonPiIOw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-determiners@5.4.0:
-    resolution: {integrity: sha512-F/WLWqmEHJi+qzWbQGtHynmFPsP3z5QBptIoh/zm32ofQKdZ03oW97TpCm8JAsoDoHMQbmV2tOT2XpFoBOQTlg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-ordinals@3.4.0:
-    resolution: {integrity: sha512-WSiRZstJ6h6yod/YcZquU8GMdZq7lBm28+vSyu3WO3hQ+Ny+QOVszBDGIRm2V63ELYEfJQTWp1TOu5VlFx5ZSw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-plurals-list@3.4.0:
-    resolution: {integrity: sha512-4eNVS+L5oBC7eoNl9iot/BcY3dYdSHa3WlPkYiGMB7scK+bYYdEpt8L4FLBcTSD1V2Yon7lFiB3ZWhbMqkQLNw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-plurals@3.4.0:
-    resolution: {integrity: sha512-wpmptgw7Nva21VeAHDA7NSWtQ3qnizMFZwm7/ps2gHFg19HEcWYT+RXaFHpV5GK9WSF5w/QTn6J3WuL6ceI42Q==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-verbs-gerunds@3.4.0:
-    resolution: {integrity: sha512-sc6Zgm7Du+KKIloln0GzcT/fZxIqJBXlfU9B8DLi1bPmKK/hVK3HsRWywNaAGwHU4+SpZ7ADvLvoXlMI2PkwUw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-verbs-helper@3.4.0:
-    resolution: {integrity: sha512-yP1msoIysGuUolx1s3K7dHj5ASqitjHN3PAe3rrF7/mbcHqg1VaLyGVII7Onkv3AHnrPqMT6ITiPtd2rccE7eg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  english-verbs-irregular@3.4.0:
-    resolution: {integrity: sha512-Rk0fgdzJ0oqpERPHr6QV2Dp8nnNKO3Si92RWYCe7fgxks8+yEOtUDu0ZBm3AJ6Ccqaa5ZtVh/pndUYdbKkr7xg==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   enhanced-resolve@5.20.0:
@@ -2014,11 +1934,6 @@ packages:
   espree@10.4.0:
     resolution: {integrity: sha512-j6PAQ2uUr79PZhBjP5C5fhl8e39FmRnOjsD5lGnWrFU8i2G776tBK7+nP8KuQUTTyAZUwfQqXAgrVH5MbH9CYQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  esprima@4.0.1:
-    resolution: {integrity: sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==}
-    engines: {node: '>=4'}
-    hasBin: true
 
   esquery@1.7.0:
     resolution: {integrity: sha512-Ap6G0WQwcU/LHsvLwON1fAQX9Zp0A2Y6Y/cJBl9r/JbW90Zyg4/zbG6zzKa2OTALELarYHmKu0GhpM5EO+7T0g==}
@@ -2112,44 +2027,8 @@ packages:
       react-dom:
         optional: true
 
-  french-adjectives-wrapper@3.4.0:
-    resolution: {integrity: sha512-IjyHq0BY1nxUaYsUMzQ7ZerCvLkYzUcOf1Q5b3sCCjr9vmG1yrWAJz9Xp6b/ivOxMV4/LHTW2IMOKjLJY3oB8w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-adjectives@5.4.0:
-    resolution: {integrity: sha512-wYyHORlVggYTRa1J/nLqeegqEXQ2fmns/fdAINbbzP5p8WTI79DTJNnf9AzA86U6s0e+WTltCptTkqHcljRi+g==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-contractions@5.4.0:
-    resolution: {integrity: sha512-joMnWmU7t55Zaumc/9QBERtJneIRorlMPAM18HB2g2etFvygRU10fsXwrEKoHZTWaqcR0jazsCLaq3VlIPfg0w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-determiners@5.4.0:
-    resolution: {integrity: sha512-q871d7U/6Paq/qaZzbTSsuVFxM8HdgmyNNjlThhEAYIqw4QAr12AzEgnUZey0NCwGtnjgssdLkPSxiQJI9YP9w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-ordinals@5.4.0:
-    resolution: {integrity: sha512-Un2gfEVRa6vodhy7EycHZvnKRUOy8zGVJTIcavZwa5Q6u0z69XSqyRfgsgeRXwpYvD0VwO/sUCmhhGRUKfkfVw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   french-verbs-lefff@3.4.0:
     resolution: {integrity: sha512-fHpP4sewTSJ4GYxKpIuUhJq/5F1x7Giyw3Tq4hxHumlNaAgF1Jz9T97AYsHo/LejDbTQaTGaX3jppkvIhgId0w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-verbs-transitive@3.4.0:
-    resolution: {integrity: sha512-1YxSv4taaFvB86saX3h6a9OYLfxr/WceNmseLhfNy8RZoh2FIO5KLn/zOA3erBP/CKLUfiZuaz2m2W11q5IVfQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-verbs@5.4.0:
-    resolution: {integrity: sha512-yPpqkBa9mOjGz60l4mDNdTahZzPklwGkokmHvSvJ+XyA0Xwx56owQJNsF3GRJyLvD3Du1sya3UQZp+pxk0jOeQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-words-gender-lefff@3.4.0:
-    resolution: {integrity: sha512-FlkblD5k98vtKsLe0Oczxjcg3RR6/Es/wADneoYYYbExu9NTbTpgdz1I1OTahsqFnvCMBqAUPcmb8gGkoLyhtg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  french-words@3.4.0:
-    resolution: {integrity: sha512-PUsDUF8jc1B775Jkr/gQT/isBQsoajxGTOXwVudavAPWr3R83MK4JasYxk83iTwPUSIqQg3fykJte2RW2UFG1w==}
     deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   fs-extra@10.1.0:
@@ -2167,42 +2046,6 @@ packages:
   gensync@1.0.0-beta.2:
     resolution: {integrity: sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==}
     engines: {node: '>=6.9.0'}
-
-  german-adjectives-dict@3.4.0:
-    resolution: {integrity: sha512-jpPb3ihGOCA/eJwJJ/7ciGizEIqEf9+5UhDrMWlGgax2TFu7XOrvxcqYw39kRab22Yax9BcbohSHM5CaWytong==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-adjectives@5.4.0:
-    resolution: {integrity: sha512-eiWKrLdUO2Hjc/Z4C1id+UqV5WFjLjVtGoA49hMBNwaI867KS/VuMLni9JXf6QHlYhGlskGYKUiM1Ag+EdOoAQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-determiners@5.4.0:
-    resolution: {integrity: sha512-lH+jq7ES8zIqbK6Uummi7EgWi4NMo696xRn7By+O5S3tmc0bUAF6eJbqqLBKDG6wMUPT0xT7kjNXZIPhaCedUg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-dict-helper@5.4.0:
-    resolution: {integrity: sha512-HELP0p+aYeCXf8+omb5FCVLLQT2fnIrOGgOWh0vmCdjcMuaqIDlpRrYX8/BZMxzAnr99zLijqAouPUFg4x17MQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-ordinals@5.4.0:
-    resolution: {integrity: sha512-pnsdsEOv+Qanaic5R5bbmld6Mup6qbLovdAfFkR9trpZO7kL1lqtlsqC57Li4JOMNgoHuh2HAQhTd0yru/BdPQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-verbs-dict@3.4.0:
-    resolution: {integrity: sha512-q8ymkhHKtfyJuIRjUhvK0SLaD8q3A0g+iCXuUvuPgwsZTm/aprh4Bxcdv3rtr+4S9842IRK+EugJ3+jr+BXqnw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-verbs@5.4.0:
-    resolution: {integrity: sha512-u7Dzyp/xIVfIsLp9xYZpPAIJM8nj+7sf8+0lQvdxu3J9yFQpLs5YYIfpEHp8XH1JEK8JZnYnm3KQnvMXhmTPnQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-words-dict@3.4.0:
-    resolution: {integrity: sha512-S3Vyd8mYknAIRMtLOf+loYESFZ/XnHxBSxLJvqGaeaWGKgKny2bYOccT3uqsmwPOiPItVqc05gVdBHMBGoaevw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  german-words@5.4.0:
-    resolution: {integrity: sha512-5DfP1zNzqFU2N8S8ndw9CUQv0Jm6MRqOIa9Be9VJAQ7lndeqzZ+G6hexbnMB5bDVSe2/qGuScnrWPUmvVBlAvg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   get-east-asian-width@1.5.0:
     resolution: {integrity: sha512-CQ+bEO+Tva/qlmw24dCejulK5pMzVnUOFOijVogd3KQs07HnRIgp8TGipvCCRT06xeYEbpbgwaCxglFyiuIcmA==}
@@ -2254,10 +2097,6 @@ packages:
 
   has-symbols@1.1.0:
     resolution: {integrity: sha512-1cDNdwJ2Jaohmb3sg4OmKaMBwuC48sYni5HUw2DvsC8LjGTLK9h+eb1X6RyuOHe4hT0ULCW68iomhjUoKUqlPQ==}
-    engines: {node: '>= 0.4'}
-
-  has-tostringtag@1.0.2:
-    resolution: {integrity: sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==}
     engines: {node: '>= 0.4'}
 
   hasown@2.0.2:
@@ -2315,9 +2154,6 @@ packages:
     engines: {node: '>=8'}
     hasBin: true
 
-  is-expression@4.0.0:
-    resolution: {integrity: sha512-zMIXX63sxzG3XrkHkrAPvm/OVZVSCPNkwMHU8oTX7/U3AL78I0QXCEICXUM13BIa8TYGZ68PiTKfQz3yaTNr4A==}
-
   is-extglob@2.1.1:
     resolution: {integrity: sha512-SbKbANkN603Vi4jEZv49LeVJMn4yGwsbzZworEoyEiutsN3nJYdbO36zfhGJ6QEDpOZIFkDtnq5JRxmvl3jsoQ==}
     engines: {node: '>=0.10.0'}
@@ -2340,10 +2176,6 @@ packages:
 
   is-potential-custom-element-name@1.0.1:
     resolution: {integrity: sha512-bCYeRA2rVibKZd+s2625gGnGF/t7DSqDs4dP7CrLA1m7jKWz6pps0LpYLJN8Q64HtmPKJ1hrN3nzPNKFEKOUiQ==}
-
-  is-regex@1.2.1:
-    resolution: {integrity: sha512-MjYsKHO5O7mCsmRGxWcLWheFqN9DJ/2TmngvjKXihe6efViPqc274+Fx/4fYj/r03+ESvBdTXK0V6tA3rgez1g==}
-    engines: {node: '>= 0.4'}
 
   is-unicode-supported@2.1.0:
     resolution: {integrity: sha512-mE00Gnza5EEB3Ds0HfMyllZzbBrmLOX3vfWoj9A9PEnTfratQ/BcaJOuMhnkhjXvb2+FkY3VuHqtAGpTPmglFQ==}
@@ -2375,47 +2207,12 @@ packages:
     resolution: {integrity: sha512-HGYWWS/ehqTV3xN10i23tkPkpH46MLCIMFNCaaKNavAXTF1RkqxawEPtnjnGZ6XKSInBKkiOA5BKS+aZiY3AvA==}
     engines: {node: '>=8'}
 
-  italian-adjectives-dict@3.4.0:
-    resolution: {integrity: sha512-Ka3iO5/chtB7B9tCa6pb9qSZiANfubp7JVmR0dx8fyCpsP7XpfVubyML8CzXT8iyNMvxDXuyf2QwaTXSWaF5sg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-adjectives@5.4.0:
-    resolution: {integrity: sha512-hDNo40V5HUSNifgliIRXGiSEVp/grf/Gh8Jsa1OlpbN/+9AIB0lPhowAN4Aar/wqeMLLdP/TO1fMG2Ng6rpMMw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-determiners@5.4.0:
-    resolution: {integrity: sha512-1V4tJ60RyIhIZY7UqBMeI6FHIbDVfFmiZ2yOi/jq87ejKexm/Zvp8GQ+oW39l5lNKdpD2XL12iFvZRAvtY2h5w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-ordinals-cardinals@5.4.0:
-    resolution: {integrity: sha512-pi6mCvpGI4WsHxQ8s1dtAJ7i0Cfk9HcfunktgBLmohZ0zu4YdY5wlzbN6aU5I3YATNXOHKeXmJLcqzRkfbBgfw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-verbs-dict@3.4.0:
-    resolution: {integrity: sha512-TY0kVsDUxP8sg1V+9QDXryu/IJzaRGLZgkeOibECr1ASMwBwMW/O63YQEJl4R5kLO5cE3RIltFxt15mQkkdOlA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-verbs@5.4.0:
-    resolution: {integrity: sha512-OsDVOqN6p1I249sBXvcCZXJo4pWcRSiKKGwv3VN+uR5Hs77837KzBikgQ5fvJApx2LADO4aLg2o2G2Umi2kRDQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-words-dict@3.4.0:
-    resolution: {integrity: sha512-4Buxj5/d2lUrIdK9VaZyUfM0KlS0I/PmXtBC+7W0P+bMWidlHzHSfyKEguhWqWV4j9NYAlXFB4G82Non2bWHzA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  italian-words@5.4.0:
-    resolution: {integrity: sha512-xAzFEFd88G02VDEW30XLbw2yHvIlqz7WH2uB5m6EuW0UN60WqBWLYN9Kufa5EfDKlWHXACgS7ktOuN+1vBINMA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
 
   jose@5.10.0:
     resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
-
-  js-stringify@1.0.2:
-    resolution: {integrity: sha512-rtS5ATOo2Q5k1G+DADISilDA6lv79zIiwFd6CcjuIxGKLFm5C+RLImRscVap9k55i+MOZwgliw+NejvkLuGD5g==}
 
   js-tokens@10.0.0:
     resolution: {integrity: sha512-lM/UBzQmfJRo9ABXbPWemivdCW8V2G8FHaHdypQaIy523snUjog0W71ayWXTjiR+ixeMyVHN2XcpnTd/liPg/Q==}
@@ -2490,10 +2287,6 @@ packages:
     peerDependencies:
       '@types/node': '>=18'
       typescript: '>=5.0.4 <7'
-
-  lefff-helper@5.4.0:
-    resolution: {integrity: sha512-pCXpwOBZEv6brvFk38LsAABxhOnxWSmX8t+N3KvhvVZZwoLhUUqfLP8U7fSu9b/CGBr2HBYDSprEoH7bv9iiOA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -2580,9 +2373,6 @@ packages:
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
-  lodash@4.17.23:
-    resolution: {integrity: sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==}
-
   log-symbols@7.0.1:
     resolution: {integrity: sha512-ja1E3yCr9i/0hmBVaM0bfwDjnGy8I/s6PP4DFp+yP+a+mrHO4Rm7DtmnqROTUkHIkqffC84YY7AeqX6oFk0WFg==}
     engines: {node: '>=18'}
@@ -2663,10 +2453,6 @@ packages:
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
 
-  morph-it-helper@5.4.0:
-    resolution: {integrity: sha512-7BUGlNh2bVgp3WjSx2PBC08DnZ21mKb/oKShmMlVaeSvBpwfZvNzSHVFbI9edDjb3TtpvePc3FMwiqmalPpfCw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   motion-dom@12.35.0:
     resolution: {integrity: sha512-FFMLEnIejK/zDABn+vqGVAUN4T0+3fw+cVAY8MMT65yR+j5uMuvWdd4npACWhh94OVWQs79CrBBuwOwGRZAQiA==}
 
@@ -2713,15 +2499,8 @@ packages:
     engines: {node: ^20.5.0 || >=22.0.0, npm: '>= 10'}
     hasBin: true
 
-  numeral@2.0.6:
-    resolution: {integrity: sha512-qaKRmtYPZ5qdw4jWJD6bxEf1FJEqllJrwxCLIm0sQU/A7v2/czigzOb+C2uSiFsa9lBUzeH7M1oK+Q+OLxL3kA==}
-
   oauth4webapi@3.8.5:
     resolution: {integrity: sha512-A8jmyUckVhRJj5lspguklcl90Ydqk61H3dcU0oLhH3Yv13KpAliKTt5hknpGGPZSSfOwGyraNEFmofDYH+1kSg==}
-
-  object-assign@4.1.1:
-    resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
-    engines: {node: '>=0.10.0'}
 
   object-keys@1.1.1:
     resolution: {integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==}
@@ -2751,9 +2530,6 @@ packages:
   ora@9.3.0:
     resolution: {integrity: sha512-lBX72MWFduWEf7v7uWf5DHp9Jn5BI8bNPGuFgtXMmr2uDz2Gz2749y3am3agSDdkhHPHYmmxEGSKH85ZLGzgXw==}
     engines: {node: '>=20'}
-
-  ordinal-spanish@0.1.3:
-    resolution: {integrity: sha512-ajBoTPQ5zogB2X0dc04lHv0EVKI3MYOnqilGvf/FsKGX/werYN2UNsXJZPlyChUipwIiFTcrNyNmqKs+lVxD4Q==}
 
   oxc-resolver@11.19.1:
     resolution: {integrity: sha512-qE/CIg/spwrTBFt5aKmwe3ifeDdLfA2NESN30E42X/lII5ClF8V7Wt6WIJhcGZjp0/Q+nQ+9vgxGk//xZNX2hg==}
@@ -2855,27 +2631,12 @@ packages:
   property-information@7.1.0:
     resolution: {integrity: sha512-TwEZ+X+yCJmYfL7TPUOcvBZ4QfoT5YenQiJuX//0th53DE6w0xxLEtfK3iyryQFddXuvkIk51EEgrJQ0WJkOmQ==}
 
-  pug-attrs@2.0.4:
-    resolution: {integrity: sha512-TaZ4Z2TWUPDJcV3wjU3RtUXMrd3kM4Wzjbe3EWnSsZPsJ3LDI0F3yCnf2/W7PPFF+edUFQ0HgDL1IoxSz5K8EQ==}
-
-  pug-error@1.3.3:
-    resolution: {integrity: sha512-qE3YhESP2mRAWMFJgKdtT5D7ckThRScXRwkfo+Erqga7dyJdY3ZquspprMCj/9sJ2ijm5hXFWQE/A3l4poMWiQ==}
-
-  pug-runtime@2.0.5:
-    resolution: {integrity: sha512-P+rXKn9un4fQY77wtpcuFyvFaBww7/91f3jHa154qU26qFAnOe6SW1CbIDcxiG5lLK9HazYrMCCuDvNgDQNptw==}
-
-  pug-strip-comments@1.0.4:
-    resolution: {integrity: sha512-i5j/9CS4yFhSxHp5iKPHwigaig/VV9g+FgReLJWWHEHbvKsbqL0oP/K5ubuLco6Wu3Kan5p7u7qk8A4oLLh6vw==}
-
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
-
-  random-js@2.1.0:
-    resolution: {integrity: sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==}
 
   react-day-picker@9.14.0:
     resolution: {integrity: sha512-tBaoDWjPwe0M5pGrum4H0SR6Lyk+BO9oHnp9JbKpGKW2mlraNPgP9BMfsg5pWpwrssARmeqk7YBl2oXutZTaHA==}
@@ -2924,16 +2685,9 @@ packages:
     resolution: {integrity: sha512-qpt8EwugBWDw2cgE2W+/3oxC+KTez2uSVR8JU9Q36TXPAGCaozfQUs59v4j4GFpWTaw0i6hAZSvOmu1J0uOEUg==}
     engines: {node: ^18.17.0 || >=20.5.0}
 
-  recast@0.20.5:
-    resolution: {integrity: sha512-E5qICoPoNL4yU0H0NoBDntNB0Q5oMSNh9usFctYniLBluTthi3RsQVBXIJNbApOlvSwW/RGxIuokPcAc59J5fQ==}
-    engines: {node: '>= 4'}
-
   redent@3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
-
-  regenerator-runtime@0.11.1:
-    resolution: {integrity: sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==}
 
   regex-recursion@6.0.2:
     resolution: {integrity: sha512-0YCaSCq2VRIebiaUviZNs0cBz1kg5kVS2UKUfNIx8YVs1cN3AV7NTctO5FOKBA+UT2BPJIWZauYHPqJODG50cg==}
@@ -2943,9 +2697,6 @@ packages:
 
   regex@6.1.0:
     resolution: {integrity: sha512-6VwtthbV4o/7+OaAF9I5L5V3llLEsoPyq9P1JVXkedTP33c7MfCG0/5NOPcSJn0TzXcG9YUrR0gQSWioew3LDg==}
-
-  remove-accents@0.4.4:
-    resolution: {integrity: sha512-EpFcOa/ISetVHEXqu+VwI96KZBmq+a8LJnGkaeFw45epGlxIZz5dhEEnNZMsQXgORu3qaMoLX4qJCzOik6ytAg==}
 
   require-from-string@2.0.2:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
@@ -2970,66 +2721,6 @@ packages:
     resolution: {integrity: sha512-2oMpl67a3zCH9H79LeMcbDhXW/UmWG/y2zuqnF2jQq5uq9TbM9TVyXvA4+t+ne2IIkBdrLpAaRQAvo7YI/Yyeg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
-
-  rosaenlg-commons@3.4.0:
-    resolution: {integrity: sha512-gxDcHnFP69eQSVZoecoMGYhqEkih9I6NVzvp3MRi5SMzuG4B2+Hv5fRty9kpGWYRKdVLA/DhnDqNgMjZaoWsmw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-filter@5.4.0:
-    resolution: {integrity: sha512-ZKIk9LAVlQPewc/nGfPbdyTZl+TR1xDlspydEZi7PKLxmPyP3tTotnG5JJTCXjX8nBCWnDt2VjiANgTF+1p4zw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-gender-es@4.4.0:
-    resolution: {integrity: sha512-3C5RRMiVVXCSiHh1aYhgjVmhBST1zGed1ILtaWkHQ8FZbkqBnYlsKIwC5/J3KzBfj4MVL4ptJDCKilxl2L2x5w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-lib@4.4.0:
-    resolution: {integrity: sha512-E3ONUwSZaMBh1ujhLJo8JeX4M3IlVtvSGPx3wv1CdKnfLN4ixkMjUIN2cmWVb5FfZlVkV6gBmJ2aUZgn95+OpQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-n2words@3.4.0:
-    resolution: {integrity: sha512-jb9uv8xhcU/JlrSuDeCCg6sBOsyplqUg9DdjkTqPYxxab1iFqMyO7jmCJEiaG98nTxs6eD5A81hT7YXpaIDyGw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pluralize-es@4.4.0:
-    resolution: {integrity: sha512-zpQ4ALydumPTtgmsvby1aUpLFEiu3UISY5LW859cHCuz/yw6FqcxC54tRHyfZk61WV6gZNLYKCnOey2nYMfNKw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pluralize-fr@3.4.0:
-    resolution: {integrity: sha512-kHA/KRLVikORymrZ618JSa1xAyx4N7qOWi2GhXU66aJyyZvudkrLhV0OUnz81XYHtFSA7y/4FqVf+LIYN1NvxA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-code-gen@6.4.0:
-    resolution: {integrity: sha512-R3cfzEiaKk5+UIRWH08d9XU5xwFgnF3ISg0+9vJ5RIcrdXOMJsGxGSft3frgPhYak8Ap+L3/579brMAVmorpNg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-lexer@8.4.0:
-    resolution: {integrity: sha512-7C1Awl9FNSzGBAVevVD9zBB0Dl7HrH6JQ4zlYHUi1crDN/5kEkTe7GQFU4lOqwhQxso5V45dCeLLXpV/4BQIxw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-linker@7.4.0:
-    resolution: {integrity: sha512-qVm0CTldrRBvvXkHXRFphDziPhObX6YhVn9tYGDtZ9bAN2aRcLo5Pxr4nao63iDAE3yd20Mwk8zWmjuB/Uy63w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-load@6.4.0:
-    resolution: {integrity: sha512-Bakn7LlCzlAnq+Db1iUls3OSf3a7532C2Gg5wOn8Y0nh6TphH6hK2yTwvsHA3oM5IqRIGoRS1j6Lw8k68DTqHw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-parser@9.4.0:
-    resolution: {integrity: sha512-DST+pVLIdR2i/ivZKmqPCINXHTeyy4tbyxNVoz0YGI6LoQoP/1AhAVWXbpAzf7JS5oT3uGBuaDH3adzMnadKew==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-pug-walk@5.4.0:
-    resolution: {integrity: sha512-fNcKS8tXhUit36cP3jvRSRzUOlwMkvGYBYN9MAMGL7wT5ErEX3R+rM7Z4DXcUpr7c6C/wFwZ74Ze+cHkB2B8sQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg-yseop@5.4.0:
-    resolution: {integrity: sha512-KdtFJYZdv3A7N20LdOoPkKSrUNS48GzrRoFjjFea7fqmyQup4d1I3jz3F3evUf1jLe2WmPAZQOFSRZVV9fCHQw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  rosaenlg@4.4.0:
-    resolution: {integrity: sha512-P0oK5BGbNMCRDC/zFoqE3LhnUlOejXpgpES14Ubg8J4NnFy5FExUzTN5uevJi4nck4N/AKoo8SOywG++1JtRRQ==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
@@ -3094,10 +2785,6 @@ packages:
     resolution: {integrity: sha512-4zemZi0HvTnYwLfrpk/CF9LOd9Lt87kAt50GnqhMpyF9U3poDAP2+iukq2bZsO/ufegbYehBkqINbsWxj4l4cw==}
     engines: {node: '>= 18'}
 
-  snowball-stemmer.jsx@0.2.3:
-    resolution: {integrity: sha512-9XxyGgB1eLtU1hses7ggusDhj5gjJ/QzhlBLDFta2Brp4K4/EiEolvDX1GVYWOGy11nYpwFDehkaJOlhWf2zQw==}
-    engines: {node: '>=0.8.0'}
-
   source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
@@ -3109,30 +2796,6 @@ packages:
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
 
-  spanish-adjectives-wrapper@3.4.0:
-    resolution: {integrity: sha512-ISbMZ+i3x/pFIfZEdp/E0jVuuk3/1KdNBYav+xZjY6CW+Da+RzKRXzk5klVJ6FodEhvAo0bnTa8/EgiESoQ2+Q==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  spanish-adjectives@3.4.0:
-    resolution: {integrity: sha512-8Xaxh+t4PNIBKHQ5YPTPtjNzRgIXNUiPui6nUNBm7HRD8wcR767mT9lYiTaAHgabTI68dgvOwGNFDDPBl5XUig==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  spanish-determiners@3.4.0:
-    resolution: {integrity: sha512-j9PpUUGeEx4rHX54+BP1ZW+DIVRKzT0mhuyDuBIkRifMsFEXB1zJtBnSumfCBVF/2V79t1fRhawplDsqsVOD0w==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  spanish-verbs-wrapper@3.4.0:
-    resolution: {integrity: sha512-HeExtdV+lVWgEQundqb4Q4yC1qn+ubhS0YepDZ+AV6R3RL9B71WVU2txoOLQchnUVJ5hxPX/HaGb6tdLMns3Rw==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  spanish-verbs@3.4.0:
-    resolution: {integrity: sha512-S8vKdPDYF/i485hww+zEG/260hYpvrg2sNFaKrWX1t1KANIjzldzUiKW2aH+cnL+xgeB7Il4gccDioZN0EsyEA==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
-  spanish-words@3.4.0:
-    resolution: {integrity: sha512-jqX1idSua+dnZ77DC0UPSgle06Gs7bLshg6RV5JlaNsDLWFFUlonIBi/DKjToilqnfgUpYsAsrOJOkK+XdKYJg==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
@@ -3142,26 +2805,6 @@ packages:
   stdin-discarder@0.3.1:
     resolution: {integrity: sha512-reExS1kSGoElkextOcPkel4NE99S0BWxjUHQeDFnR8S993JxpPX7KU4MNmO19NXhlJp+8dmdCbKQVNgLJh2teA==}
     engines: {node: '>=18'}
-
-  stopwords-de@0.3.0:
-    resolution: {integrity: sha512-9Agjg1Hv6nXxEZFI1L1WUo1Qqbiy113Xjdw2PDZ9L/YISASZuPJZlShF7AGXDhULiBvmWdg4rBlCv05CJsXnww==}
-    engines: {node: '>=0.10.0'}
-
-  stopwords-en@0.3.0:
-    resolution: {integrity: sha512-1gQn0NedCj8zJ/pDkyruGgq9wHwv1PSWVHZ9EUe6OQaSWQszGDih+I/k6Mkm7HNaBNjPsbYmW47O1fVg3M1EAw==}
-    engines: {node: '>=0.10.0'}
-
-  stopwords-es@0.3.0:
-    resolution: {integrity: sha512-lmD0/R3f3ZVkBkBYbW6XgH1YH9QW+mc8J43YkBBK/d8z6tF+2QdoiWcDzC8YtLkM/dYyHjIAIiKFz8OyAtZ/dw==}
-    engines: {node: '>=0.10.0'}
-
-  stopwords-fr@0.3.0:
-    resolution: {integrity: sha512-QPLifH9dO1dvPitzunVJnnO6P5cj1nNvnAmj9Ci+mMQfyqwGhheKZO75buN6sgX/mYT8SwCuRz8chVLhGT9D4g==}
-    engines: {node: '>=0.10.0'}
-
-  stopwords-it@0.4.0:
-    resolution: {integrity: sha512-YaUT+iJs1JgqQfWH8uYtuE10B4GF72jW2dF6IQKeIgz1USyzi3pvyewMz76mJiaaNMKTfVHlcz42UZktyN2pog==}
-    engines: {node: '>=0.10.0'}
 
   string-width@8.2.0:
     resolution: {integrity: sha512-6hJPQ8N0V0P3SNmP6h2J99RLuzrWz2gvT7VnK5tKvrNqJoyS9W4/Fb8mo31UiPvy00z7DQXkP2hnKBVav76thw==}
@@ -3192,10 +2835,6 @@ packages:
 
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
-
-  synonym-optimizer@5.4.0:
-    resolution: {integrity: sha512-kd4M2+Hz06I/KBn/VVOGO4RTCogBJhXuI2IksVQ8utcfjEbNEISJOprCRhhA/R1BlOQvzSLCojwjFC+BcdRBew==}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   tabbable@6.4.0:
     resolution: {integrity: sha512-05PUHKSNE8ou2dwIxTngl4EzcnsCDZGJ/iCLtDflR/SHB/ny14rXc+qU5P4mG9JkusiV7EivzY9Mhm55AzAvCg==}
@@ -3243,16 +2882,9 @@ packages:
     resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
     engines: {node: '>=14.14'}
 
-  to-fast-properties@1.0.3:
-    resolution: {integrity: sha512-lxrWP8ejsq+7E3nNjwYmUBMAgjMTZoTI+sdBOpvNyijeDLa29LUn9QaoXAHv4+Z578hbmHHJKZknzxVtvo77og==}
-    engines: {node: '>=0.10.0'}
-
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
-
-  token-stream@1.0.0:
-    resolution: {integrity: sha512-VSsyNPPW74RpHwR8Fc21uubwHY7wMDeJLys2IX5zJNih+OnAnaifKHo+1LHT7DAdloQ7apeaaWg8l7qnf/TnEg==}
 
   tough-cookie@6.0.0:
     resolution: {integrity: sha512-kXuRi1mtaKMrsLUxz3sQYvVl37B0Ns6MzfrtV5DvJceE9bPyspOqk9xxv7XbZWcfLWbFmm997vl83qUWVJA64w==}
@@ -3408,10 +3040,6 @@ packages:
       jsdom:
         optional: true
 
-  void-elements@3.1.0:
-    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
-    engines: {node: '>=0.10.0'}
-
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
@@ -3446,13 +3074,6 @@ packages:
     resolution: {integrity: sha512-hUrmaWBdVDcxvYqnyh09zunKzROWjbZTiNy8dBEjkS7ehEDQibXJ7XvlmtbwuTclUiIyN+CyXQD4Vmko8fNm8w==}
     engines: {node: '>=8'}
     hasBin: true
-
-  wink-tokenizer@5.3.0:
-    resolution: {integrity: sha512-O/yAw0g3FmSgeeQuYAJJfP7fVPB4A6ay0018qASh79aWmIOyPYy4j4r9EQT8xBjicja6lCLvgRVAybmEBaATQA==}
-
-  with@7.0.2:
-    resolution: {integrity: sha512-RNGKj82nUPg3g5ygxkQl0R937xLyho1J24ItRCBTr/m1YnZkzJy1hUiHUJrc/VlsDQzsCnInEGSg3bci0Lmd4w==}
-    engines: {node: '>= 10.0.0'}
 
   word-wrap@1.2.5:
     resolution: {integrity: sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==}
@@ -4464,8 +4085,6 @@ snapshots:
 
   '@types/aria-query@5.0.4': {}
 
-  '@types/babel-types@7.0.16': {}
-
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.29.0
@@ -4486,10 +4105,6 @@ snapshots:
   '@types/babel__traverse@7.28.0':
     dependencies:
       '@babel/types': 7.29.0
-
-  '@types/babylon@6.16.9':
-    dependencies:
-      '@types/babel-types': 7.0.16
 
   '@types/chai@5.2.3':
     dependencies:
@@ -4514,8 +4129,6 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  '@types/numeral@0.0.28': {}
-
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
     dependencies:
       '@types/react': 19.2.14
@@ -4524,11 +4137,7 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
-  '@types/snowball-stemmers@0.6.2': {}
-
   '@types/unist@3.0.3': {}
-
-  '@types/wink-tokenizer@4.0.6': {}
 
   '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260307.1':
     optional: true
@@ -4634,8 +4243,6 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  acorn@7.4.1: {}
-
   acorn@8.16.0: {}
 
   agent-base@7.1.4: {}
@@ -4667,37 +4274,13 @@ snapshots:
 
   aria-query@5.3.2: {}
 
-  assert-never@1.4.0: {}
-
   assertion-error@2.0.1: {}
-
-  ast-types@0.14.2:
-    dependencies:
-      tslib: 2.8.1
 
   ast-v8-to-istanbul@0.3.12:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       estree-walker: 3.0.3
       js-tokens: 10.0.0
-
-  babel-runtime@6.26.0:
-    dependencies:
-      core-js: 2.6.12
-      regenerator-runtime: 0.11.1
-
-  babel-types@6.26.0:
-    dependencies:
-      babel-runtime: 6.26.0
-      esutils: 2.0.3
-      lodash: 4.17.23
-      to-fast-properties: 1.0.3
-
-  babel-walk@3.0.0-canary-5:
-    dependencies:
-      '@babel/types': 7.29.0
-
-  babylon@6.18.0: {}
 
   balanced-match@1.0.2: {}
 
@@ -4762,10 +4345,6 @@ snapshots:
 
   character-entities-legacy@3.0.0: {}
 
-  character-parser@2.2.0:
-    dependencies:
-      is-regex: 1.2.1
-
   ci-info@3.9.0: {}
 
   cli-cursor@5.0.0:
@@ -4788,18 +4367,6 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  constantinople@3.1.2:
-    dependencies:
-      '@types/babel-types': 7.0.16
-      '@types/babylon': 6.16.9
-      babel-types: 6.26.0
-      babylon: 6.18.0
-
-  constantinople@4.0.1:
-    dependencies:
-      '@babel/parser': 7.29.0
-      '@babel/types': 7.29.0
-
   convert-source-map@2.0.0: {}
 
   convex-test@0.0.41(convex@1.32.0(react@19.2.4)):
@@ -4818,8 +4385,6 @@ snapshots:
       - utf-8-validate
 
   cookie@1.1.1: {}
-
-  core-js@2.6.12: {}
 
   cross-spawn@7.0.6:
     dependencies:
@@ -4852,10 +4417,6 @@ snapshots:
 
   date-fns-jalali@4.1.0-0: {}
 
-  date-fns@2.30.0:
-    dependencies:
-      '@babel/runtime': 7.28.6
-
   date-fns@4.1.0: {}
 
   debug@4.4.3:
@@ -4880,8 +4441,6 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  doctypes@1.1.0: {}
-
   dom-accessibility-api@0.5.16: {}
 
   dom-accessibility-api@0.6.3: {}
@@ -4899,27 +4458,9 @@ snapshots:
 
   electron-to-chromium@1.5.307: {}
 
-  emoji-regex@9.2.2: {}
-
   english-a-an-list@3.4.0: {}
 
   english-a-an@3.4.0: {}
-
-  english-determiners@5.4.0: {}
-
-  english-ordinals@3.4.0:
-    dependencies:
-      rosaenlg-n2words: 3.4.0
-
-  english-plurals-list@3.4.0: {}
-
-  english-plurals@3.4.0: {}
-
-  english-verbs-gerunds@3.4.0: {}
-
-  english-verbs-helper@3.4.0: {}
-
-  english-verbs-irregular@3.4.0: {}
 
   enhanced-resolve@5.20.0:
     dependencies:
@@ -5069,8 +4610,6 @@ snapshots:
       acorn-jsx: 5.3.2(acorn@8.16.0)
       eslint-visitor-keys: 4.2.1
 
-  esprima@4.0.1: {}
-
   esquery@1.7.0:
     dependencies:
       estraverse: 5.3.0
@@ -5152,37 +4691,7 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  french-adjectives-wrapper@3.4.0:
-    dependencies:
-      french-adjectives: 5.4.0
-      french-contractions: 5.4.0
-
-  french-adjectives@5.4.0:
-    dependencies:
-      french-contractions: 5.4.0
-
-  french-contractions@5.4.0: {}
-
-  french-determiners@5.4.0:
-    dependencies:
-      french-contractions: 5.4.0
-
-  french-ordinals@5.4.0: {}
-
   french-verbs-lefff@3.4.0: {}
-
-  french-verbs-transitive@3.4.0: {}
-
-  french-verbs@5.4.0:
-    dependencies:
-      french-contractions: 5.4.0
-      french-verbs-transitive: 3.4.0
-
-  french-words-gender-lefff@3.4.0: {}
-
-  french-words@3.4.0:
-    dependencies:
-      rosaenlg-pluralize-fr: 3.4.0
 
   fs-extra@10.1.0:
     dependencies:
@@ -5196,24 +4705,6 @@ snapshots:
   function-bind@1.1.2: {}
 
   gensync@1.0.0-beta.2: {}
-
-  german-adjectives-dict@3.4.0: {}
-
-  german-adjectives@5.4.0: {}
-
-  german-determiners@5.4.0: {}
-
-  german-dict-helper@5.4.0: {}
-
-  german-ordinals@5.4.0: {}
-
-  german-verbs-dict@3.4.0: {}
-
-  german-verbs@5.4.0: {}
-
-  german-words-dict@3.4.0: {}
-
-  german-words@5.4.0: {}
 
   get-east-asian-width@1.5.0: {}
 
@@ -5269,10 +4760,6 @@ snapshots:
       es-define-property: 1.0.1
 
   has-symbols@1.1.0: {}
-
-  has-tostringtag@1.0.2:
-    dependencies:
-      has-symbols: 1.1.0
 
   hasown@2.0.2:
     dependencies:
@@ -5339,11 +4826,6 @@ snapshots:
 
   is-docker@2.2.1: {}
 
-  is-expression@4.0.0:
-    dependencies:
-      acorn: 7.4.1
-      object-assign: 4.1.1
-
   is-extglob@2.1.1: {}
 
   is-glob@4.0.3:
@@ -5357,13 +4839,6 @@ snapshots:
   is-number@7.0.0: {}
 
   is-potential-custom-element-name@1.0.1: {}
-
-  is-regex@1.2.1:
-    dependencies:
-      call-bound: 1.0.4
-      gopd: 1.2.0
-      has-tostringtag: 1.0.2
-      hasown: 2.0.2
 
   is-unicode-supported@2.1.0: {}
 
@@ -5390,31 +4865,9 @@ snapshots:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
 
-  italian-adjectives-dict@3.4.0: {}
-
-  italian-adjectives@5.4.0:
-    dependencies:
-      rosaenlg-commons: 3.4.0
-
-  italian-determiners@5.4.0: {}
-
-  italian-ordinals-cardinals@5.4.0:
-    dependencies:
-      rosaenlg-n2words: 3.4.0
-
-  italian-verbs-dict@3.4.0: {}
-
-  italian-verbs@5.4.0: {}
-
-  italian-words-dict@3.4.0: {}
-
-  italian-words@5.4.0: {}
-
   jiti@2.6.1: {}
 
   jose@5.10.0: {}
-
-  js-stringify@1.0.2: {}
 
   js-tokens@10.0.0: {}
 
@@ -5508,8 +4961,6 @@ snapshots:
       typescript: 5.9.3
       zod: 4.3.6
 
-  lefff-helper@5.4.0: {}
-
   levn@0.4.1:
     dependencies:
       prelude-ls: 1.2.1
@@ -5569,8 +5020,6 @@ snapshots:
       p-locate: 5.0.0
 
   lodash.merge@4.6.2: {}
-
-  lodash@4.17.23: {}
 
   log-symbols@7.0.1:
     dependencies:
@@ -5656,8 +5105,6 @@ snapshots:
 
   minimist@1.2.8: {}
 
-  morph-it-helper@5.4.0: {}
-
   motion-dom@12.35.0:
     dependencies:
       motion-utils: 12.29.2
@@ -5695,11 +5142,7 @@ snapshots:
       shell-quote: 1.8.3
       which: 5.0.0
 
-  numeral@2.0.6: {}
-
   oauth4webapi@3.8.5: {}
-
-  object-assign@4.1.1: {}
 
   object-keys@1.1.1: {}
 
@@ -5741,8 +5184,6 @@ snapshots:
       log-symbols: 7.0.1
       stdin-discarder: 0.3.1
       string-width: 8.2.0
-
-  ordinal-spanish@0.1.3: {}
 
   oxc-resolver@11.19.1:
     optionalDependencies:
@@ -5891,25 +5332,9 @@ snapshots:
 
   property-information@7.1.0: {}
 
-  pug-attrs@2.0.4:
-    dependencies:
-      constantinople: 3.1.2
-      js-stringify: 1.0.2
-      pug-runtime: 2.0.5
-
-  pug-error@1.3.3: {}
-
-  pug-runtime@2.0.5: {}
-
-  pug-strip-comments@1.0.4:
-    dependencies:
-      pug-error: 1.3.3
-
   punycode@2.3.1: {}
 
   queue-microtask@1.2.3: {}
-
-  random-js@2.1.0: {}
 
   react-day-picker@9.14.0(react@19.2.4):
     dependencies:
@@ -5965,19 +5390,10 @@ snapshots:
       json-parse-even-better-errors: 4.0.0
       npm-normalize-package-bin: 4.0.0
 
-  recast@0.20.5:
-    dependencies:
-      ast-types: 0.14.2
-      esprima: 4.0.1
-      source-map: 0.6.1
-      tslib: 2.8.1
-
   redent@3.0.0:
     dependencies:
       indent-string: 4.0.0
       strip-indent: 3.0.0
-
-  regenerator-runtime@0.11.1: {}
 
   regex-recursion@6.0.2:
     dependencies:
@@ -5988,8 +5404,6 @@ snapshots:
   regex@6.1.0:
     dependencies:
       regex-utilities: 2.3.0
-
-  remove-accents@0.4.4: {}
 
   require-from-string@2.0.2: {}
 
@@ -6034,159 +5448,6 @@ snapshots:
       '@rollup/rollup-win32-x64-gnu': 4.59.0
       '@rollup/rollup-win32-x64-msvc': 4.59.0
       fsevents: 2.3.3
-
-  rosaenlg-commons@3.4.0: {}
-
-  rosaenlg-filter@5.4.0:
-    dependencies:
-      better-title-case: 1.0.1
-      english-a-an: 3.4.0
-      english-a-an-list: 3.4.0
-      french-contractions: 5.4.0
-      rosaenlg-commons: 3.4.0
-      titlecase-french: 1.0.1
-
-  rosaenlg-gender-es@4.4.0: {}
-
-  rosaenlg-lib@4.4.0:
-    dependencies:
-      '@types/numeral': 0.0.28
-      date-fns: 2.30.0
-      english-determiners: 5.4.0
-      english-ordinals: 3.4.0
-      english-plurals: 3.4.0
-      english-plurals-list: 3.4.0
-      english-verbs-gerunds: 3.4.0
-      english-verbs-helper: 3.4.0
-      english-verbs-irregular: 3.4.0
-      french-adjectives-wrapper: 3.4.0
-      french-determiners: 5.4.0
-      french-ordinals: 5.4.0
-      french-verbs: 5.4.0
-      french-verbs-lefff: 3.4.0
-      french-words: 3.4.0
-      french-words-gender-lefff: 3.4.0
-      german-adjectives: 5.4.0
-      german-adjectives-dict: 3.4.0
-      german-determiners: 5.4.0
-      german-dict-helper: 5.4.0
-      german-ordinals: 5.4.0
-      german-verbs: 5.4.0
-      german-verbs-dict: 3.4.0
-      german-words: 5.4.0
-      german-words-dict: 3.4.0
-      italian-adjectives: 5.4.0
-      italian-adjectives-dict: 3.4.0
-      italian-determiners: 5.4.0
-      italian-ordinals-cardinals: 5.4.0
-      italian-verbs: 5.4.0
-      italian-verbs-dict: 3.4.0
-      italian-words: 5.4.0
-      italian-words-dict: 3.4.0
-      lefff-helper: 5.4.0
-      morph-it-helper: 5.4.0
-      numeral: 2.0.6
-      ordinal-spanish: 0.1.3
-      random-js: 2.1.0
-      rosaenlg-commons: 3.4.0
-      rosaenlg-filter: 5.4.0
-      rosaenlg-n2words: 3.4.0
-      spanish-adjectives-wrapper: 3.4.0
-      spanish-determiners: 3.4.0
-      spanish-verbs-wrapper: 3.4.0
-      spanish-words: 3.4.0
-      synonym-optimizer: 5.4.0
-
-  rosaenlg-n2words@3.4.0: {}
-
-  rosaenlg-pluralize-es@4.4.0:
-    dependencies:
-      remove-accents: 0.4.4
-
-  rosaenlg-pluralize-fr@3.4.0: {}
-
-  rosaenlg-pug-code-gen@6.4.0:
-    dependencies:
-      constantinople: 4.0.1
-      doctypes: 1.1.0
-      english-plurals: 3.4.0
-      english-plurals-list: 3.4.0
-      english-verbs-gerunds: 3.4.0
-      english-verbs-helper: 3.4.0
-      english-verbs-irregular: 3.4.0
-      french-adjectives-wrapper: 3.4.0
-      french-verbs: 5.4.0
-      french-verbs-lefff: 3.4.0
-      french-words: 3.4.0
-      german-adjectives: 5.4.0
-      german-adjectives-dict: 3.4.0
-      german-verbs: 5.4.0
-      german-verbs-dict: 3.4.0
-      german-words: 5.4.0
-      german-words-dict: 3.4.0
-      italian-adjectives: 5.4.0
-      italian-adjectives-dict: 3.4.0
-      italian-verbs: 5.4.0
-      italian-verbs-dict: 3.4.0
-      italian-words: 5.4.0
-      italian-words-dict: 3.4.0
-      js-stringify: 1.0.2
-      pug-attrs: 2.0.4
-      pug-error: 1.3.3
-      pug-runtime: 2.0.5
-      recast: 0.20.5
-      spanish-adjectives-wrapper: 3.4.0
-      spanish-verbs-wrapper: 3.4.0
-      spanish-words: 3.4.0
-      void-elements: 3.1.0
-      with: 7.0.2
-
-  rosaenlg-pug-lexer@8.4.0:
-    dependencies:
-      character-parser: 2.2.0
-      is-expression: 4.0.0
-      pug-error: 1.3.3
-
-  rosaenlg-pug-linker@7.4.0:
-    dependencies:
-      pug-error: 1.3.3
-      rosaenlg-pug-walk: 5.4.0
-
-  rosaenlg-pug-load@6.4.0:
-    dependencies:
-      object-assign: 4.1.1
-      rosaenlg-pug-walk: 5.4.0
-
-  rosaenlg-pug-parser@9.4.0:
-    dependencies:
-      pug-error: 1.3.3
-      token-stream: 1.0.0
-
-  rosaenlg-pug-walk@5.4.0: {}
-
-  rosaenlg-yseop@5.4.0:
-    dependencies:
-      constantinople: 4.0.1
-      doctypes: 1.1.0
-      js-stringify: 1.0.2
-      pug-attrs: 2.0.4
-      pug-error: 1.3.3
-      pug-runtime: 2.0.5
-      void-elements: 3.1.0
-      with: 7.0.2
-
-  rosaenlg@4.4.0:
-    dependencies:
-      pug-runtime: 2.0.5
-      pug-strip-comments: 1.0.4
-      rosaenlg-commons: 3.4.0
-      rosaenlg-lib: 4.4.0
-      rosaenlg-pug-code-gen: 6.4.0
-      rosaenlg-pug-lexer: 8.4.0
-      rosaenlg-pug-linker: 7.4.0
-      rosaenlg-pug-load: 6.4.0
-      rosaenlg-pug-parser: 9.4.0
-      rosaenlg-yseop: 5.4.0
 
   run-parallel@1.2.0:
     dependencies:
@@ -6244,48 +5505,17 @@ snapshots:
 
   smol-toml@1.6.0: {}
 
-  snowball-stemmer.jsx@0.2.3: {}
-
   source-map-js@1.2.1: {}
 
   source-map@0.6.1: {}
 
   space-separated-tokens@2.0.2: {}
 
-  spanish-adjectives-wrapper@3.4.0:
-    dependencies:
-      spanish-adjectives: 3.4.0
-
-  spanish-adjectives@3.4.0: {}
-
-  spanish-determiners@3.4.0: {}
-
-  spanish-verbs-wrapper@3.4.0:
-    dependencies:
-      spanish-verbs: 3.4.0
-
-  spanish-verbs@3.4.0: {}
-
-  spanish-words@3.4.0:
-    dependencies:
-      rosaenlg-gender-es: 4.4.0
-      rosaenlg-pluralize-es: 4.4.0
-
   stackback@0.0.2: {}
 
   std-env@3.10.0: {}
 
   stdin-discarder@0.3.1: {}
-
-  stopwords-de@0.3.0: {}
-
-  stopwords-en@0.3.0: {}
-
-  stopwords-es@0.3.0: {}
-
-  stopwords-fr@0.3.0: {}
-
-  stopwords-it@0.4.0: {}
 
   string-width@8.2.0:
     dependencies:
@@ -6314,19 +5544,6 @@ snapshots:
       has-flag: 4.0.0
 
   symbol-tree@3.2.4: {}
-
-  synonym-optimizer@5.4.0:
-    dependencies:
-      '@types/snowball-stemmers': 0.6.2
-      '@types/wink-tokenizer': 4.0.6
-      rosaenlg-filter: 5.4.0
-      snowball-stemmer.jsx: 0.2.3
-      stopwords-de: 0.3.0
-      stopwords-en: 0.3.0
-      stopwords-es: 0.3.0
-      stopwords-fr: 0.3.0
-      stopwords-it: 0.4.0
-      wink-tokenizer: 5.3.0
 
   tabbable@6.4.0: {}
 
@@ -6359,13 +5576,9 @@ snapshots:
 
   tmp@0.2.5: {}
 
-  to-fast-properties@1.0.3: {}
-
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
-
-  token-stream@1.0.0: {}
 
   tough-cookie@6.0.0:
     dependencies:
@@ -6499,8 +5712,6 @@ snapshots:
       - tsx
       - yaml
 
-  void-elements@3.1.0: {}
-
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
@@ -6531,17 +5742,6 @@ snapshots:
     dependencies:
       siginfo: 2.0.0
       stackback: 0.0.2
-
-  wink-tokenizer@5.3.0:
-    dependencies:
-      emoji-regex: 9.2.2
-
-  with@7.0.2:
-    dependencies:
-      '@babel/parser': 7.29.0
-      '@babel/types': 7.29.0
-      assert-never: 1.4.0
-      babel-walk: 3.0.0-canary-5
 
   word-wrap@1.2.5: {}
 
