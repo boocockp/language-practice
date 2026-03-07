@@ -10,18 +10,17 @@ import { SettingsPage } from "../routes/SettingsPage";
 import { RootErrorPage } from "../routes/RootErrorPage";
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AppLayout />,
-    errorElement: <RootErrorPage />,
-    children: [
-      { index: true, element: <HomePage /> },
-      { path: "practice", element: <PracticePage /> },
-      { path: "words/:wordId?", element: <WordsPage /> },
-      { path: "question-types/:questionTypeId?", element: <QuestionTypesPage /> },
-      { path: "stats", element: <StatsPage /> },
-      { path: "settings", element: <SettingsPage /> },
-    ],
-  },
+    {
+        path: "/",
+        element: <AppLayout />,
+        errorElement: <RootErrorPage />,
+        children: [
+            { index: true, element: <HomePage /> },
+            { path: "practice", element: <PracticePage /> },
+            { path: "words/:wordId?", element: <WordsPage /> },
+            { path: "question-types/:questionTypeId?", element: <QuestionTypesPage /> },
+            { path: "stats", element: <StatsPage /> },
+            { path: "settings", element: <SettingsPage /> },
+        ],
+    },
 ]);
-

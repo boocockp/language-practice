@@ -11,15 +11,19 @@ The `users` table and `authSessions` (and related auth tables) come from Convex 
 All language-scoped data (`words`, `questionTypes`, and related records) is filtered by the `language` field. The client passes the current language from `useCurrentLanguage()` to all relevant Convex queries and mutations. The user sees only records where `language` matches their current selection.
 
 ### Standard fields
-Every record will have the Convex standard fields _id and _creationTime
+
+Every record will have the Convex standard fields \_id and \_creationTime
 
 ### Type definitions
+
 - WordType: nf, nm, nmf, vtr, vi, adj, adv
 
 ### `words`
-Represents vocabulary items.  Each word is for a particular language and a particular user. Single-word read, create, and update are done via Convex `words.getById` (query), `words.create` (mutation), and `words.update` (mutation), all scoped by `userId` and language.
+
+Represents vocabulary items. Each word is for a particular language and a particular user. Single-word read, create, and update are done via Convex `words.getById` (query), `words.create` (mutation), and `words.update` (mutation), all scoped by `userId` and language.
 
 Fields:
+
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
 - `text`: the word/phrase
@@ -29,11 +33,12 @@ Fields:
 
 **Word lookup for question generation**: The `word` helper in data templates uses `getRandomByCriteria` (internal) to select a random word matching optional `text`, `type`, and `tags` criteria. See Practice Questions feature doc for matching rules.
 
-
 ### `questionTypes`
+
 Defines how to generate questions from words.
 
 Fields:
+
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
 - `name`: a descriptive name for this question type
@@ -41,11 +46,12 @@ Fields:
 - `questionTemplate`: the template for generating the question
 - `answerTemplate`: the template for generating the answer
 
-
 ### `questions`
+
 Stores generated questions + learner responses.
 
 Fields:
+
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
 - `questionTypeId` (reference to `questionTypes`)
@@ -58,8 +64,7 @@ Fields:
 - `score`, `durationMs`: optional; for future scheduling
 
 ### Index notes
+
 - questions by `questionTypeId`
 - questions by `userId`
 - questions by `userId` and `respondedAt`
-
-

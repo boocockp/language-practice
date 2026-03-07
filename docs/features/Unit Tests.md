@@ -1,13 +1,10 @@
-Technical Feature: Unit Tests
-=============
+# Technical Feature: Unit Tests
 
-Overview
---------
+## Overview
 
 Introduce unit tests for parts of the code where it is useful.
 
-Requirements
-------------
+## Requirements
 
 - Unit tests for queries and mutations in Convex code.
 - Unit tests for React components including what they display and the effects of user interactions.

@@ -7,5 +7,4 @@ import type { VerbInfo } from "./verbInfo";
 
 import irregularVerbsData from "./irregularVerbsData.json";
 
-export const irregularVerbs: Record<string, VerbInfo> =
-  irregularVerbsData as unknown as Record<string, VerbInfo>;
+export const irregularVerbs: Record<string, VerbInfo> = irregularVerbsData as unknown as Record<string, VerbInfo>;

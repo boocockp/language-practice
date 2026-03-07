@@ -1,29 +1,24 @@
-User Feature: Auto Translation
-==============================
+# User Feature: Auto Translation
 
-Overview
---------
+## Overview
 
 In Question Type templates, the user can use a helper that translates a given text into the user's own language.
 This will enable questions that ask the user to translate sentences to or from the target language.
 Translation is done by an API call to a translation service, which will be Libretranslate initially, but may change in the future
 
-Requirements
-------------
+## Requirements
 
 - New helper: translate <text>
 - The translation is from the language of the Question Type into the user's language
 - Get the user's language from the language of the browser (We may introduce a user profile with preferred language later)
 
-Implementation
---------------
+## Implementation
 
 - **Helper**: `{{translate someText}}` in data, question, or answer templates. One positional argument (the text to translate).
 - **Direction**: From the question type language (e.g. French) into the user's language. User language is taken from `navigator.language` on the client and passed as `userLanguage` when generating a question.
 - **Registration**: The translate helper is only registered when the client passes a non-empty `userLanguage` to the generate-question action. If a template uses `{{translate ...}}` and `userLanguage` is not provided, question generation will fail (helper not registered).
 
-Technical Notes
----------------
+## Technical Notes
 
 - Structure the translation code into a self-contained area of code with an interface with arguments for text, from language, to language
 - Use a Libretranslate API, which may be the public service or a self-hosted one

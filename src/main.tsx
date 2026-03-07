@@ -10,13 +10,13 @@ import { CurrentLanguageProvider } from "./contexts/CurrentLanguageContext";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <ConvexAuthProvider client={convex}>
-      <CurrentLanguageProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </CurrentLanguageProvider>
-    </ConvexAuthProvider>
-  </StrictMode>,
+    <StrictMode>
+        <ConvexAuthProvider client={convex}>
+            <CurrentLanguageProvider>
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
+            </CurrentLanguageProvider>
+        </ConvexAuthProvider>
+    </StrictMode>,
 );

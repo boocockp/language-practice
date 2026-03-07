@@ -25,9 +25,9 @@ Use this when implementing or reviewing UI so the app works well on small screen
 
 - [ ] **Viewport**: `index.html` has `viewport-fit=cover` in the viewport meta tag.
 - [ ] **Full-bleed / fixed UI**: Any fixed or full-bleed element at the top/bottom/sides uses safe-area utilities so content isn’t under the notch or home indicator:
-  - Padding: `pt-safe`, `pr-safe`, `pb-safe`, `pl-safe`, `px-safe`, `py-safe`, `p-safe`
-  - Margin: `mt-safe`, `mr-safe`, `mb-safe`, `ml-safe`
-  - Full-height content: `min-h-screen-safe` (viewport height minus top/bottom safe insets)
+    - Padding: `pt-safe`, `pr-safe`, `pb-safe`, `pl-safe`, `px-safe`, `py-safe`, `p-safe`
+    - Margin: `mt-safe`, `mr-safe`, `mb-safe`, `ml-safe`
+    - Full-height content: `min-h-screen-safe` (viewport height minus top/bottom safe insets)
 
 ## Testing
 

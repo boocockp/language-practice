@@ -5,10 +5,9 @@ import { router } from "./router";
 import { KumoRouterLink } from "./KumoLinkAdapter";
 
 export function App() {
-  return (
-    <LinkProvider component={KumoRouterLink}>
-      <RouterProvider router={router} />
-    </LinkProvider>
-  );
+    return (
+        <LinkProvider component={KumoRouterLink}>
+            <RouterProvider router={router} />
+        </LinkProvider>
+    );
 }
-

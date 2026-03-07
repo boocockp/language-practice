@@ -12,20 +12,15 @@ import { conjugateRegular } from "./regularVerbRules";
  * - Else try to generate via regular rules (-er, -ir, -re); return undefined if not regular.
  * french-verbs getVerbInfo(verbsList, verb) only does verbsList[verb], so we only need get.
  */
-export function createVerbLookupProxy(
-  irregularDict: Record<string, VerbInfo>,
-): Record<string, VerbInfo> {
-  return new Proxy(
-    {} as Record<string, VerbInfo>,
-    {
-      get(_target, prop: string): VerbInfo | undefined {
-        if (typeof prop !== "string") return undefined;
-        const verb = prop;
-        if (Object.prototype.hasOwnProperty.call(irregularDict, verb)) {
-          return irregularDict[verb];
-        }
-        return conjugateRegular(verb) ?? undefined;
-      },
-    },
-  ) as Record<string, VerbInfo>;
+export function createVerbLookupProxy(irregularDict: Record<string, VerbInfo>): Record<string, VerbInfo> {
+    return new Proxy({} as Record<string, VerbInfo>, {
+        get(_target, prop: string): VerbInfo | undefined {
+            if (typeof prop !== "string") return undefined;
+            const verb = prop;
+            if (Object.prototype.hasOwnProperty.call(irregularDict, verb)) {
+                return irregularDict[verb];
+            }
+            return conjugateRegular(verb) ?? undefined;
+        },
+    }) as Record<string, VerbInfo>;
 }

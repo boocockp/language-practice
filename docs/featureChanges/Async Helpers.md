@@ -21,4 +21,3 @@ This will make the data and question/answer templates easier for users to write,
 - A data-expression can now be processed in two ways:
     - If it contains a pair of left braces anywhere, treat it as a template, evaluate the template using the data template context, and store the resulting string under the associated name in the context
     - If it contains no braces, process as now - wrap it in a storeData expression which stores the result in the context
-
