@@ -5,7 +5,7 @@
  */
 
 import { LanguageFilter } from './LanguageFilter';
-import { LanguageCommonItalian } from '../rosaenlg-commons';
+import { LanguageCommonItalian } from '../rosaenlgCommons';
 
 export class LanguageFilterItalian extends LanguageFilter {
   public languageCommon: LanguageCommonItalian;

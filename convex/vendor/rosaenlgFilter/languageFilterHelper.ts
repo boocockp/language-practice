@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { LanguageCommon, LanguageCommonItalian } from '../rosaenlg-commons';
+import { LanguageCommon, LanguageCommonItalian } from '../rosaenlgCommons';
 import { LanguageFilter } from './LanguageFilter';
 import { LanguageFilterFrench } from './LanguageFilterFrench';
 import { LanguageFilterSpanish } from './LanguageFilterSpanish';

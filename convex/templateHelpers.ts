@@ -2,12 +2,12 @@
 
 import type Handlebars from "handlebars";
 
-import { agree } from "./vendor/french-adjectives";
+import { agree } from "./vendor/frenchAdjectives";
 import { createVerbLookupProxy, irregularVerbs } from "./frenchConjugation";
-import FrenchVerbs from "./vendor/french-verbs";
-import type { Tense } from "./vendor/french-verbs";
-import { LanguageCommonFrench } from "./vendor/rosaenlg-commons";
-import { filter } from "./vendor/rosaenlg-filter";
+import FrenchVerbs from "./vendor/frenchVerbs";
+import type { Tense } from "./vendor/frenchVerbs";
+import { LanguageCommonFrench } from "./vendor/rosaenlgCommons";
+import { filter } from "./vendor/rosaenlgFilter";
 import { pluralizeFr } from "./vendor/pluralizeFr";
 
 const verbLookup = createVerbLookupProxy(irregularVerbs);

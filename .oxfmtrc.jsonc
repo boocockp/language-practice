@@ -6,11 +6,13 @@
     "insertFinalNewline": true,
     "ignorePatterns": [
         "dist/**",
+        "docs/**",
         "convex/_generated/**",
         "convex/vendor/**",
         "stuff/**",
         "scripts/**",
         ".cursor/**",
         "node_modules/**",
+        "pnpm-workspace.yaml",
     ],
 }

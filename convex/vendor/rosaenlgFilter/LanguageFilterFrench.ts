@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { LanguageCommon } from '../rosaenlgCommons';
 import { LanguageFilter } from './LanguageFilter';
-import { contracts } from '../french-contractions';
-import { LanguageCommon } from '../rosaenlg-commons';
+import { contracts } from '../frenchContractions';
 import * as titleCaseFrFr from 'titlecase-french';
 
 export class LanguageFilterFrench extends LanguageFilter {

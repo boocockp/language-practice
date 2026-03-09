@@ -49,7 +49,6 @@
         "@typescript/native-preview": "^7.0.0-dev.20260307.1",
         "@vitejs/plugin-react": "^5.1.1",
         "@vitest/coverage-v8": "^4.0.18",
-        "better-title-case": "^1.0.1",
         "convex-test": "^0.0.41",
         "english-a-an": "3.4.0",
         "english-a-an-list": "3.4.0",

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { LanguageCommon } from '../rosaenlg-commons';
+import { LanguageCommon } from '../rosaenlgCommons';
 import { LanguageFilter } from './LanguageFilter';
 
 export class LanguageFilterGerman extends LanguageFilter {

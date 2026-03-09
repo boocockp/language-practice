@@ -8,8 +8,8 @@ import { LanguageFilter } from './LanguageFilter';
 import { getAAn } from 'english-a-an';
 import type { AAnAsObj } from 'english-a-an-list';
 import anList from 'english-a-an-list/dist/aan.json';
-import titleCaseEnUs from 'better-title-case';
-import { LanguageCommon } from '../rosaenlg-commons';
+import titleCaseEnUs from './titleCaseEnUs';
+import { LanguageCommon } from '../rosaenlgCommons';
 
 export class LanguageFilterEnglish extends LanguageFilter {
   constructor(languageCommon: LanguageCommon) {

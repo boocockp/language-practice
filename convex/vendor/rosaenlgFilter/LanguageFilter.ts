@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { LanguageCommon, DictManager, Constants } from '../rosaenlg-commons';
+import { LanguageCommon, DictManager, Constants } from '../rosaenlgCommons';
 
 export abstract class LanguageFilter {
   public cleanSpacesPunctuationDoDefault: boolean | null = null;

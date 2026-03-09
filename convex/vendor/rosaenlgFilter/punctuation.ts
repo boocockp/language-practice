@@ -5,7 +5,7 @@
  */
 
 import { LanguageFilter } from './LanguageFilter';
-import { Constants } from '../rosaenlg-commons';
+import { Constants } from '../rosaenlgCommons';
 
 export const EATSPACE = 'EATSPACE';
 

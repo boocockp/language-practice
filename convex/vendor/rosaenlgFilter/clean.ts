@@ -8,7 +8,7 @@ export function joinLines(input: string): string {
   return input.replace(/[\n\r]/g, ' ');
 }
 
-import { Constants } from '../rosaenlg-commons';
+import { Constants } from '../rosaenlgCommons';
 
 export function cleanStruct(input: string, constants: Constants): string {
   let res: string = input;

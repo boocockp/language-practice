@@ -5,9 +5,9 @@
  * Vendored from rosaenlg/packages/french-verbs.
  */
 
-import { beginsWithVowel, isContractedVowelWord, isHMuet } from '../french-contractions';
-import type { VerbInfo, VerbInfoIndex, VerbsInfo } from '../french-verbs-lefff-types';
-import listTransitive from '../french-verbs-transitive/transitive.json';
+import { beginsWithVowel, isContractedVowelWord, isHMuet } from '../frenchContractions';
+import type { VerbInfo, VerbInfoIndex, VerbsInfo } from '../frenchVerbsLefffTypes';
+import listTransitive from '../frenchVerbsTransitive/transitive.json';
 
 const conjAvoir: VerbInfo = {
   P: ['ai', 'as', 'a', 'avons', 'avez', 'ont'],

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { contracts, type ContractsData } from '../french-contractions';
+import { contracts, type ContractsData } from '../frenchContractions';
 
 /*
 accord des adjectifs

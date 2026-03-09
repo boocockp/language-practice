@@ -6,7 +6,7 @@
 
 import * as punctuation from './punctuation';
 import * as clean from './clean';
-import { LanguageCommon } from '../rosaenlg-commons';
+import { LanguageCommon } from '../rosaenlgCommons';
 import { titlecase } from './titlecase';
 import * as protect from './protect';
 import { processProtectHtmlTags } from './protectTag';
