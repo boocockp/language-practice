@@ -34,4 +34,4 @@
 
 **User:** /commit
 
-**Outcome:** Created `.cursor/prompts/037_save_or_discard_leave_dialog.md` with this transcript. Staged all changes and committed with a message summarizing the feature, test updates, and the ListDetailPage fix. Did not run `git push`.
+**Outcome:** Created `.cursor/prompts/037_save_or_discard_leave_dialog.md` with this transcript. Staged all changes and committed (7f1755c) with message: feat: save-or-discard leave dialog when navigating with unsaved changes; ListDetailPage fix; tests; transcript. Did not run `git push`.

@@ -68,3 +68,30 @@ Fields:
 - questions by `questionTypeId`
 - questions by `userId`
 - questions by `userId` and `respondedAt`
+
+### `sessionTypes`
+
+Defines how to generate a certain type of practice session
+
+Fields:
+
+- `userId`: the id of the User to which this record belongs
+- `language`: target language as a two-letter code, eg 'en', 'fr'
+- `name`: a descriptive name for this session type
+- `questions`: an ordered list of `sessionQuestion` (see below)
+
+
+### `sessionQuestion`
+
+Defines one of the Question Types included in a Session 
+Note: there may be more than one Session Question belonging to a Session Type with the same Question Type 
+Issue: should this be a separate table, or an array inside a `sessionTypes` record?
+
+Fields:
+
+- `userId`: the id of the User to which this record belongs
+- `language`: target language as a two-letter code, eg 'en', 'fr'
+- `sessionTypeId`: reference to `sessionTypes` - only if this is a separate table
+- `sequence`: the position in the list - only if this is a separate table
+- `questionTypeId`: reference to `questionTypes`
+- `count`: the number of times this question type occurs in the session
