@@ -3,8 +3,9 @@ import { Empty, Text, Button } from "@cloudflare/kumo";
 import { Plus } from "@phosphor-icons/react";
 
 import { cn } from "../lib/cn";
+import type { ConfirmLeaveFn } from "../lib/confirmLeave";
 
-export type ConfirmLeaveFn = () => Promise<boolean>;
+export type { ConfirmLeaveFn } from "../lib/confirmLeave";
 
 export type ListDetailPageProps<TId extends string, TDoc> = {
     title: string;
@@ -31,9 +32,7 @@ export type ListDetailPageProps<TId extends string, TDoc> = {
         containerRef: React.RefObject<HTMLDivElement | null>;
         onRowClick: (id: TId) => void;
     }) => ReactNode;
-    renderDetailsForm: (opts: {
-        confirmLeaveRef: React.MutableRefObject<ConfirmLeaveFn | null>;
-    }) => ReactNode;
+    renderDetailsForm: (opts: { confirmLeaveRef: React.MutableRefObject<ConfirmLeaveFn | null> }) => ReactNode;
 };
 
 export function ListDetailPage<TId extends string, TDoc>({
@@ -64,15 +63,8 @@ export function ListDetailPage<TId extends string, TDoc>({
     }, [showDetails]);
 
     useEffect(() => {
-        if (
-            !selectedId ||
-            !dataRowIdAttribute ||
-            !tableContainerRef.current
-        )
-            return;
-        const row = tableContainerRef.current.querySelector(
-            `[${dataRowIdAttribute}="${selectedId}"]`,
-        );
+        if (!selectedId || !dataRowIdAttribute || !tableContainerRef.current) return;
+        const row = tableContainerRef.current.querySelector(`[${dataRowIdAttribute}="${selectedId}"]`);
         const el = row as HTMLElement | null;
         if (el?.scrollIntoView) {
             el.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -98,12 +90,7 @@ export function ListDetailPage<TId extends string, TDoc>({
         <section className="flex flex-col min-h-0 flex-1">
             <div className="flex items-center justify-between gap-2">
                 <Text variant="heading2">{title}</Text>
-                <Button
-                    type="button"
-                    variant="primary"
-                    aria-label={addButtonAriaLabel}
-                    onClick={handleAddClick}
-                >
+                <Button type="button" variant="primary" aria-label={addButtonAriaLabel} onClick={handleAddClick}>
                     <Plus size={20} aria-hidden />
                     Add
                 </Button>
@@ -114,18 +101,9 @@ export function ListDetailPage<TId extends string, TDoc>({
                     Loading…
                 </p>
             ) : list.length === 0 && !showDetails ? (
-                <Empty
-                    className="mt-4"
-                    title={emptyTitle}
-                    description={emptyDescription}
-                />
+                <Empty className="mt-4" title={emptyTitle} description={emptyDescription} />
             ) : (
-                <div
-                    className={cn(
-                        "mt-4 flex flex-1 min-h-0 gap-4",
-                        "flex-col md:flex-row",
-                    )}
-                >
+                <div className={cn("mt-4 flex flex-1 min-h-0 gap-4", "flex-col md:flex-row")}>
                     {showTable && list && list.length > 0 && (
                         <div
                             ref={tableContainerRef}
@@ -147,22 +125,13 @@ export function ListDetailPage<TId extends string, TDoc>({
                                     confirmLeaveRef,
                                 })
                             ) : selectedItem === undefined ? (
-                                <p
-                                    className="text-slate-500"
-                                    aria-busy="true"
-                                >
+                                <p className="text-slate-500" aria-busy="true">
                                     Loading…
                                 </p>
                             ) : selectedItem === null ? (
                                 <div className="space-y-2">
-                                    <p className="text-slate-600">
-                                        {notFoundMessage}
-                                    </p>
-                                    <button
-                                        type="button"
-                                        onClick={onGoBack}
-                                        className="text-blue-600 hover:underline"
-                                    >
+                                    <p className="text-slate-600">{notFoundMessage}</p>
+                                    <button type="button" onClick={onGoBack} className="text-blue-600 hover:underline">
                                         {backLinkText}
                                     </button>
                                 </div>

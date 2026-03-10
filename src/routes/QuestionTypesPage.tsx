@@ -65,9 +65,7 @@ export function QuestionTypesPage() {
     return (
         <ListDetailPage
             title="Question Types"
-            emptyTitle={
-                user ? "No question types yet" : "Log in to manage your question types"
-            }
+            emptyTitle={user ? "No question types yet" : "Log in to manage your question types"}
             emptyDescription={
                 user
                     ? "Add question types for the current language to see them here."
@@ -98,14 +96,8 @@ export function QuestionTypesPage() {
             }
             renderDetailsForm={({ confirmLeaveRef }) => (
                 <QuestionTypeDetailsForm
-                    key={
-                        isNewQuestionType
-                            ? "_new"
-                            : selectedQuestionType?._id ?? "_new"
-                    }
-                    questionType={
-                        isNewQuestionType ? null : selectedQuestionType ?? null
-                    }
+                    key={isNewQuestionType ? "_new" : (selectedQuestionType?._id ?? "_new")}
+                    questionType={isNewQuestionType ? null : (selectedQuestionType ?? null)}
                     onSave={handleSave}
                     onCancel={goToQuestionTypes}
                     onClose={goToQuestionTypes}

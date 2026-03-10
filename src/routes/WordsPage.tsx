@@ -24,8 +24,7 @@ export function WordsPage() {
     const updateWord = useMutation(api.words.update);
     const createWord = useMutation(api.words.create);
 
-    const selectedWordId =
-        wordId && wordId !== "_new" ? (wordId as Id<"words">) : null;
+    const selectedWordId = wordId && wordId !== "_new" ? (wordId as Id<"words">) : null;
     const showDetails = Boolean(wordId);
     const showTable = !showDetails || (words !== undefined && words.length > 0);
 
@@ -78,18 +77,12 @@ export function WordsPage() {
             onGoBack={goToWords}
             onSave={async () => {}}
             renderTable={({ onRowClick }) =>
-                words ? (
-                    <WordsTable
-                        words={words}
-                        selectedWordId={selectedWordId}
-                        onRowClick={onRowClick}
-                    />
-                ) : null
+                words ? <WordsTable words={words} selectedWordId={selectedWordId} onRowClick={onRowClick} /> : null
             }
             renderDetailsForm={({ confirmLeaveRef }) => (
                 <WordDetailsForm
-                    key={isNewWord ? "_new" : selectedWord?._id ?? "_new"}
-                    word={isNewWord ? null : selectedWord ?? null}
+                    key={isNewWord ? "_new" : (selectedWord?._id ?? "_new")}
+                    word={isNewWord ? null : (selectedWord ?? null)}
                     onSave={handleSave}
                     onCancel={goToWords}
                     onClose={goToWords}
