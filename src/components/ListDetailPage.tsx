@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
 import { Empty, Text, Button } from "@cloudflare/kumo";
 import { Plus } from "@phosphor-icons/react";
 
@@ -32,7 +32,10 @@ export type ListDetailPageProps<TId extends string, TDoc> = {
         containerRef: React.RefObject<HTMLDivElement | null>;
         onRowClick: (id: TId) => void;
     }) => ReactNode;
-    renderDetailsForm: (opts: { confirmLeaveRef: React.MutableRefObject<ConfirmLeaveFn | null> }) => ReactNode;
+    renderDetailsForm: (opts: {
+        onConfirmLeaveReady: (fn: ConfirmLeaveFn) => void;
+        onDirtyChange: (dirty: boolean) => void;
+    }) => ReactNode;
 };
 
 export function ListDetailPage<TId extends string, TDoc>({
@@ -56,7 +59,15 @@ export function ListDetailPage<TId extends string, TDoc>({
     renderDetailsForm,
 }: ListDetailPageProps<TId, TDoc>) {
     const confirmLeaveRef = useRef<ConfirmLeaveFn | null>(null);
+    const confirmLeaveFnRef = useRef<ConfirmLeaveFn | null>(null);
     const tableContainerRef = useRef<HTMLDivElement | null>(null);
+
+    const onConfirmLeaveReady = useCallback((fn: ConfirmLeaveFn) => {
+        confirmLeaveFnRef.current = fn;
+    }, []);
+    const onDirtyChange = useCallback((dirty: boolean) => {
+        confirmLeaveRef.current = dirty ? confirmLeaveFnRef.current : null;
+    }, []);
 
     useEffect(() => {
         if (!showDetails) confirmLeaveRef.current = null;
@@ -122,7 +133,8 @@ export function ListDetailPage<TId extends string, TDoc>({
                         <div className="min-w-0 flex-1 md:min-w-[320px] flex flex-col border border-slate-200 rounded-lg p-4 bg-white">
                             {isNew ? (
                                 renderDetailsForm({
-                                    confirmLeaveRef,
+                                    onConfirmLeaveReady,
+                                    onDirtyChange,
                                 })
                             ) : selectedItem === undefined ? (
                                 <p className="text-slate-500" aria-busy="true">
@@ -137,7 +149,8 @@ export function ListDetailPage<TId extends string, TDoc>({
                                 </div>
                             ) : (
                                 renderDetailsForm({
-                                    confirmLeaveRef,
+                                    onConfirmLeaveReady,
+                                    onDirtyChange,
                                 })
                             )}
                         </div>

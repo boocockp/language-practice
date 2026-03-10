@@ -94,16 +94,15 @@ export function QuestionTypesPage() {
                     />
                 ) : null
             }
-            renderDetailsForm={({ confirmLeaveRef }) => (
+            renderDetailsForm={({ onConfirmLeaveReady, onDirtyChange }) => (
                 <QuestionTypeDetailsForm
                     key={isNewQuestionType ? "_new" : (selectedQuestionType?._id ?? "_new")}
                     questionType={isNewQuestionType ? null : (selectedQuestionType ?? null)}
                     onSave={handleSave}
                     onCancel={goToQuestionTypes}
                     onClose={goToQuestionTypes}
-                    onConfirmLeaveReady={(fn) => {
-                        confirmLeaveRef.current = fn;
-                    }}
+                    onConfirmLeaveReady={onConfirmLeaveReady}
+                    onDirtyChange={onDirtyChange}
                 />
             )}
         />

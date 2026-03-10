@@ -79,16 +79,15 @@ export function WordsPage() {
             renderTable={({ onRowClick }) =>
                 words ? <WordsTable words={words} selectedWordId={selectedWordId} onRowClick={onRowClick} /> : null
             }
-            renderDetailsForm={({ confirmLeaveRef }) => (
+            renderDetailsForm={({ onConfirmLeaveReady, onDirtyChange }) => (
                 <WordDetailsForm
                     key={isNewWord ? "_new" : (selectedWord?._id ?? "_new")}
                     word={isNewWord ? null : (selectedWord ?? null)}
                     onSave={handleSave}
                     onCancel={goToWords}
                     onClose={goToWords}
-                    onConfirmLeaveReady={(fn) => {
-                        confirmLeaveRef.current = fn;
-                    }}
+                    onConfirmLeaveReady={onConfirmLeaveReady}
+                    onDirtyChange={onDirtyChange}
                 />
             )}
         />
