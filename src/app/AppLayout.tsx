@@ -14,6 +14,7 @@ const navItems = [
     { to: "/practice", label: "Practice" },
     { to: "/words", label: "Words" },
     { to: "/question-types", label: "Question Types" },
+    { to: "/session-types", label: "Session Types" },
     { to: "/stats", label: "Stats" },
     { to: "/settings", label: "Settings" },
 ];

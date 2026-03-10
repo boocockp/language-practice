@@ -29,9 +29,10 @@ Specific requirements for Session Types are:
 - The Session Type can be saved with an empty Session Question list
 - The title of the Session type Details form is the Name of the session type when editing an existing record, or 'New Session Type' when adding
 
+Implemented: Path `/session-types` (hyphenated for consistency with `/question-types`). Session Types nav item, list+detail page using ListDetailPage; table shows Name only; details form has Name and editable Session Questions list (add, remove, edit count, change question type, reorder via Move up / Move down). Changes saved on Save; name required; empty questions list allowed. Title = session type name when editing, "New Session Type" when adding.
 
-Technical Issues
-----------------
+Technical Issues (resolved)
+---------------------------
 
-- Should `sessionQuestion`s be a separate table, or an array inside a `sessionTypes` record?
-- What is the best React component available for editable lists?
+- **Session questions**: Stored as an array inside each `sessionTypes` document (see DATA_MODEL.md). Reorder via Move up / Move down buttons; drag-and-drop can be added later if desired.
+- **Editable list**: Custom list with question-type dropdown, count input, and up/down/remove buttons; no third-party component.

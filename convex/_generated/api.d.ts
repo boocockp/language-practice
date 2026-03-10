@@ -20,6 +20,7 @@ import type * as practiceActions from "../practiceActions.js";
 import type * as practiceInternal from "../practiceInternal.js";
 import type * as questionGeneration from "../questionGeneration.js";
 import type * as questionTypes from "../questionTypes.js";
+import type * as sessionTypes from "../sessionTypes.js";
 import type * as templateHelpers from "../templateHelpers.js";
 import type * as translation from "../translation.js";
 import type * as users from "../users.js";
@@ -78,6 +79,7 @@ declare const fullApi: ApiFromModules<{
   practiceInternal: typeof practiceInternal;
   questionGeneration: typeof questionGeneration;
   questionTypes: typeof questionTypes;
+  sessionTypes: typeof sessionTypes;
   templateHelpers: typeof templateHelpers;
   translation: typeof translation;
   users: typeof users;

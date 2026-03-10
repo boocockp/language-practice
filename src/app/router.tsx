@@ -5,6 +5,7 @@ import { HomePage } from "../routes/HomePage";
 import { PracticePage } from "../routes/PracticePage";
 import { WordsPage } from "../routes/WordsPage";
 import { QuestionTypesPage } from "../routes/QuestionTypesPage";
+import { SessionTypesPage } from "../routes/SessionTypesPage";
 import { StatsPage } from "../routes/StatsPage";
 import { SettingsPage } from "../routes/SettingsPage";
 import { RootErrorPage } from "../routes/RootErrorPage";
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
             { path: "practice", element: <PracticePage /> },
             { path: "words/:wordId?", element: <WordsPage /> },
             { path: "question-types/:questionTypeId?", element: <QuestionTypesPage /> },
+            { path: "session-types/:sessionTypeId?", element: <SessionTypesPage /> },
             { path: "stats", element: <StatsPage /> },
             { path: "settings", element: <SettingsPage /> },
         ],

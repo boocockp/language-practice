@@ -40,4 +40,16 @@ export default defineSchema({
         .index("by_questionTypeId", ["questionTypeId"])
         .index("by_userId", ["userId"])
         .index("by_userId_respondedAt", ["userId", "respondedAt"]),
+
+    sessionTypes: defineTable({
+        userId: v.id("users"),
+        language: v.string(),
+        name: v.string(),
+        questions: v.array(
+            v.object({
+                questionTypeId: v.id("questionTypes"),
+                count: v.number(),
+            }),
+        ),
+    }).index("by_userId_language", ["userId", "language"]),
 });
