@@ -41,7 +41,7 @@ export function QuestionTypesPage() {
         navigate("/question-types");
     }
 
-    async function handleSave(payload: QuestionTypeUpdatePayload) {
+    async function saveQuestionType(payload: QuestionTypeUpdatePayload) {
         if (payload.questionTypeId) {
             await updateQuestionType({
                 questionTypeId: payload.questionTypeId,
@@ -59,6 +59,10 @@ export function QuestionTypesPage() {
                 answerTemplate: payload.answerTemplate,
             });
         }
+    }
+
+    async function handleSave(payload: QuestionTypeUpdatePayload) {
+        await saveQuestionType(payload);
         goToQuestionTypes();
     }
 
@@ -99,6 +103,7 @@ export function QuestionTypesPage() {
                     key={isNewQuestionType ? "_new" : (selectedQuestionType?._id ?? "_new")}
                     questionType={isNewQuestionType ? null : (selectedQuestionType ?? null)}
                     onSave={handleSave}
+                    onSaveWithoutNavigate={saveQuestionType}
                     onCancel={goToQuestionTypes}
                     onClose={goToQuestionTypes}
                     onConfirmLeaveReady={onConfirmLeaveReady}

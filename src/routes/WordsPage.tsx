@@ -32,7 +32,7 @@ export function WordsPage() {
         navigate("/words");
     }
 
-    async function handleSave(payload: WordUpdatePayload) {
+    async function saveWord(payload: WordUpdatePayload) {
         if (payload.wordId) {
             await updateWord({
                 wordId: payload.wordId,
@@ -50,6 +50,10 @@ export function WordsPage() {
                 tags: payload.tags,
             });
         }
+    }
+
+    async function handleSave(payload: WordUpdatePayload) {
+        await saveWord(payload);
         goToWords();
     }
 
@@ -84,6 +88,7 @@ export function WordsPage() {
                     key={isNewWord ? "_new" : (selectedWord?._id ?? "_new")}
                     word={isNewWord ? null : (selectedWord ?? null)}
                     onSave={handleSave}
+                    onSaveWithoutNavigate={saveWord}
                     onCancel={goToWords}
                     onClose={goToWords}
                     onConfirmLeaveReady={onConfirmLeaveReady}

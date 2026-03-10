@@ -124,7 +124,7 @@ describe("QuestionTypesPage", () => {
         expect(screen.getByPlaceholderText("Descriptive name for this question type")).toHaveValue("");
     });
 
-    it("shows discard confirm dialog when Add is clicked with unsaved changes, then navigates on Discard", async () => {
+    it("shows save-or-discard dialog when Add is clicked with valid unsaved changes, then navigates on Discard", async () => {
         const user = userEvent.setup();
         renderQuestionTypesPage("/question-types/qt1");
         const nameInput = screen.getByLabelText("Name");
@@ -132,10 +132,53 @@ describe("QuestionTypesPage", () => {
         await user.type(nameInput, "edited");
         await user.click(screen.getByRole("button", { name: /add/i }));
         const dialog = screen.getByRole("dialog");
-        expect(dialog).toHaveTextContent(/discard|abandon/i);
+        expect(dialog).toHaveTextContent("Save changes?");
+        expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to save them?");
+        expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
         expect(screen.getByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Descriptive name for this question type")).toHaveValue("");
+    });
+
+    it("when Add is clicked with valid unsaved changes, Save changes saves and then navigates to new question type", async () => {
+        const user = userEvent.setup();
+        const updateMutation = vi.fn().mockResolvedValue(undefined);
+        let mutationCallIndex = 0;
+        vi.mocked(useMutation).mockImplementation(() => {
+            mutationCallIndex += 1;
+            return (mutationCallIndex === 1
+                ? updateMutation
+                : vi.fn().mockResolvedValue(undefined)) as unknown as ReturnType<typeof useMutation>;
+        });
+
+        renderQuestionTypesPage("/question-types/qt1");
+        const nameInput = screen.getByLabelText("Name");
+        await user.clear(nameInput);
+        await user.type(nameInput, "edited");
+        await user.click(screen.getByRole("button", { name: /add/i }));
+
+        await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+        expect(updateMutation).toHaveBeenCalledWith(
+            expect.objectContaining({
+                name: "edited",
+            }),
+        );
+        expect(screen.getByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
+    });
+
+    it("when Add is clicked with invalid unsaved changes, shows discard dialog without Save changes option", async () => {
+        const user = userEvent.setup();
+        renderQuestionTypesPage("/question-types/qt1");
+        const nameInput = screen.getByLabelText("Name");
+        await user.clear(nameInput);
+        await user.click(screen.getByRole("button", { name: /add/i }));
+        const dialog = screen.getByRole("dialog");
+        expect(dialog).toHaveTextContent("Discard changes?");
+        expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to discard them?");
+        expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
+        await user.click(screen.getByRole("button", { name: "Discard changes" }));
+        expect(screen.getByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
     });
 
     it("at /question-types/_new shows details form with New Question Type title and create mutation on Save", async () => {

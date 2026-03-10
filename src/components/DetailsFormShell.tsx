@@ -9,6 +9,7 @@ export type DetailsFormShellProps = {
     onClose: () => void;
     onConfirmLeaveReady?: (confirmLeave: ConfirmLeaveFn) => void;
     onDirtyChange?: (dirty: boolean) => void;
+    onSaveAndLeave?: () => Promise<void>;
     isDirty: boolean;
     isSubmitting: boolean;
     isSubmitDisabled: boolean;
@@ -22,6 +23,7 @@ export function DetailsFormShell({
     onClose,
     onConfirmLeaveReady,
     onDirtyChange,
+    onSaveAndLeave,
     isDirty,
     isSubmitting,
     isSubmitDisabled,
@@ -30,6 +32,7 @@ export function DetailsFormShell({
     children,
 }: DetailsFormShellProps) {
     const [showDiscardConfirm, setShowDiscardConfirm] = useState(false);
+    const [isSavingAndLeaving, setIsSavingAndLeaving] = useState(false);
     const pendingLeaveResolveRef = useRef<((value: boolean) => void) | null>(null);
 
     useEffect(() => {
@@ -69,6 +72,21 @@ export function DetailsFormShell({
         setShowDiscardConfirm(false);
     }
 
+    const canSaveAndLeave = Boolean(onSaveAndLeave) && !isSubmitDisabled;
+
+    async function handleSaveAndLeaveClick() {
+        if (!onSaveAndLeave || !canSaveAndLeave) return;
+        setIsSavingAndLeaving(true);
+        try {
+            await onSaveAndLeave();
+            pendingLeaveResolveRef.current?.(true);
+            pendingLeaveResolveRef.current = null;
+            setShowDiscardConfirm(false);
+        } finally {
+            setIsSavingAndLeaving(false);
+        }
+    }
+
     return (
         <>
             <div className="flex flex-col h-full">
@@ -93,16 +111,46 @@ export function DetailsFormShell({
 
             <Dialog.Root open={showDiscardConfirm} onOpenChange={setShowDiscardConfirm}>
                 <Dialog size="sm" className="p-6">
-                    <Dialog.Title>Discard changes?</Dialog.Title>
-                    <Dialog.Description>You have unsaved changes. Do you want to discard them?</Dialog.Description>
-                    <div className="mt-4 flex gap-2 justify-end">
-                        <Button variant="secondary" onClick={handleKeepEditing}>
-                            Keep editing
-                        </Button>
-                        <Button variant="primary" onClick={handleConfirmDiscard}>
-                            Discard changes
-                        </Button>
-                    </div>
+                    {canSaveAndLeave ? (
+                        <>
+                            <Dialog.Title>Save changes?</Dialog.Title>
+                            <Dialog.Description>You have unsaved changes. Do you want to save them?</Dialog.Description>
+                            <div className="mt-4 flex gap-2 justify-end">
+                                <Button variant="secondary" onClick={handleKeepEditing} disabled={isSavingAndLeaving}>
+                                    Keep editing
+                                </Button>
+                                <Button
+                                    variant="secondary"
+                                    onClick={handleConfirmDiscard}
+                                    disabled={isSavingAndLeaving}
+                                >
+                                    Discard changes
+                                </Button>
+                                <Button
+                                    variant="primary"
+                                    onClick={handleSaveAndLeaveClick}
+                                    disabled={isSavingAndLeaving || isSubmitting}
+                                >
+                                    Save changes
+                                </Button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <Dialog.Title>Discard changes?</Dialog.Title>
+                            <Dialog.Description>
+                                You have unsaved changes. Do you want to discard them?
+                            </Dialog.Description>
+                            <div className="mt-4 flex gap-2 justify-end">
+                                <Button variant="secondary" onClick={handleKeepEditing}>
+                                    Keep editing
+                                </Button>
+                                <Button variant="primary" onClick={handleConfirmDiscard}>
+                                    Discard changes
+                                </Button>
+                            </div>
+                        </>
+                    )}
                 </Dialog>
             </Dialog.Root>
         </>

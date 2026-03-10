@@ -58,7 +58,7 @@ export function ListDetailPage<TId extends string, TDoc>({
     renderTable,
     renderDetailsForm,
 }: ListDetailPageProps<TId, TDoc>) {
-    const confirmLeaveRef = useRef<ConfirmLeaveFn | null>(null);
+    const dirtyRef = useRef(false);
     const confirmLeaveFnRef = useRef<ConfirmLeaveFn | null>(null);
     const tableContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -66,11 +66,11 @@ export function ListDetailPage<TId extends string, TDoc>({
         confirmLeaveFnRef.current = fn;
     }, []);
     const onDirtyChange = useCallback((dirty: boolean) => {
-        confirmLeaveRef.current = dirty ? confirmLeaveFnRef.current : null;
+        dirtyRef.current = dirty;
     }, []);
 
     useEffect(() => {
-        if (!showDetails) confirmLeaveRef.current = null;
+        if (!showDetails) dirtyRef.current = false;
     }, [showDetails]);
 
     useEffect(() => {
@@ -83,8 +83,8 @@ export function ListDetailPage<TId extends string, TDoc>({
     }, [selectedId, dataRowIdAttribute, list]);
 
     async function handleAddClick() {
-        if (showDetails) {
-            const confirmLeave = confirmLeaveRef.current ?? (() => Promise.resolve(true));
+        if (showDetails && dirtyRef.current) {
+            const confirmLeave = confirmLeaveFnRef.current ?? (() => Promise.resolve(true));
             const ok = await confirmLeave();
             if (!ok) return;
         }
@@ -92,9 +92,12 @@ export function ListDetailPage<TId extends string, TDoc>({
     }
 
     async function handleRowClick(id: TId) {
-        const confirmLeave = confirmLeaveRef.current ?? (() => Promise.resolve(true));
-        const ok = await confirmLeave();
-        if (ok) onRowClick(id);
+        if (dirtyRef.current) {
+            const confirmLeave = confirmLeaveFnRef.current ?? (() => Promise.resolve(true));
+            const ok = await confirmLeave();
+            if (!ok) return;
+        }
+        onRowClick(id);
     }
 
     return (

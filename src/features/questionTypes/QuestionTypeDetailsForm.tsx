@@ -62,6 +62,7 @@ function questionTypeFormReducer(state: QuestionTypeFormState, action: QuestionT
 type QuestionTypeDetailsFormProps = {
     questionType: Doc<"questionTypes"> | null;
     onSave: (payload: QuestionTypeUpdatePayload) => Promise<void>;
+    onSaveWithoutNavigate?: (payload: QuestionTypeUpdatePayload) => Promise<void>;
     onCancel: () => void;
     onClose: () => void;
     onConfirmLeaveReady?: (confirmLeave: ConfirmLeaveFn) => void;
@@ -95,6 +96,7 @@ const textareaClassName = "w-full rounded-md border border-slate-300 px-3 py-2 t
 export function QuestionTypeDetailsForm({
     questionType,
     onSave,
+    onSaveWithoutNavigate,
     onCancel,
     onClose,
     onConfirmLeaveReady,
@@ -122,19 +124,23 @@ export function QuestionTypeDetailsForm({
     const isDirty = !formValuesEqual(current, initial);
     const isNameValid = state.name.trim() !== "";
 
+    function buildPayload(): QuestionTypeUpdatePayload {
+        const payload: QuestionTypeUpdatePayload = {
+            name: state.name.trim(),
+            dataTemplate: state.dataTemplate,
+            questionTemplate: state.questionTemplate,
+            answerTemplate: state.answerTemplate,
+        };
+        if (questionType) payload.questionTypeId = questionType._id;
+        return payload;
+    }
+
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!isNameValid) return;
         dispatch({ type: "SET_SUBMITTING", payload: true });
         try {
-            const payload: QuestionTypeUpdatePayload = {
-                name: state.name.trim(),
-                dataTemplate: state.dataTemplate,
-                questionTemplate: state.questionTemplate,
-                answerTemplate: state.answerTemplate,
-            };
-            if (questionType) payload.questionTypeId = questionType._id;
-            await onSave(payload);
+            await onSave(buildPayload());
             onClose();
         } finally {
             dispatch({ type: "SET_SUBMITTING", payload: false });
@@ -147,6 +153,19 @@ export function QuestionTypeDetailsForm({
             onClose={onClose}
             onConfirmLeaveReady={onConfirmLeaveReady}
             onDirtyChange={onDirtyChange}
+            onSaveAndLeave={
+                onSaveWithoutNavigate
+                    ? async () => {
+                          if (!isNameValid) return;
+                          dispatch({ type: "SET_SUBMITTING", payload: true });
+                          try {
+                              await onSaveWithoutNavigate(buildPayload());
+                          } finally {
+                              dispatch({ type: "SET_SUBMITTING", payload: false });
+                          }
+                      }
+                    : undefined
+            }
             isDirty={isDirty}
             isSubmitting={state.isSubmitting}
             isSubmitDisabled={!isNameValid}

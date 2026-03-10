@@ -61,6 +61,7 @@ function wordFormReducer(state: WordFormState, action: WordFormAction): WordForm
 type WordDetailsFormProps = {
     word: Doc<"words"> | null;
     onSave: (payload: WordUpdatePayload) => Promise<void>;
+    onSaveWithoutNavigate?: (payload: WordUpdatePayload) => Promise<void>;
     onCancel: () => void;
     onClose: () => void;
     onConfirmLeaveReady?: (confirmLeave: ConfirmLeaveFn) => void;
@@ -77,6 +78,7 @@ function formValuesEqual(
 export function WordDetailsForm({
     word,
     onSave,
+    onSaveWithoutNavigate,
     onCancel,
     onClose,
     onConfirmLeaveReady,
@@ -100,19 +102,23 @@ export function WordDetailsForm({
     const isDirty = !formValuesEqual(current, initial);
     const isTextValid = state.text.trim() !== "";
 
+    function buildPayload(): WordUpdatePayload {
+        const payload: WordUpdatePayload = {
+            text: state.text.trim(),
+            type: state.type,
+            meaning: state.meaning,
+            tags: state.tags || undefined,
+        };
+        if (word) payload.wordId = word._id;
+        return payload;
+    }
+
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         if (!isTextValid) return;
         dispatch({ type: "SET_SUBMITTING", payload: true });
         try {
-            const payload: WordUpdatePayload = {
-                text: state.text.trim(),
-                type: state.type,
-                meaning: state.meaning,
-                tags: state.tags || undefined,
-            };
-            if (word) payload.wordId = word._id;
-            await onSave(payload);
+            await onSave(buildPayload());
             onClose();
         } finally {
             dispatch({ type: "SET_SUBMITTING", payload: false });
@@ -125,6 +131,19 @@ export function WordDetailsForm({
             onClose={onClose}
             onConfirmLeaveReady={onConfirmLeaveReady}
             onDirtyChange={onDirtyChange}
+            onSaveAndLeave={
+                onSaveWithoutNavigate
+                    ? async () => {
+                          if (!isTextValid) return;
+                          dispatch({ type: "SET_SUBMITTING", payload: true });
+                          try {
+                              await onSaveWithoutNavigate(buildPayload());
+                          } finally {
+                              dispatch({ type: "SET_SUBMITTING", payload: false });
+                          }
+                      }
+                    : undefined
+            }
             isDirty={isDirty}
             isSubmitting={state.isSubmitting}
             isSubmitDisabled={!isTextValid}

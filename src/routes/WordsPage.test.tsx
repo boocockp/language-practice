@@ -134,29 +134,73 @@ describe("WordsPage", () => {
         expect(screen.getByPlaceholderText("What the word means")).toHaveValue("");
     });
 
-    it("shows discard confirm dialog when Add is clicked with unsaved changes, then navigates to new word on Discard", async () => {
+    it("shows save-or-discard dialog when Add is clicked with valid unsaved changes, then navigates to new word on Discard", async () => {
         const user = userEvent.setup();
         renderWordsPage("/words/word1");
         await user.clear(screen.getByDisplayValue("maison"));
         await user.type(screen.getByPlaceholderText("The word you are learning"), "edited");
         await user.click(screen.getByRole("button", { name: /add/i }));
         const dialog = screen.getByRole("dialog");
-        expect(dialog).toHaveTextContent(/discard|abandon/i);
+        expect(dialog).toHaveTextContent("Save changes?");
+        expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to save them?");
+        expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
         expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
         expect(screen.getByPlaceholderText("The word you are learning")).toHaveValue("");
     });
 
-    it("shows discard confirm when Add clicked with unsaved changes, keeps editing on Keep editing", async () => {
+    it("shows save-or-discard dialog when Add clicked with valid unsaved changes, keeps editing on Keep editing", async () => {
         const user = userEvent.setup();
         renderWordsPage("/words/word1");
         await user.clear(screen.getByDisplayValue("maison"));
         await user.type(screen.getByPlaceholderText("The word you are learning"), "edited");
         await user.click(screen.getByRole("button", { name: /add/i }));
-        expect(screen.getByRole("dialog")).toHaveTextContent(/discard|abandon/i);
+        const dialog = screen.getByRole("dialog");
+        expect(dialog).toHaveTextContent("Save changes?");
+        expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to save them?");
+        expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Keep editing" }));
         expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
         expect(screen.getByDisplayValue("edited")).toBeInTheDocument();
+    });
+
+    it("when Add is clicked with valid unsaved changes, Save changes saves and then navigates to new word", async () => {
+        const user = userEvent.setup();
+        const updateMutation = vi.fn().mockResolvedValue(undefined);
+        let mutationCallIndex = 0;
+        vi.mocked(useMutation).mockImplementation(() => {
+            mutationCallIndex += 1;
+            return (mutationCallIndex === 1
+                ? updateMutation
+                : vi.fn().mockResolvedValue(undefined)) as unknown as ReturnType<typeof useMutation>;
+        });
+
+        renderWordsPage("/words/word1");
+        await user.clear(screen.getByDisplayValue("maison"));
+        await user.type(screen.getByPlaceholderText("The word you are learning"), "edited");
+        await user.click(screen.getByRole("button", { name: /add/i }));
+
+        await user.click(screen.getByRole("button", { name: "Save changes" }));
+
+        expect(updateMutation).toHaveBeenCalledWith(
+            expect.objectContaining({
+                text: "edited",
+            }),
+        );
+        expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+    });
+
+    it("when Add is clicked with invalid unsaved changes, shows discard dialog without Save changes option", async () => {
+        const user = userEvent.setup();
+        renderWordsPage("/words/word1");
+        await user.clear(screen.getByDisplayValue("maison"));
+        await user.click(screen.getByRole("button", { name: /add/i }));
+        const dialog = screen.getByRole("dialog");
+        expect(dialog).toHaveTextContent("Discard changes?");
+        expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to discard them?");
+        expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
+        await user.click(screen.getByRole("button", { name: "Discard changes" }));
+        expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
     });
 
     it("at /words/_new shows details form with New Word title and create mutation on Save", async () => {
