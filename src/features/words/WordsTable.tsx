@@ -59,6 +59,7 @@ export function WordsTable({ words, selectedWordId, onRowClick }: WordsTableProp
                         return (
                             <Table.Row
                                 key={word._id}
+                                data-word-id={word._id}
                                 className={cn("cursor-pointer", isSelected && "bg-slate-100")}
                                 data-selected={isSelected ? "true" : undefined}
                                 tabIndex={0}

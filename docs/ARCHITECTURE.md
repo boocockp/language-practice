@@ -30,6 +30,8 @@ The user studies one language at a time. The selection is stored per browser tab
 - Stats: show progress/history summaries
 - Settings: learner preferences
 
+List+detail data pages (Words, Question Types) use the shared **`ListDetailPage`** component (`src/components/ListDetailPage.tsx`). It handles the layout (header + Add, table + detail panel), loading/empty/not-found states, confirm-before-leave when the form is dirty, and scroll-selected-row-into-view. New list+detail data pages should use this component and pass config plus `renderTable` and `renderDetailsForm` render props.
+
 ### Template helpers (question/answer generation)
 
 Question and answer templates support language-specific Handlebars helpers (e.g. `noun`, `verb`) for grammatical correctness. These live in `convex/templateHelpers.ts` and use **vendored** code from the rosaenlg repo (see `convex/vendor/`: rosaenlg-commons, rosaenlg-filter, french-verbs, french-adjectives, french-contractions, plus `convex/lib/pluralizeFr.ts`). They are only active for supported languages (French initially). French verb conjugation uses a rule-based lookup (regular -er/-ir/-re rules + irregular dictionary); see `docs/features/Verb conjugation.md`. The full rendered output is post-processed for contractions and elisions. See `docs/features/Template Helpers.md`.

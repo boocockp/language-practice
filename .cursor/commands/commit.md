@@ -23,6 +23,7 @@ Write the file from the actual conversation in this chat; summarize outcomes cle
 
 ## 3. Stage and commit
 
+Ensure that the transcript file is completely written so it is included in the commit in the next step.
 Run in the project root:
 
 1. `git add -A`
