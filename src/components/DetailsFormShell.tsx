@@ -60,10 +60,13 @@ export function DetailsFormShell({
     }
 
     function handleConfirmDiscard() {
+        const wasConfirmLeave = pendingLeaveResolveRef.current != null;
         pendingLeaveResolveRef.current?.(true);
         pendingLeaveResolveRef.current = null;
         setShowDiscardConfirm(false);
-        onClose();
+        if (!wasConfirmLeave) {
+            onClose();
+        }
     }
 
     function handleKeepEditing() {

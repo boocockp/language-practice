@@ -145,7 +145,7 @@ describe("WordsPage", () => {
         expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to save them?");
         expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
-        expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+        expect(await screen.findByRole("heading", { name: "New Word" })).toBeInTheDocument();
         expect(screen.getByPlaceholderText("The word you are learning")).toHaveValue("");
     });
 
@@ -200,7 +200,7 @@ describe("WordsPage", () => {
         expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to discard them?");
         expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
-        expect(screen.getByRole("heading", { name: "New Word" })).toBeInTheDocument();
+        expect(await screen.findByRole("heading", { name: "New Word" })).toBeInTheDocument();
     });
 
     it("at /words/_new shows details form with New Word title and create mutation on Save", async () => {

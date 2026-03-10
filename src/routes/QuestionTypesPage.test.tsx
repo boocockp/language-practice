@@ -136,7 +136,7 @@ describe("QuestionTypesPage", () => {
         expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to save them?");
         expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
-        expect(screen.getByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
+        expect(await screen.findByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Descriptive name for this question type")).toHaveValue("");
     });
 
@@ -178,7 +178,7 @@ describe("QuestionTypesPage", () => {
         expect(dialog).toHaveTextContent("You have unsaved changes. Do you want to discard them?");
         expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
         await user.click(screen.getByRole("button", { name: "Discard changes" }));
-        expect(screen.getByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
+        expect(await screen.findByRole("heading", { name: "New Question Type" })).toBeInTheDocument();
     });
 
     it("at /question-types/_new shows details form with New Question Type title and create mutation on Save", async () => {
