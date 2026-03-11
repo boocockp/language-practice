@@ -2,8 +2,7 @@
 
 - Pronoun helpers
 - Helper syntax improvements
-- Question sessions
-- Session types
+- Practice sessions
 - Statistics
 - Word weighting by statistics
 - Speech input
@@ -23,4 +22,5 @@
 - Auto translate
 - Use better tools: https://cpojer.net/posts/fastest-frontend-tooling
 - Use react doctor https://github.com/millionco/react-doctor
+- Session types
 

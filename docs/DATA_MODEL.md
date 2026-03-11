@@ -54,7 +54,8 @@ Fields:
 
 - `userId`: the id of the User to which this record belongs
 - `language`: target language as a two-letter code, eg 'en', 'fr'
-- `questionTypeId` (reference to `questionTypes`)
+- `questionTypeId`: reference to `questionTypes`
+- `sessionId`: optional, reference to `sessions`
 - `text`: the generated question
 - `expected`: the generated expected answer
 - `answerGiven`: optional; the answer the user entered (set when they submit)
@@ -86,3 +87,19 @@ Each item in `questions` has:
 - `count`: number of times this question type occurs in the session (≥ 1)
 
 There may be more than one item with the same `questionTypeId`. Convex: `sessionTypes.listByUserAndLanguage`, `sessionTypes.getById`, `sessionTypes.create`, `sessionTypes.update`.
+
+
+### `sessions`
+
+Defines a practice session generated from a Session Type
+
+Fields: 
+
+- `userId`: the id of the User to which this record belongs
+- `language`: target language as a two-letter code, eg 'en', 'fr'
+- `sessionTypeId`: link to the Session Type from which it was generated
+- `numberCorrect`: the number of questions answered correctly (could be derived from related Questions, but denormalized for efficiency)
+
+Related:
+
+- a number of records in `questions` will be related to this one by their `sessionId`
