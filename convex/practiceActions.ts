@@ -15,6 +15,7 @@ export const generateQuestion = action({
         questionTypeId: v.id("questionTypes"),
         language: v.string(),
         userLanguage: v.optional(v.string()),
+        sessionId: v.optional(v.id("sessions")),
     },
     returns: v.union(
         v.null(),
@@ -89,6 +90,7 @@ export const generateQuestion = action({
             text: result.text,
             expected: result.expected,
             wordIds: [...new Set(wordIds)],
+            ...(args.sessionId !== undefined && { sessionId: args.sessionId }),
         })) as Id<"questions">;
 
         return {

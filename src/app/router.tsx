@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { AppLayout } from "./AppLayout";
 import { HomePage } from "../routes/HomePage";
 import { PracticePage } from "../routes/PracticePage";
+import { PracticeSessionPage } from "../routes/PracticeSessionPage";
 import { WordsPage } from "../routes/WordsPage";
 import { QuestionTypesPage } from "../routes/QuestionTypesPage";
 import { SessionTypesPage } from "../routes/SessionTypesPage";
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
         children: [
             { index: true, element: <HomePage /> },
             { path: "practice", element: <PracticePage /> },
+            { path: "practice/session", element: <PracticeSessionPage /> },
             { path: "words/:wordId?", element: <WordsPage /> },
             { path: "question-types/:questionTypeId?", element: <QuestionTypesPage /> },
             { path: "session-types/:sessionTypeId?", element: <SessionTypesPage /> },

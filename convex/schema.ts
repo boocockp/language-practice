@@ -28,6 +28,7 @@ export default defineSchema({
         userId: v.id("users"),
         language: v.string(),
         questionTypeId: v.id("questionTypes"),
+        sessionId: v.optional(v.id("sessions")),
         text: v.string(),
         expected: v.string(),
         answerGiven: v.optional(v.string()),
@@ -39,7 +40,8 @@ export default defineSchema({
     })
         .index("by_questionTypeId", ["questionTypeId"])
         .index("by_userId", ["userId"])
-        .index("by_userId_respondedAt", ["userId", "respondedAt"]),
+        .index("by_userId_respondedAt", ["userId", "respondedAt"])
+        .index("by_sessionId", ["sessionId"]),
 
     sessionTypes: defineTable({
         userId: v.id("users"),
@@ -52,4 +54,11 @@ export default defineSchema({
             }),
         ),
     }).index("by_userId_language", ["userId", "language"]),
+
+    sessions: defineTable({
+        userId: v.id("users"),
+        language: v.string(),
+        sessionTypeId: v.id("sessionTypes"),
+        numberCorrect: v.optional(v.number()),
+    }).index("by_userId", ["userId"]),
 });

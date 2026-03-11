@@ -11,7 +11,8 @@ import { getLanguageFlag, LANGUAGES } from "../lib/languages";
 
 const navItems = [
     { to: "/", label: "Home", end: true as const },
-    { to: "/practice", label: "Practice" },
+    { to: "/practice", label: "Practice", end: true as const },
+    { to: "/practice/session", label: "Practice Session" },
     { to: "/words", label: "Words" },
     { to: "/question-types", label: "Question Types" },
     { to: "/session-types", label: "Session Types" },

@@ -113,6 +113,22 @@ describe("AppLayout", () => {
 
                 expect(screen.getByTestId("words-page")).toBeInTheDocument();
             });
+
+            it("opens menu and navigates to Practice Session page when Practice Session is clicked", async () => {
+                mdMatches = false;
+                renderAppLayout();
+
+                const openMenuButton = screen.getByRole("button", {
+                    name: "Open menu",
+                });
+                await user.click(openMenuButton);
+
+                const practiceSessionItem = await screen.findByText("Practice Session");
+                expect(practiceSessionItem).toBeInTheDocument();
+                await user.click(practiceSessionItem);
+
+                expect(screen.getByTestId("practice-session-page")).toBeInTheDocument();
+            });
         });
 
         describe("nav bar (large viewport)", () => {
@@ -124,6 +140,19 @@ describe("AppLayout", () => {
                 await user.click(wordsLink);
 
                 expect(screen.getByTestId("words-page")).toBeInTheDocument();
+            });
+
+            it("navigates to Practice Session page when Practice Session link is clicked", async () => {
+                mdMatches = true;
+                renderAppLayout();
+
+                const practiceSessionLink = screen.getByRole("link", {
+                    name: "Practice Session",
+                });
+                expect(practiceSessionLink).toHaveAttribute("href", "/practice/session");
+                await user.click(practiceSessionLink);
+
+                expect(screen.getByTestId("practice-session-page")).toBeInTheDocument();
             });
         });
     });

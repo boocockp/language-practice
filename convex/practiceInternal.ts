@@ -46,6 +46,7 @@ export const insertGeneratedQuestion = internalMutation({
         text: v.string(),
         expected: v.string(),
         wordIds: v.optional(v.array(v.id("words"))),
+        sessionId: v.optional(v.id("sessions")),
     },
     returns: v.id("questions"),
     handler: async (ctx, args) => {
@@ -56,6 +57,7 @@ export const insertGeneratedQuestion = internalMutation({
             text: args.text,
             expected: args.expected,
             ...(args.wordIds !== undefined && { wordIds: args.wordIds }),
+            ...(args.sessionId !== undefined && { sessionId: args.sessionId }),
         });
     },
 });

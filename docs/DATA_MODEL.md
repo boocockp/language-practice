@@ -69,6 +69,7 @@ Fields:
 - questions by `questionTypeId`
 - questions by `userId`
 - questions by `userId` and `respondedAt`
+- questions by `sessionId`
 
 ### `sessionTypes`
 

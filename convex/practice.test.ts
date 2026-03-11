@@ -283,6 +283,41 @@ describe("practiceActions.generateQuestion (action)", () => {
         expect(question?.expected).toBe("4");
     });
 
+    it("stores sessionId on question when sessionId is provided", async () => {
+        const { userId, userSession } = await createUserAndSession(t);
+        const questionTypeId = await insertQuestionType(userId, {
+            name: "QT",
+            dataTemplate: "",
+            questionTemplate: "What is 2+2?",
+            answerTemplate: "4",
+        });
+        const stId = await t.run(async (ctx) =>
+            ctx.db.insert("sessionTypes", {
+                userId,
+                language: "en",
+                name: "ST",
+                questions: [{ questionTypeId, count: 1 }],
+            }),
+        );
+        const sessionId = await t.run(async (ctx) =>
+            ctx.db.insert("sessions", {
+                userId,
+                language: "en",
+                sessionTypeId: stId,
+            }),
+        );
+
+        const result = await userSession.action(api.practiceActions.generateQuestion, {
+            questionTypeId,
+            language: "en",
+            sessionId,
+        });
+        expect(result).not.toBeNull();
+
+        const question = await t.run(async (ctx) => ctx.db.get("questions", result!.questionId));
+        expect(question?.sessionId).toBe(sessionId);
+    });
+
     it("generates question with word helper using type filter", async () => {
         const { userId, userSession } = await createUserAndSession(t);
         const wordId = await t.run(async (ctx) =>

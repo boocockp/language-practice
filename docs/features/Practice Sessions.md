@@ -3,6 +3,8 @@ User Feature: Practice Sessions
 
 Initial version: these requirements will evolve greatly after experience with the app
 
+**Implemented** (Stage 1): Practice Session page at `/practice/session`, nav entry "Practice Session", shared `PracticeQuestionBlock`, Convex `sessions` table and `sessionsActions.generateSession`, `sessions.getWithQuestions`, `sessions.endSession`.
+
 Overview
 --------
 
@@ -12,6 +14,8 @@ The overall results of the session are stored along with the individual question
 
 Requirements - Stage 1
 ----------------------
+
+- Add a Practice Session nav bar button/hamburger menu option that navigates to the Practice Session page
 
 ### Initial display
 - The Practice Session page initially shows the following elements:

@@ -24,10 +24,7 @@ export default defineConfig({
                 extends: true,
                 test: {
                     name: "route-pages",
-                    include: [
-                        "src/routes/WordsPage.test.tsx",
-                        "src/routes/QuestionTypesPage.test.tsx",
-                    ],
+                    include: ["src/routes/WordsPage.test.tsx", "src/routes/QuestionTypesPage.test.tsx"],
                     fileParallelism: false,
                     sequence: { groupOrder: 1 },
                 },

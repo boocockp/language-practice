@@ -1,15 +1,13 @@
 import { useReducer } from "react";
-import { Button, Empty, Select, Text, Textarea } from "@cloudflare/kumo";
-import { Check, X } from "@phosphor-icons/react";
+import { Button, Empty, Select, Text } from "@cloudflare/kumo";
 import { useAction, useMutation, useQuery } from "convex/react";
 
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
+import { PracticeQuestionBlock } from "../components/PracticeQuestionBlock";
 import { useAuth } from "../contexts/AuthContext";
 import { useCurrentLanguage } from "../contexts/CurrentLanguageContext";
 import { getBrowserLanguageCode } from "../lib/languages";
-
-const BORDERED_BLOCK = "border border-slate-200 rounded-lg p-3 min-h-[2.5rem] bg-slate-50";
 
 type PracticeState = {
     selectedQuestionTypeId: Id<"questionTypes"> | null;
@@ -74,7 +72,6 @@ export function PracticePage() {
     const hasQuestionType = state.selectedQuestionTypeId !== null;
     const hasCurrentQuestion = state.currentQuestion !== null;
     const showNextButton = hasQuestionType && (!hasCurrentQuestion || state.feedback !== null) && !state.isGenerating;
-    const showCheckButton = hasCurrentQuestion && state.feedback === null;
 
     async function handleNextQuestion() {
         if (state.selectedQuestionTypeId === null) return;
@@ -156,60 +153,18 @@ export function PracticePage() {
                         ))}
                     </Select>
 
-                    <div>
-                        <label htmlFor="question-display" className="block text-sm font-medium text-slate-700 mb-1">
-                            Question
-                        </label>
-                        <div id="question-display" className={BORDERED_BLOCK} aria-label="Question">
-                            {state.currentQuestion?.text ?? ""}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="answer-input" className="block text-sm font-medium text-slate-700 mb-1">
-                            Answer
-                        </label>
-                        <Textarea
-                            id="answer-input"
-                            placeholder="Enter your answer"
-                            value={state.answer}
-                            onChange={(e) => dispatch({ type: "SET_ANSWER", payload: e.target.value })}
-                            disabled={!hasCurrentQuestion}
-                            className="min-h-[4rem]"
-                            aria-label="Answer"
-                        />
-                    </div>
-
-                    <div>
-                        <label htmlFor="expected-display" className="block text-sm font-medium text-slate-700 mb-1">
-                            Expected Answer
-                        </label>
-                        <div id="expected-display" className={BORDERED_BLOCK} aria-label="Expected Answer">
-                            {state.feedback !== null && state.currentQuestion ? state.currentQuestion.expected : ""}
-                        </div>
-                    </div>
-
-                    <div>
-                        <label htmlFor="result-display" className="block text-sm font-medium text-slate-700 mb-1">
-                            Result
-                        </label>
-                        <div id="result-display" className={BORDERED_BLOCK} aria-label="Result">
-                            {state.feedback !== null &&
-                                (state.feedback.isCorrect ? (
-                                    <span className="flex items-center gap-2 text-green-700">
-                                        <Check size={20} aria-hidden />
-                                        Correct
-                                    </span>
-                                ) : (
-                                    <span className="flex items-center gap-2 text-red-700">
-                                        <X size={20} aria-hidden />
-                                        Wrong
-                                    </span>
-                                ))}
-                        </div>
-                    </div>
-
-                    <div className="flex gap-2">
+                    <PracticeQuestionBlock
+                        questionText={state.currentQuestion?.text ?? ""}
+                        expectedAnswer={
+                            state.feedback !== null && state.currentQuestion ? state.currentQuestion.expected : ""
+                        }
+                        answer={state.answer}
+                        onAnswerChange={(value) => dispatch({ type: "SET_ANSWER", payload: value })}
+                        feedback={state.feedback}
+                        onCheckAnswer={handleCheckAnswer}
+                        answerDisabled={!hasCurrentQuestion}
+                        checkAnswerDisabled={state.answer.trim() === ""}
+                    >
                         {showNextButton && (
                             <Button
                                 type="button"
@@ -222,18 +177,7 @@ export function PracticePage() {
                                 {state.isGenerating ? "Loading…" : "Next Question"}
                             </Button>
                         )}
-                        {showCheckButton && (
-                            <Button
-                                type="button"
-                                variant="secondary"
-                                onClick={handleCheckAnswer}
-                                aria-label="Check answer"
-                                disabled={state.answer.trim() === ""}
-                            >
-                                Check Answer
-                            </Button>
-                        )}
-                    </div>
+                    </PracticeQuestionBlock>
                 </div>
             )}
         </section>

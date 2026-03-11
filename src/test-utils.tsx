@@ -60,6 +60,10 @@ const appLayoutRoutes = (
         <Route path="/" element={<AppLayout />}>
             <Route index element={<div data-testid="outlet" />} />
             <Route path="words" element={<div data-testid="words-page">Words page</div>} />
+            <Route
+                path="practice/session"
+                element={<div data-testid="practice-session-page">Practice Session page</div>}
+            />
         </Route>
     </Routes>
 );

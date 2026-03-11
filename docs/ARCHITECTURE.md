@@ -25,6 +25,7 @@ The user studies one language at a time. The selection is stored per browser tab
 
 - Home: entry point and navigation
 - Practice: show current question, accept answer, show feedback, advance
+- Practice Session: choose a session type, run a generated session (questions one by one), then see summary. Convex: `sessionsActions.generateSession` (action), `sessions.getWithQuestions` (query), `sessions.endSession` (mutation). Route: `/practice/session`.
 - Words: manage word list; word detail view and edit at `/words/:wordId`; add new word at `/words/_new`. Edits are persisted via Convex mutation `words.update`; new words via `words.create`.
 - Question Types: manage question type templates; list at `/question-types`; detail and edit at `/question-types/:questionTypeId`; add new at `/question-types/_new`. Convex: `questionTypes.listByUserAndLanguage`, `questionTypes.getById`, `questionTypes.create`, `questionTypes.update`.
 - Session Types: manage session type templates (ordered list of question types + counts); list at `/session-types`; detail and edit at `/session-types/:sessionTypeId`; add new at `/session-types/_new`. Convex: `sessionTypes.listByUserAndLanguage`, `sessionTypes.getById`, `sessionTypes.create`, `sessionTypes.update`.
